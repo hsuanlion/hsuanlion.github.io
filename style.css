@@ -1,0 +1,96 @@
+/* 前景色 color */
+/* 背景色 background-color */
+
+body {
+	font-family: Times, Times New Roman;
+	background-color: rgb(200,200,200);
+	padding: 8%;
+	font-size: 120%;
+}
+
+/*找出id屬性質為main的元素*/
+#main {
+	background-color: white;
+	padding: 8%;
+
+}
+
+/*table 的屬性*/
+table {
+	width: 100%;
+}
+
+td, th {
+	padding: 1%;
+	text-align: center;
+}
+
+tr.first th{
+	color: rgb(212,106,106);
+	text-transform: uppercase;
+	border-bottom: 2px solid #111111;
+	border-top: 1px solid #999;
+	text-align: center;
+}
+
+tr.even {
+	background-color: #efefef;
+}
+
+tr:hover{
+	background-color: #c3e6e5;
+}
+
+.money {
+	text-align: right;
+}
+
+/*圖片的規格*/
+#bread {
+	width: 100%;
+}
+
+#jam {
+	width: 100%;
+}
+
+figcaption {
+	color: rgb(100,100,90);
+	text-align: center;
+	font-style:  italic;
+}
+
+h1 {
+	color: DarkCyan; /*前景色*/
+}
+
+/* hex code */
+h2 {
+	color: #ee3e80
+}
+/* rgb value */
+p {
+	color: rgb(100,100,90);
+}
+
+a:link {
+	color: deeppink;
+	text-decoration: none;
+}
+
+a:visited {
+	color: rgb(225,170,170);
+}
+
+a:hover {
+	color: deeppink;
+	text-decoration: underline;
+}
+
+a:active {
+	color: darkcyan;
+}
+
+
+
+
