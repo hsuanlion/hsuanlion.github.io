@@ -49,7 +49,7 @@
 		}
 
 		function refresh_aritcle_list(category){
-			//$("#content").empty();
+			$("#content").empty();
 			$.each(articles, function( index, article ){
 				
 				if (category.includes(article.category) || category == "All")
@@ -61,7 +61,7 @@
 						'<div class="articlelist">' +
 						'<a href=' + article_link +'>' +
 						'<h1>' + article.title + '</h1>' +
-						'<span class="article_description">' + $(article.html).text().slice(0, 500) +
+						'<span class="article_description">' + $(article.html).text().slice(0, 50) +
 						'</span>' +
 						'</a>'+
 						'</div>');

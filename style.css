@@ -180,6 +180,50 @@ ul.nav-bar a:hover {
 	border: 1px dashed lightgrey;
 }
 
+/*文章中程式碼區塊*/
+pre {
+	display: block;
+	margin: 1em 0px;
+	font-size: 14px;
+	font-family: monospace;
+	background-color: #f8f8ff;
+	border: 1px solid #ddd;
+	padding: 8px;
+	line-height: 1.5em;
+	color: #444;
+	border-radius: 3px;
+	overflow: auto;
+	white-space: pre;
+	word-wrap: normal;
+}
+
+code {
+	font
+}
+
+pre code{
+	background-color: #f8f8ff;
+	border: none;
+	padding: 0px;
+}
+
+code {
+	font-size: 14px;
+	background-color: #f8f8ff;
+	color: #444;
+	padding: 0 .2em;
+	border: 1px solid #dedede;
+}
+
+/*文章中小標*/
+h2 {
+	font-size: 200%;
+	line-height: 1.4em;
+	margin-top: 6%;
+	border-left: 8px solid #ff7e79;
+	padding-left: 11px;
+}
+
 /*文章中 table的樣式*/
 /*table 的屬性*/
 .article table {
@@ -225,7 +269,7 @@ ul.nav-bar a:hover {
 .article img {
 	display: block;
 	margin: 20px auto;
-	width: 60%;
+	width: 80%;
 	box-shadow: 0px 0px 8px #777777;
 }
 
