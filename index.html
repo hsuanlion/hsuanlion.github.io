@@ -4,12 +4,15 @@
 	<title>Jam Jam's Notebook.</title>
 	<meta charset="utf-8" />
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="atelier-cave-light.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- javascript-->
 	<script src="javaScript/articles.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
+	<!--prettify-->
+	<script src="google-code-prettify/prettify.js?"></script>
 
 	<script>
 
@@ -43,6 +46,8 @@
 						'<hr class="line">' +
 						article.html + 
 						'</div>');
+					$("pre").addClass("prettyprint");
+					PR.prettyPrint();
 				}	
 
 			});
@@ -123,7 +128,7 @@
 	<!--header part-->
 	<div class="header">
 		<div class="brand">
-			<p><a href="#">Jam Jam's Note.</a></p>
+			<p><a href="index.html">Jam Jam's Note.</a></p>
 		</div>
 		<div class="nav">
 			<ul class="nav-bar">

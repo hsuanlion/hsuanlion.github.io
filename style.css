@@ -182,6 +182,15 @@ ul.nav-bar a:hover {
 
 /*文章中程式碼區塊*/
 pre {
+	font-size: 16px;
+	padding: 8px;
+	line-height: 1.8em;
+	border-radius: 5px;
+	overflow: auto;
+
+}
+/*文章中程式碼區塊
+pre {
 	display: block;
 	margin: 1em 0px;
 	font-size: 14px;
@@ -214,6 +223,7 @@ code {
 	padding: 0 .2em;
 	border: 1px solid #dedede;
 }
+*/
 
 /*文章中小標*/
 h2 {
