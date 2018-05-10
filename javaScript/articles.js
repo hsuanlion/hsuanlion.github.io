@@ -26,7 +26,15 @@ var articles =  [
 		"author" : "Hsuan",
 		"date": "May. 08, 2018",
 		"link": "articles/article02.md"	
+	},
+	{
+		"title": "Note 03 : R資料視覺化-part1",
+		"category": "R",
+		"author" : "Hsuan",
+		"date": "May. 09, 2018",
+		"link": "articles/article03.md"	
 	}
+
 
 ]
 

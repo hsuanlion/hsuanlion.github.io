@@ -58,7 +58,7 @@
 	# 後面都用這個 cursor來做SQL操作.
 	c = conn.cursor()
 
-	# 砍掉就資料.如要讓新的資料自動append在舊資料後 則下列兩段程式碼不需執行
+	# 砍掉舊資料.如要讓新的資料自動append在舊資料後 則下列兩段程式碼不需執行
 	# c.execute('drop table if exists records')
 	# c.execute('''create table records
 	# 			(boardname text,
