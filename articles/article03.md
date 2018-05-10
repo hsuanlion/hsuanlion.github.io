@@ -1,5 +1,5 @@
 
-利用爬網資料，視覺話PTT版位與人氣概況
+利用爬網資料，視覺化PTT版位與人氣概況
 
 ## 載入常用套件
     # Install package if not exists 
