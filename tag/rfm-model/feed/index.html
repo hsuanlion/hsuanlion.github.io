@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>RFM Model &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/rfm-model/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:27:36 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>RFM Model using R &#124; CRM 客戶分群模型 Customer Segmentation &#124; R 統計</title>
+		<link>/rfm-model-crm-customer-segmentation-r/</link>
+					<comments>/rfm-model-crm-customer-segmentation-r/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Wed, 05 Dec 2018 03:23:22 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[統計分析]]></category>
+		<category><![CDATA[CRM]]></category>
+		<category><![CDATA[RFM Model]]></category>
+		<guid isPermaLink="false">/?p=2221</guid>
+
+					<description><![CDATA[<p>RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/rfm-model-crm-customer-segmentation-r/">RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評估最適化的CRM方案，極大化投資報酬率。比如說，若能知道各客群歷史回應率，就能預測不同客群的行銷效果(預期回應人數與報酬率)，並客製化CRM行銷策略。</p>
+<h3>RFM Model</h3>
+<p>在精準行銷的時代，行銷者需要評估資源（或預算）如何有效的分配給對的目標受眾輪廓，最大化投資報酬率。主要需評估的問題包括兩個面向：</p>
+<ol>
+<li><strong>Customer Segmentation</strong>
+<ul>
+<li>如何有效區隔消費者，並找出各消費者分群的特色如：高貢獻度、高往來程度、以及高回應率等。</li>
+</ul>
+</li>
+<li><strong>CRM strategies</strong>
+<ul>
+<li>根據消費者所屬分群特性，挑選合適的目標受眾進行行銷，以獲取最大報酬率。</li>
+</ul>
+</li>
+</ol>
+<p>RFM模型則是一個簡單卻有效的顧客分析模型，能幫助我們解決以上兩個問題。其中RFM分別代表：</p>
+<ul>
+<li>R &#8211; Recency : 消費者最後一次購買距今天數。</li>
+<li>F &#8211; Frequency: 消費者購買頻率。</li>
+<li>M &#8211; Monetary: 消費者平均花費金額（每一次購物/訂單結帳）。</li>
+</ul>
+<p>雖然RFM模型在部分統計分析軟體中有現成快速套用的RFM功能節點(ex: IBM SPSS RFM)，在R裡面並沒有簡易現成的套件能快速套用。故本學習筆記將說明如何使用R語言進行RFM分析。</p>
+<h3>Data Explore</h3>
+<p>我們使用CDNOW dataset (1/10th sample)，<a href="http://www.brucehardie.com/datasets/" target="_blank" rel="noopener noreferrer">下載連結</a>。</p><pre class="crayon-plain-tag"># read CDNOW_SAMPLE.txt
+rawdf &lt;- read.table(file = "CDNOW_sample.txt", header = FALSE)
+head(rawdf)</pre><p></p><pre class="crayon-plain-tag">##   V1 V2       V3 V4    V5
+## 1  4  1 19970101  2 29.33
+## 2  4  1 19970118  2 29.73
+## 3  4  1 19970802  1 14.96
+## 4  4  1 19971212  2 26.48
+## 5 21  2 19970101  3 63.34
+## 6 21  2 19970113  1 11.77</pre><p></p><pre class="crayon-plain-tag"># select columns of interest :
+df &lt;- rawdf[,c(1,3,5)]
+# rename columns' names
+names(df) &lt;- c("ID","Date","Amount")
+# transfer column Date type from int type to date type
+df$Date &lt;- as.Date(as.character(df$Date), format="%Y%m%d")
+head(df)</pre><p></p><pre class="crayon-plain-tag">##   ID       Date Amount
+## 1  4 1997-01-01  29.33
+## 2  4 1997-01-18  29.73
+## 3  4 1997-08-02  14.96
+## 4  4 1997-12-12  26.48
+## 5 21 1997-01-01  63.34
+## 6 21 1997-01-13  11.77</pre><p></p><pre class="crayon-plain-tag"># see total row&amp;column number 
+dim(df)</pre><p></p><pre class="crayon-plain-tag">## [1] 6919    3</pre><p></p><pre class="crayon-plain-tag"># count the number of distinct ID 
+uid &lt;- df[!duplicated(df$ID),]
+dim(uid)</pre><p></p><pre class="crayon-plain-tag">## [1] 2357    3</pre><p>我們可以知道獨立用戶ID數為2357，交易比數共為6919。</p>
+<h3>Segment the Customers into RFM Cells</h3>
+<p>根據剛剛載入的資料，我們可以依據R,F,M三個維度將客戶分群到各個RFM<span style="color: #9f6ad4;"> Cell</span>。<br />
+而通常，我們會幫客戶在每個維度給予1~5級的評分（維度bin數量可以根據情境調整），分數越高表示在該維度程度越高。</p>
+<p>且根據過去經驗來說，Recency是高回應率的主要關鍵影響因素(x100)，Frequency是次要影響因素(x10)，最後才是Monetary(x1)。被分類到同一個RFM Cell的客戶分數會是相同的。分數“531&#8243;代表著該客戶在Recency得到5分，Frequency得到3分，Monetary則為1分。</p>
+<p>在每一維度進行客戶切群(分箱，Binning)的方法有兩種：一種是Nested Binning巢狀法，另一種是Independent Binning獨立法。</p>
+<ol>
+<li><strong>Nested Binning 巢狀法</strong>：先將客群在Recency維度切成若干等分(aliquots)，然後從每組Recency等分中再依據Frequency切割成若干等份，Monetary亦然。此法的好處是，每一群RFM Cell的人數會差不多，但缺點就是不同Recency分群下的Frequency和Monetary的意義就無法比較，分數相同，但意義不同。</li>
+<li><strong>Independent Binning 獨立法</strong>：則是獨立將客戶在各維度進行等分切群，這樣的好處就是，同樣RFM分數的意義是相同的，但缺點就是每群RFM Cell中的人數大小會有差距。</li>
+</ol>
+<p>更多有關維度切bin(分箱)方法的優缺點比較(pros &amp; cons)可參考此<a href="https://www.quora.com/SPSS/SPSS-Pros-and-Cons-of-Nested-and-Independent-Binning-for-RFM-Analysis">連結</a>。</p>
+<p><span style="color: #9f6ad4;">為了讓每一群RFM Cell可以相互比較，本學習筆記將先以Independent法，依據各維度分佈來決定bin的切點(breaks)</span>。</p>
+<h3>Calculate the Recency, Frequency, and Monetary</h3>
+<p>為了進行RFM分析，我們需要進一步處理加工CDNOW Sample資料集，分為以下幾個步驟：</p>
+<ol>
+<li>group by unique customer ID</li>
+<li>計算每個ID的Recency: 計算最新的一筆交易距離今日或其他指定日期的天數。</li>
+<li>計算每個ID的Frequency: 計算每個人的總交易次數。</li>
+<li>計算每個ID的Monetary: 計算每個人的交易金額加總除上總交易次數，即平均每筆交易的金額。</li>
+</ol>
+<p>首先，先限制分析資料的時間區間如下：</p><pre class="crayon-plain-tag">startDate &lt;- as.Date("19970101","%Y%m%d")
+endDate &lt;- as.Date("19980701","%Y%m%d")</pre><p>group by 每個獨立ID計算以上時間區間的R,F,M值。其中Recency是最近一次交易距離endDate(1998-07-01)的天數。</p><pre class="crayon-plain-tag">library(dplyr)
+library(magrittr)
+
+df.1 &lt;- 
+  df %&gt;% 
+  filter(Date &gt;= startDate &amp; Date &lt;= endDate) %&gt;% 
+  group_by(ID) %&gt;% 
+  summarise(
+    MaxTransDate = max(Date),
+    Amount = sum(Amount),
+    Recency = as.numeric(endDate - MaxTransDate),
+    Frequency = n(),
+    Monetary = Amount/Frequency
+         ) %&gt;% 
+  ungroup() %&gt;% 
+  as.data.frame()
+
+head(df.1)</pre><p></p><pre class="crayon-plain-tag">##   ID MaxTransDate Amount Recency Frequency Monetary
+## 1  4   1997-12-12 100.50     201         4   25.125
+## 2 18   1997-01-04  14.96     543         1   14.960
+## 3 21   1997-01-13  75.11     534         2   37.555
+## 4 50   1997-01-01   6.79     546         1    6.790
+## 5 60   1997-02-01  21.75     515         1   21.750
+## 6 71   1997-01-01  13.97     546         1   13.970</pre><p></p>
+<h3>Independent RFM Scoring</h3>
+<h4>檢視Recency維度的分佈資訊。</h4>
+<p></p><pre class="crayon-plain-tag">quantile(df.1$Recency, probs = seq(0,1,by = 0.2))</pre><p></p><pre class="crayon-plain-tag">##   0%  20%  40%  60%  80% 100% 
+##    1  153  443  487  513  546</pre><p></p><pre class="crayon-plain-tag">hist(df.1$Recency)</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-5-1.png" alt="RFM Model CRM " /></p><pre class="crayon-plain-tag">plot(density(df.1$Recency))</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-5-2.png" alt="RFM Model CRM " /></p>
+<h4>Recency binning</h4>
+<p>依據Recency維度的百分位數(quantile)進行切群(binning)，每間隔20%百分位數切一等份。</p><pre class="crayon-plain-tag">labels = c(5,4,3,2,1)
+df.1$R_Score &lt;- labels[as.numeric(cut(df.1$Recency, breaks=c(quantile(df.1$Recency, probs = seq(0,1,by = 0.2))), labels=labels, include.lowest=TRUE))]
+
+head(df.1)</pre><p></p><pre class="crayon-plain-tag">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1
+## 4 50   1997-01-01   6.79     546         1    6.790       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1</pre><p></p>
+<h4>檢視Frequency維度的分佈資訊。</h4>
+<p>可以發現前80%百分位數都集中在1,2,3,4等數值。</p><pre class="crayon-plain-tag">quantile(df.1$Frequency, probs = seq(0,1,by = 0.2))</pre><p></p><pre class="crayon-plain-tag">##   0%  20%  40%  60%  80% 100% 
+##    1    1    1    2    4   56</pre><p></p><pre class="crayon-plain-tag">summary(df.1$Frequency)</pre><p></p><pre class="crayon-plain-tag">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.000   1.000   2.936   3.000  56.000</pre><p></p><pre class="crayon-plain-tag">hist(df.1$Frequency, breaks = 100)</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-7-1.png" alt="RFM Model CRM " /></p><pre class="crayon-plain-tag">plot(density(df.1$Frequency))</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-7-2.png" alt="RFM Model CRM " /></p>
+<h4>Frequency binning</h4>
+<p>Frequency的部分<span style="color: #9f6ad4;">則使用指定的1,2,3,4,5+的bin區間來進行分箱</span>。</p><pre class="crayon-plain-tag">labels.freq = c(1,2,3,4,5)
+df.1$F_Score &lt;- labels.freq[as.numeric(cut(df.1$Frequency, breaks=c(0,1,2,3,4,60), labels=labels.freq, include.lowest=TRUE))]
+
+head(df.1)</pre><p></p><pre class="crayon-plain-tag">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1</pre><p></p><pre class="crayon-plain-tag">table(df.1$F_Score)</pre><p></p><pre class="crayon-plain-tag">## 
+##    1    2    3    4    5 
+## 1205  406  208  150  388</pre><p></p>
+<h4>檢視Monetary維度的分佈資訊。</h4>
+<p></p><pre class="crayon-plain-tag">quantile(df.1$Monetary, probs = seq(0,1,by = 0.2))</pre><p></p><pre class="crayon-plain-tag">##        0%       20%       40%       60%       80%      100% 
+##   0.00000  14.37000  20.40800  29.33098  43.08773 506.97000</pre><p></p><pre class="crayon-plain-tag">summary(df.1$Monetary)</pre><p></p><pre class="crayon-plain-tag">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   15.24   24.99   32.44   38.51  506.97</pre><p></p><pre class="crayon-plain-tag">hist(df.1$Monetary,200)</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-10-1.png" alt="RFM Model CRM " /></p><pre class="crayon-plain-tag">plot(density(df.1$Monetary))</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-10-2.png" alt="RFM Model CRM " /></p>
+<h4>Monetary binning</h4>
+<p>Monetary維度則使用百分位數法來進行分箱。</p><pre class="crayon-plain-tag">labels.mon = c(1,2,3,4,5)
+df.1$M_Score &lt;- labels.mon[as.numeric(cut(df.1$Monetary, breaks=c(quantile(df.1$Monetary, probs = seq(0,1,0.2))), labels=labels.mon, include.lowest=TRUE))]
+
+table(df.1$M_Score)</pre><p></p><pre class="crayon-plain-tag">## 
+##   1   2   3   4   5 
+## 487 456 471 471 472</pre><p></p><pre class="crayon-plain-tag">head(df.1)</pre><p></p><pre class="crayon-plain-tag">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1
+##   M_Score
+## 1       3
+## 2       2
+## 3       4
+## 4       1
+## 5       3
+## 6       1</pre><p></p>
+<h4>計算total score</h4>
+<p>將R_Score, F_Score, M_Score三個數值合併為新的三位數值。</p><pre class="crayon-plain-tag">df.1$Total_Score &lt;- as.numeric(paste(df.1$R_Score,df.1$F_Score,df.1$M_Score, sep = ""))
+head(df.1)</pre><p></p><pre class="crayon-plain-tag">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1
+##   M_Score Total_Score
+## 1       3         443
+## 2       2         112
+## 3       4         124
+## 4       1         111
+## 5       3         113
+## 6       1         111</pre><p></p>
+<h3>查看每一個RFM Cell的人數分佈</h3>
+<p>R_Score和M_Score兩維度交叉表。</p><pre class="crayon-plain-tag">library(ggplot2)
+# plot data
+df.1 %&gt;% 
+  mutate(R_Score = as.factor(R_Score),
+         F_Score = as.factor(F_Score)) %&gt;%
+  group_by(R_Score, F_Score) %&gt;% 
+  summarise(value = n()) %&gt;% 
+  ungroup() %&gt;% 
+  ggplot(aes(R_Score, F_Score)) +
+  geom_tile(aes(fill = value), col = "black") + 
+  geom_text(aes(label = round(value, 1))) +
+  scale_fill_gradient2() +
+  theme(panel.background = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        text = element_text(family = "黑體-繁 中黑", size = 14),
+        legend.background = element_rect(fill = "gray96",colour = "gray88"),
+        plot.background = element_rect(fill = "gray99"),
+        plot.title = element_text(hjust = 0.5,size = 16), #標題置中
+        strip.background = element_rect(fill = "lightgray", colour = NA)
+  )</pre><p><img src="/wp-content/uploads/2018/12/unnamed-chunk-14-1.png" alt="RFM Model CRM " /></p>
+<p>根據行銷目的斟酌參考R_ScorexM_Score和R_ScorexF_Score交叉資訊表，有了基本分群資訊後，<span style="color: #9f6ad4;">就可套用各客群歷史行銷回應率資訊，來輔助分配行銷預算，尋找目標客群，並估算預期行銷效果（預期回應人數與投報率）</span>。</p>
+<hr />
+<p><strong>更多<span style="color: #9f6ad4;">統計分析(Analysis)</span>與<span style="color: #9f6ad4;">資料分群(Clustering)</span>學習筆記:</strong></p>
+<ol>
+<li><a href="/app-mobile-ad-revenue-admob-%e8%a1%8c%e5%8b%95%e5%bb%a3%e5%91%8a%e6%94%b6%e5%85%a5/" target="_blank" rel="noopener noreferrer">開發一個免費App能賺多少錢？靠AdMob廣告月收3萬實例分享</a></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering 切割式分群 | K-means, Kmedoid | Clustering 資料分群</a></li>
+<li><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</a></li>
+<li><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">Decision Tree 決策樹 | CART, Conditional Inference Tree, Random Forest </a></li>
+</ol>
+<hr />
+<p><strong>參考資料連結：</strong></p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="https://www.r-bloggers.com/rfm-customer-analysis-with-r-language/" target="_blank" rel="noopener noreferrer">RFM Customer Analysis with R Language</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/rfm-model-crm-customer-segmentation-r/">RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/rfm-model-crm-customer-segmentation-r/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

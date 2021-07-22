@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>hierarchical clustering &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/hierarchical-clustering/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:31:05 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>Hierarchical Clustering 階層式分群 &#124; Clustering 資料分群 &#124; R 統計</title>
+		<link>/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/</link>
+					<comments>/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comments</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Wed, 05 Sep 2018 07:43:45 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[統計模型]]></category>
+		<category><![CDATA[clustering]]></category>
+		<category><![CDATA[hierarchical clustering]]></category>
+		<category><![CDATA[分群]]></category>
+		<category><![CDATA[分群演算法]]></category>
+		<category><![CDATA[資料分群]]></category>
+		<category><![CDATA[階層式分群]]></category>
+		<guid isPermaLink="false">/?p=1157</guid>
+
+					<description><![CDATA[<p>Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群方法包括著名的kmeans, hierarchical clustering，分別使用不同分群演算邏輯。本篇將介紹階層式分群的實作與特色。</p>
+<h3>資料分群簡介</h3>
+<ul>
+<li>資料分群是一個將資料分割成數個子集合的方法，主要目的包括：
+<ul>
+<li>找出資料中相近的<span style="color: #9f6ad4;">群聚(clusters)</span>，</li>
+<li>找出各群的<span style="color: #9f6ad4;">代表點</span>。代表點可以是群聚中的<span style="color: #9f6ad4;">中心點(centroids)</span>或是<span style="color: #9f6ad4;">原型(prototypes)</span>。</li>
+</ul>
+</li>
+<li>透過各群的代表點，可以達到幾個目標：
+<ul>
+<li>資料壓縮</li>
+<li>降低雜訊</li>
+<li>降低計算量</li>
+</ul>
+</li>
+<li> 資料分群將<span style="color: #9f6ad4;">依據資料自身屬性計算彼此間的相似度</span>（物以類聚），而<span style="color: #9f6ad4;">「相似度」</span>主要有兩種型態：
+<ul>
+<li>「Compactness」：目標是讓子集合間差異最大化，子集合內差異最小化。如階層式分群和K-means分群。</li>
+<li>「Connectedness」：目標是將可串連在一起的個體分成一群。如譜分群(Spectral Clustering)。</li>
+</ul>
+</li>
+<li>資料分群屬於<span style="color: #9f6ad4;">非監督式學習法(Unsupervised Learning)</span>，即資料沒有標籤(unlabeled data)或沒有標準答案，<span style="color: #9f6ad4;">無法透過所謂的目標變數(response variable)來做分類之訓練</span>。也因為資料沒有標籤之緣故，與監督式學習法和強化式學習法不同，<span style="color: #9f6ad4;">非監督式學習法無法衡量演算法的正確率</span>。</li>
+</ul>
+<p><span style="color: #333333;"><span style="text-decoration: underline;">資料分群系列文</span>章會依序介紹以下幾種常見的分群方法：</span></p>
+<ol>
+<li><a href="/%e7%b5%b1%e8%a8%88-r%e8%aa%9e%e8%a8%80-%e5%88%86%e7%be%a4%e5%88%86%e6%9e%90-clustering-hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a41/">階層式分群(hierarchical clustering)</a>
+<ol>
+<li>聚合式階層分群法 Agglomerative Hierarchical Clustering</li>
+<li>分裂式階層分群法 Divisive Hierarchical Clustering</li>
+<li>最佳分群群數(Determining Optimal Clusters)</li>
+</ol>
+</li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群(partitional clustering)</a>
+<ol>
+<li>K-means</li>
+<li>K-medoid</li>
+<li>最佳分群群數(Determining Optimal Clusters)</li>
+</ol>
+</li>
+<li>譜分群(Spectral Clustering)</li>
+</ol>
+<h3>1. 階層式分群(Hierarchical clustering)</h3>
+<ul>
+<li>階層分群法的概念是在分群中建立分群，並不需要預先設定分群數。</li>
+<li>產生的分群結果為一目瞭然的樹狀結構圖（又稱作<span style="color: #9f6ad4;">dendrogram</span>）。</li>
+<li>群數(number of clusters)可由大變小(divisive hierarchical clustering)，或是由小變大(agglomerative hierarchical clustering)，透過群聚反覆的分裂和合併後，在選取最佳的群聚數。</li>
+<li>階層式分群兩種演算法：
+<ul>
+<li>當採行<span style="color: #9f6ad4;">聚合法</span>，又稱作AGNES(Agglomerative Nesting)，資料會由樹狀結構的底部開始開始逐次合併 (<span style="color: #9f6ad4;">bottom-up</span>)，在R語言中所使用的函數為<span style="color: #9f6ad4;">hclust()[in stat package]或agnes[in cluster package]</span>，<span style="color: #9f6ad4;">擅於</span><span style="color: #9f6ad4;">處理與識別小規模群聚</span></li>
+<li>當採行<span style="color: #9f6ad4;">分裂法，<span style="color: #333333;">又稱作DIANA(Divisive Analysis)</span></span>，資料則會由樹狀結構的頂部開始逐次分裂(<span style="color: #9f6ad4;">top-down</span>)，在R語言中使用的套件為<span style="color: #9f6ad4;">diana()[in cluster package]</span>，<span style="color: #9f6ad4;">擅於處理與識別大規模群聚</span>。</li>
+</ul>
+</li>
+<li>階層分群可被用運用<span style="color: #9f6ad4;">數值與類別</span>資料。</li>
+</ul>
+<h3><span style="color: #333333;">1-1. 聚合式階層群聚法（AGNES, bottom-up）</span></h3>
+<p>我們使用Iris資料集-經典的鳶尾花資料來進行聚合式階層群聚法之說明。(<span style="color: #9f6ad4;">*注意，資料必須先預處理遺失值的部分，比如說使用na.omit(data)。</span>)</p><pre class="crayon-plain-tag">head(iris)
+
+#   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+# 1          5.1         3.5          1.4         0.2  setosa
+# 2          4.9         3.0          1.4         0.2  setosa
+# 3          4.7         3.2          1.3         0.2  setosa
+# 4          4.6         3.1          1.5         0.2  setosa
+# 5          5.0         3.6          1.4         0.2  setosa
+# 6          5.4         3.9          1.7         0.4  setosa</pre><p>因為分群法為非監督式學習法，專處理<span style="color: #9f6ad4;">無標籤(</span>un-labeled<span style="color: #9f6ad4;">)<span style="color: #333333;">或</span>無標準答案</span>的資料分群，故我們將分類結果欄位Species從我們的inputData刪除。</p><pre class="crayon-plain-tag">inputData &lt;- iris[,-5]
+head(inputData)
+
+#   Sepal.Length Sepal.Width Petal.Length Petal.Width
+# 1          5.1         3.5          1.4         0.2
+# 2          4.9         3.0          1.4         0.2
+# 3          4.7         3.2          1.3         0.2
+# 4          4.6         3.1          1.5         0.2
+# 5          5.0         3.6          1.4         0.2
+# 6          5.4         3.9          1.7         0.4</pre><p>在進行聚合式群聚法前，我們先簡單介紹幾個hclust()函數中的重要參數：</p>
+<ul>
+<li>d : 由dist()函數計算出來<span style="color: #9f6ad4;">資料兩兩間的相異度矩陣(dissimilarity matrix)</span>，即兩兩資料間的距離矩陣。</li>
+<li>method: <span style="color: #9f6ad4;">群(clusters)</span><strong>聚合</strong>或<strong>連結</strong>的方式。包括：single(單一）、complete（完整）、average（平均）、Ward&#8217;s（華德）和 centroid（中心）等法。其中又以average(平均)聚合方法被認為是最適合的。不同方法對階層分群結果亦有極大影響。</li>
+</ul>
+<p>R語言hclust()套件中提供<span style="color: #9f6ad4;">群聚距離演算法</span>來<span style="color: #9f6ad4;">衡量兩群聚的不相似度</span>，最常見的幾種演算法如下：</p>
+<ul>
+<li>單一連結聚合演算法(single-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">最近</span>的兩個點的距離。傾向產生較於緊緻(compact)的群聚。<br />
+$$d(C_{i},C_{j})=\min_{a\in C_{i},b\in C_{j}}d(a,b)$$</li>
+<li>完整連結聚合演算法(complete-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">最遠</span>的兩個點的距離。傾向產生較於長(long)、鬆散(loose)的群聚。<br />
+$$d(C_{i},C_{j})=\max_{a\in C_{i},b\in C_{j}}d(a,b)$$</li>
+<li>平均連結聚合演算法(average-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">各點與各點距離總和的平均</span>。<br />
+$$d(C_{i},C_{j})=\sum_{a\in C_{i},b\in C_{j}}\frac{d(a,b)}{|C_{i}||C_{j}|}$$<br />
+其中，\(|C_{i}|\)和\(|C_{j}|\)分別為群聚\(C_{i}\)和\(C_{j}\)的大小。</li>
+<li>中心連結聚合演算法(centroid-linkage agglomerative algorithm): 群與群的距離定義為<span style="color: #9f6ad4;">不同群聚中心點之間的距離</span>。<br />
+$$d(A,B)= d(\bar{X}_{A},\bar{X}_{B})=\|\bar{X}_{A}-\bar{X}_{B}\|^2$$</li>
+<li>華德最小變異法(Ward&#8217;s Minimum Variance): 最小化各群聚內變異加總(minimize the total within-cluster variance)。主要用來尋找緊湊球型的群聚。<span style="color: #9f6ad4;">反覆比較每對資料<strong>合併後的群內總變異數的增量</strong>，並找增量最小的組別優先合併</span>。越早合併的子集表示其間的相似度越高。<span style="color: #9f6ad4;">而使用華德最小變異法的前提為，初始各點資料距離必須是歐式距離的平方和(Squared Euclidean Distance)</span>。在R套件hclust將參數設為method = &#8220;ward.D2&#8243;(不是&#8221;ward.D&#8221;)。（<a href="https://en.wikipedia.org/wiki/Ward%27s_method">華德法參考文獻</a>）</li>
+</ul>
+<p>我們先來試試，不同的資料點間距離矩陣計算之效果。即<span style="color: #9f6ad4;">調整dist()中參數method</span>。</p>
+<ul>
+<li>歐式距離（以二維空間為例）：<span style="color: #9f6ad4;">最常用也是最重要的距離計算法</span>。<br />
+$$d(P_{1},P_{2})=\sqrt{(x_{1}-x_{2})^2+(y_{1}-y_{2})^2}$$</li>
+<li>曼哈頓距離（以二維空間為例）：<br />
+$$d(P_{1},P_{2})=|x_{1}-x_{2}|+|y_{1}-y_{2}|$$</li>
+</ul>
+<p></p><pre class="crayon-plain-tag"># 由於階層式分群是依據個體間的「距離」來計算彼此的相似度。
+# 我們會先使用dist()函數，來計算所有資料個體間的「距離矩陣(Distance Matrix)」
+# 而「距離」的算法又有：(1)歐式距離(2)曼哈頓距離
+
+E.dist &lt;- dist(x = inputData, method = "euclidean")
+M.dist &lt;- dist(x = inputData, method = "manhattan")
+
+# 讓圖形以一行兩欄的排版方式呈現，如要還原請用dev.off()
+par(mfrow=c(1,2))
+
+# 將以上資料間距離作為參數投入階層式分群函數：hclust()
+# 使用歐式距離進行分群
+h.E.cluster &lt;- hclust(E.dist)
+plot(h.E.cluster, xlab="歐式距離",family="黑體-繁 中黑")
+
+# 使用曼哈頓距離進行分群
+h.M.cluster &lt;- hclust(M.dist) 
+plot(h.M.cluster, xlab="曼哈頓距離", family="黑體-繁 中黑")</pre><p>可發現不同資料距離計算會有不同分群結果。</p>
+<ul>
+<li><span style="color: #9f6ad4;">Height</span>表示<span style="color: #9f6ad4;">n-1組</span>實數值。各值為<span style="color: #9f6ad4;">使用特定聚合方法計算出來的標準數值</span>。</li>
+</ul>
+<p><img loading="lazy" class="alignnone size-large wp-image-1221" src="/wp-content/uploads/2018/09/Rplot01-1024x469.jpeg" alt="hierarchical clustering" width="1024" height="469" srcset="/wp-content/uploads/2018/09/Rplot01-1024x469.jpeg 1024w, /wp-content/uploads/2018/09/Rplot01-300x137.jpeg 300w, /wp-content/uploads/2018/09/Rplot01-768x352.jpeg 768w, /wp-content/uploads/2018/09/Rplot01-830x380.jpeg 830w, /wp-content/uploads/2018/09/Rplot01-230x105.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-350x160.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-480x220.jpeg 480w, /wp-content/uploads/2018/09/Rplot01.jpeg 1308w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>比較不同歐式距離搭配不同聚合演算法的分群結果。</p><pre class="crayon-plain-tag">dev.off()
+par(mfrow= c(3,2),family="黑體-繁 中黑")
+plot(hclust(E.dist, method="single"),xlab = "最近聚合法:single-linkage")   # 最近法
+plot(hclust(E.dist, method="complete"), xlab = "最遠聚合法:complete-linkage")  # 最遠法
+plot(hclust(E.dist, method="average"), xlab = "平均聚合法: average-linkage")  # 平均法
+plot(hclust(E.dist, method="centroid"), xlab = "中心法: centroid-linkage") # 中心法
+plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")  # 華德法</pre><p>從下圖可以發現群聚數結構的幾個特徵：</p>
+<ul>
+<li>Single-linkage法具有「大者恆大」之效果。</li>
+<li>而 complete linkage 和 average linkage 比較具有「齊頭並進」之效果。</li>
+</ul>
+<p><img loading="lazy" class="alignnone size-large wp-image-1261" src="/wp-content/uploads/2018/09/Rplot07-1024x1024.jpeg" alt="hierarchical clustering" width="1024" height="1024" srcset="/wp-content/uploads/2018/09/Rplot07-1024x1024.jpeg 1024w, /wp-content/uploads/2018/09/Rplot07-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot07-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot07-768x768.jpeg 768w, /wp-content/uploads/2018/09/Rplot07-830x830.jpeg 830w, /wp-content/uploads/2018/09/Rplot07-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot07-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot07-480x480.jpeg 480w, /wp-content/uploads/2018/09/Rplot07.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>接著，我們聚焦在採用<span style="color: #9f6ad4;">歐式距離</span>搭配華德最小變異聚合演算法。可透過設定<span style="color: #9f6ad4;">hclust()參數method=&#8221;ward.D2&#8243;</span>。</p><pre class="crayon-plain-tag">dev.off()
+par(family="黑體-繁 中黑")
+plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1236" src="/wp-content/uploads/2018/09/Rplot02_Eu_Ward-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot02_Eu_Ward-1024x683.jpeg 1024w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-300x200.jpeg 300w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-768x512.jpeg 768w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-830x553.jpeg 830w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-230x153.jpeg 230w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-350x233.jpeg 350w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward-480x320.jpeg 480w, /wp-content/uploads/2018/09/Rplot02_Eu_Ward.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>以上結果也可以使用anges()函數來執行。此函數跟hclust()很類似，不同之處是該函數能另外計算<span style="color: #9f6ad4;">聚合係數(agglomerative coefficient)</span>。<span style="color: #9f6ad4;">聚合係數是衡量群聚結構被辨識的程度，聚合係數越接近1代表有堅固的群聚結構(strong clustering structure)</span>。在這個使用歐式距離搭配華德連結演算法的群聚係數有高達99%的表現。</p><pre class="crayon-plain-tag"># Compute with agnes
+library(cluster)
+hc2 &lt;- agnes(E.dist, method = "ward")
+# Agglomerative coefficient
+hc2$ac
+## [1] 0.9908772</pre><p>我們可以用聚合係數來比較多組分群連結演算法的效果。此範例中又以華德法表現最好。</p><pre class="crayon-plain-tag"># methods to assess
+m &lt;- c( "average", "single", "complete", "ward")
+names(m) &lt;- c( "average", "single", "complete", "ward")
+
+# function to compute coefficient
+ac &lt;- function(x) {
+  agnes(E.dist, method = x)$ac
+}
+
+map_dbl(m, ac) #Apply a function to each element of a vector 
+#   average    single  complete      ward 
+# 0.9300174 0.8493364 0.9574622 0.9908772</pre><p>若遇將agnes()產生的樹狀圖繪出可使用函數pltree()。可以發現結果大致上與hclust()結果差不多。</p><pre class="crayon-plain-tag">dev.off()
+hc2 &lt;- agnes(E.dist, method = "ward")
+pltree(hc2, cex = 0.6, hang = -1, main = "Dendrogram of agnes")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1264" src="/wp-content/uploads/2018/09/Rplot08-1024x614.jpeg" alt="hierarchical clustering" width="1024" height="614" srcset="/wp-content/uploads/2018/09/Rplot08-1024x614.jpeg 1024w, /wp-content/uploads/2018/09/Rplot08-300x180.jpeg 300w, /wp-content/uploads/2018/09/Rplot08-768x461.jpeg 768w, /wp-content/uploads/2018/09/Rplot08-830x498.jpeg 830w, /wp-content/uploads/2018/09/Rplot08-230x138.jpeg 230w, /wp-content/uploads/2018/09/Rplot08-350x210.jpeg 350w, /wp-content/uploads/2018/09/Rplot08-480x288.jpeg 480w, /wp-content/uploads/2018/09/Rplot08.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>對階層分群結果產生的樹狀結構進行<span style="color: #9f6ad4;">截枝</span>可以<span style="color: #9f6ad4;">將觀測值分成數群</span>。<span style="color: #9f6ad4;">截肢方法</span>有兩種：</p>
+<ol>
+<li>指定所要的分群數: rect.hclust(k=&#8230;)、cutree(k=&#8230;)</li>
+<li>指定截枝的位置: rect.hclust(h=&#8230;)</li>
+</ol>
+<p>比如說，指定將資料分成3群與13群。</p><pre class="crayon-plain-tag">h.E.Ward.cluster &lt;- hclust(E.dist, method="ward.D2")
+plot(h.E.Ward.cluster)
+rect.hclust(tree =h.E.Ward.cluster, k = 3, border = "red")
+rect.hclust(tree =h.E.Ward.cluster, k = 13, border = "blue")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1237" src="/wp-content/uploads/2018/09/Rplot03-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot03-1024x683.jpeg 1024w, /wp-content/uploads/2018/09/Rplot03-300x200.jpeg 300w, /wp-content/uploads/2018/09/Rplot03-768x512.jpeg 768w, /wp-content/uploads/2018/09/Rplot03-830x553.jpeg 830w, /wp-content/uploads/2018/09/Rplot03-230x153.jpeg 230w, /wp-content/uploads/2018/09/Rplot03-350x233.jpeg 350w, /wp-content/uploads/2018/09/Rplot03-480x320.jpeg 480w, /wp-content/uploads/2018/09/Rplot03.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>比如說，指定截枝高度分別為4和10，可分別將資料分成5組跟3組。</p><pre class="crayon-plain-tag">h.E.Ward.cluster &lt;- hclust(E.dist, method="ward.D2")
+plot(h.E.Ward.cluster)
+rect.hclust(tree =h.E.Ward.cluster, h = 4, border = "red")
+rect.hclust(tree =h.E.Ward.cluster, h = 10, border = "blue")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1238" src="/wp-content/uploads/2018/09/Rplot04-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot04-1024x683.jpeg 1024w, /wp-content/uploads/2018/09/Rplot04-300x200.jpeg 300w, /wp-content/uploads/2018/09/Rplot04-768x512.jpeg 768w, /wp-content/uploads/2018/09/Rplot04-830x553.jpeg 830w, /wp-content/uploads/2018/09/Rplot04-230x153.jpeg 230w, /wp-content/uploads/2018/09/Rplot04-350x233.jpeg 350w, /wp-content/uploads/2018/09/Rplot04-480x320.jpeg 480w, /wp-content/uploads/2018/09/Rplot04.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>如果要將資料標記上分群結果，可使用cutree()，並指定參數k為所欲截枝群樹。</p><pre class="crayon-plain-tag">h.E.Ward.cluster &lt;- hclust(E.dist, method="ward.D2")
+cut.h.cluster &lt;- cutree(tree = h.E.Ward.cluster, k = 3)
+cut.h.cluster
+
+#   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+#  [56] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 3 3 3 2 3 3 3
+# [111] 3 3 3 2 2 3 3 3 3 2 3 2 3 2 3 3 2 2 3 3 3 3 3 2 2 3 3 3 2 3 3 3 2 3 3 3 2 3 3 2</pre><p>分群結果和實際結果比較。</p><pre class="crayon-plain-tag">table(cut.h.cluster, iris$Species)
+
+# cut.h.cluster setosa versicolor virginica
+#             1     50          0         0
+#             2      0         49        15
+#             3      0          1        35</pre><p>將資料分群的混淆矩陣視覺化。</p><pre class="crayon-plain-tag">plot(table(iris$Species, cut.h.cluster), main = "Confusion Matrix for Species Clustering", xlab = "Species", ylab = "Cluster")</pre><p>可以發現，屬於setosa種類的都被很好的分到第一群，屬於versicolor主要被分到第二群，但virginica似乎沒有分得很好。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1257" src="/wp-content/uploads/2018/09/Rplot05.jpeg" alt="hierarchical clustering" width="800" height="722" srcset="/wp-content/uploads/2018/09/Rplot05.jpeg 800w, /wp-content/uploads/2018/09/Rplot05-300x271.jpeg 300w, /wp-content/uploads/2018/09/Rplot05-768x693.jpeg 768w, /wp-content/uploads/2018/09/Rplot05-230x208.jpeg 230w, /wp-content/uploads/2018/09/Rplot05-350x316.jpeg 350w, /wp-content/uploads/2018/09/Rplot05-480x433.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>如果回頭看一下原始資料分佈長相，可以發現versicolor和virginica其實部分資料靠得很近，因此兩種Species被分到第二和第三群也是合理的。</p><pre class="crayon-plain-tag">ggplot(data = iris,mapping = aes(x = Petal.Length, y = Petal.Width)) +
+  geom_point(aes(col = Species))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1247" src="/wp-content/uploads/2018/09/Rplot06.jpeg" alt="hierarchical clustering" width="800" height="722" srcset="/wp-content/uploads/2018/09/Rplot06.jpeg 800w, /wp-content/uploads/2018/09/Rplot06-300x271.jpeg 300w, /wp-content/uploads/2018/09/Rplot06-768x693.jpeg 768w, /wp-content/uploads/2018/09/Rplot06-230x208.jpeg 230w, /wp-content/uploads/2018/09/Rplot06-350x316.jpeg 350w, /wp-content/uploads/2018/09/Rplot06-480x433.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>1-2. 分裂式階層群聚法（DIANA, top-down）</p>
+<p>我們使用R內建的USArrests資料集來進行說明。<span style="color: #9f6ad4;">進行分群前，我們先將資料預處理，包括遺失值忽略以及標準化(0~1)</span>。</p><pre class="crayon-plain-tag">head(USArrests)
+#            Murder Assault UrbanPop Rape
+# Alabama      13.2     236       58 21.2
+# Alaska       10.0     263       48 44.5
+# Arizona       8.1     294       80 31.0
+# Arkansas      8.8     190       50 19.5
+# California    9.0     276       91 40.6
+# Colorado      7.9     204       78 38.7
+
+inputData &lt;- 
+  USArrests %&gt;% 
+  na.omit() %&gt;% 
+  scale() # scaling/standardizing the data</pre><p>diana()函數運作方式很類似agnes()，<span style="color: #9f6ad4;">只差diana沒有method參數</span>。</p><pre class="crayon-plain-tag"># compute divisive hierarchical clustering
+diana_clust &lt;- diana(inputData)
+
+# Divise coefficient; amount of clustering structure found
+diana_clust$dc
+## [1] 0.8514345
+
+# plot dendrogram
+pltree(diana_clust, cex = 0.6, hang = -1, main = "Dendrogram of diana")</pre><p>由分裂式階層分群演算法產出的樹狀圖結果如下：</p>
+<ul>
+<li>葉節點（末梢節點）代表個別資料點。</li>
+<li>垂直座標軸的Height代表群聚間的(不)相似度((dis)similarity)， 群聚的高度(height)越高，代表觀測值間越不相似（組內變異越大）。<span style="text-decoration: underline;">需要注意的是，要總結兩個觀測值的相似度，只能用<span style="color: #9f6ad4; text-decoration: underline;">兩觀測值何時被第一次合併的群聚高度</span>來做判斷，而不能以水平軸的距離來評估</span>。</li>
+</ul>
+<p><img loading="lazy" class="alignnone size-large wp-image-1266" src="/wp-content/uploads/2018/09/Rplot09-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot09-1024x683.jpeg 1024w, /wp-content/uploads/2018/09/Rplot09-300x200.jpeg 300w, /wp-content/uploads/2018/09/Rplot09-768x512.jpeg 768w, /wp-content/uploads/2018/09/Rplot09-830x553.jpeg 830w, /wp-content/uploads/2018/09/Rplot09-230x153.jpeg 230w, /wp-content/uploads/2018/09/Rplot09-350x233.jpeg 350w, /wp-content/uploads/2018/09/Rplot09-480x320.jpeg 480w, /wp-content/uploads/2018/09/Rplot09.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>另外，我們可以透過縱軸的群聚高度來決定分群數目。我們可以使用cutree()函數來得到各觀測值被分類到的群。</p><pre class="crayon-plain-tag"># Cut diana() tree into 4 groups
+diana_clust &lt;- diana(inputData)
+group &lt;- cutree(diana_clust, k = 4)
+group
+# [1] 1 2 2 3 2 2 3 3 2 1 3 4 2 3 4 3 4 1 4 2 3 2 4 1 2 4 4 2 4 3 2 2 1 4 3 3 3 3 3 1 4 1 2 3 4 3 3 4 4 3</pre><p>我們使用factoextra套件中的fviz_clusterc函數來將分群結果視覺化。</p><pre class="crayon-plain-tag">library(factoextra)
+fviz_cluster(list(data = inputData, cluster = group))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1267" src="/wp-content/uploads/2018/09/Rplot10.jpeg" alt="hierarchical clustering" width="800" height="796" srcset="/wp-content/uploads/2018/09/Rplot10.jpeg 800w, /wp-content/uploads/2018/09/Rplot10-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot10-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot10-768x764.jpeg 768w, /wp-content/uploads/2018/09/Rplot10-230x229.jpeg 230w, /wp-content/uploads/2018/09/Rplot10-350x348.jpeg 350w, /wp-content/uploads/2018/09/Rplot10-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h3>1-3. 決定階層式分群最佳群聚數</h3>
+<h4>1-3-1. Elbow Method</h4>
+<p>使用函數fviz_nbclust()，並將參數FUN指定為hcut(表階層式分群法)。wss代表組內平方誤差。</p><pre class="crayon-plain-tag">fviz_nbclust(inputData, FUN = hcut, method = "wss")</pre><p>由結果圖可知根據Elbow法，最佳分群數目為4群。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1270" src="/wp-content/uploads/2018/09/Rplot11.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot11.jpeg 800w, /wp-content/uploads/2018/09/Rplot11-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot11-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot11-768x765.jpeg 768w, /wp-content/uploads/2018/09/Rplot11-230x229.jpeg 230w, /wp-content/uploads/2018/09/Rplot11-350x349.jpeg 350w, /wp-content/uploads/2018/09/Rplot11-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h4>1-3-2. Average Silhouette Method</h4>
+<p>將method參數改為silhouette。</p><pre class="crayon-plain-tag">fviz_nbclust(x = inputData,FUNcluster = hcut, method = "silhouette")</pre><p>根據Average Silhouette Width，最佳分群數目為2 群。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1271" src="/wp-content/uploads/2018/09/Rplot12.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot12.jpeg 800w, /wp-content/uploads/2018/09/Rplot12-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot12-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot12-768x765.jpeg 768w, /wp-content/uploads/2018/09/Rplot12-230x229.jpeg 230w, /wp-content/uploads/2018/09/Rplot12-350x349.jpeg 350w, /wp-content/uploads/2018/09/Rplot12-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h4>1-3-3. Gap Statistic Method</h4>
+<p>使用clusGap()函數。</p><pre class="crayon-plain-tag">gap_stat &lt;- clusGap(x = inputData,FUNcluster = hcut, nstart = 25, K.max = 10, B = 50)
+fviz_gap_stat(gap_stat)</pre><p>根據Gap(k)統計量，最佳分群數為3群。(＊\(Gap(k)\geq Gap(k+1) &#8211; s_{k+1}\))</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1272" src="/wp-content/uploads/2018/09/Rplot13.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot13.jpeg 800w, /wp-content/uploads/2018/09/Rplot13-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot13-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot13-768x765.jpeg 768w, /wp-content/uploads/2018/09/Rplot13-230x229.jpeg 230w, /wp-content/uploads/2018/09/Rplot13-350x349.jpeg 350w, /wp-content/uploads/2018/09/Rplot13-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h3>總結</h3>
+<ul>
+<li>階層分群主要受：<span style="text-decoration: underline;">資料個體兩兩間距離矩陣衡量方法</span>與<span style="text-decoration: underline;">群與群連結方法所影響</span>。</li>
+<li> 階層分群優點包括：
+<ul>
+<li>概念簡單且樹狀圖(<span style="color: #9f6ad4;">dendrogram</span>)結果一目瞭然。</li>
+<li>只需要資料點間距離即可產出分群結果。</li>
+<li>可以應用在數值或<span style="color: #9f6ad4;">類別</span>資料。</li>
+</ul>
+</li>
+<li><span style="color: #9f6ad4;">但缺點就是運算速度，以及不適用處理大量資料</span>。運算速度方面，可以考慮其他R套件如fastcluster中的hclust函數，執行上會比一般hclust更有效率。</li>
+</ul>
+<hr />
+<p>更多統計模型筆記連結：</p>
+<ol>
+<li><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e8%bf%b4%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">Linear Regression | 線性迴歸模型 | using AirQuality Dataset</a></li>
+<li><a href="/regularized-regression-ridge-lasso-elastic/" target="_blank" rel="noopener noreferrer">Regularized Regression | 正規化迴歸 &#8211; Ridge, Lasso, Elastic Net | R語言</a></li>
+<li><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part1 &#8211; 資料探勘與處理 | 統計 R語言</a></li>
+<li><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part2 &#8211; 模型建置、診斷與比較 | R語言</a></li>
+<li><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">Decision Tree 決策樹 | CART, Conditional Inference Tree, Random Forest</a></li>
+<li><a href="/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/" target="_blank" rel="noopener noreferrer">Regression Tree | 迴歸樹, Bagging, Bootstrap Aggregation | R語言</a></li>
+<li><a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" target="_blank" rel="noopener noreferrer">Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</a></li>
+<li><a href="/gradient-boosting-machines-gbm/" target="_blank" rel="noopener noreferrer">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a></li>
+<li><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R統計</a></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering | 切割式分群 | Kmeans, Kmedoid | Clustering 資料分群</a></li>
+<li><a href="/principal-components-analysis-pca-%e4%b8%bb%e6%88%90%e4%bb%bd%e5%88%86%e6%9e%90/" target="_blank" rel="noopener noreferrer">Principal Components Analysis (PCA) | 主成份分析 | R 統計</a></li>
+</ol>
+<hr />
+<p>參考:</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/feed/</wfw:commentRss>
+			<slash:comments>6</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

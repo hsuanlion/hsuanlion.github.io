@@ -1,0 +1,2174 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>資料處理 &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/category/programming-statistics/data-processing/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 03:35:42 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>Text Mining &#038; 網路爬蟲 web crawler &#124; Google新聞與文章文字雲 &#124; Python</title>
+		<link>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/</link>
+					<comments>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Sun, 03 Mar 2019 03:42:35 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[google news]]></category>
+		<category><![CDATA[python]]></category>
+		<category><![CDATA[text mining]]></category>
+		<category><![CDATA[web crawler]]></category>
+		<category><![CDATA[word cloud]]></category>
+		<category><![CDATA[文字雲]]></category>
+		<category><![CDATA[網路爬蟲]]></category>
+		<guid isPermaLink="false">/?p=2647</guid>
+
+					<description><![CDATA[<p>本篇學習筆記將要示範如何使用 Python 來執行 網路爬蟲 web crawler 與 basic text mining ，並以爬取Google News  [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/">Text Mining &#038; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇學習筆記將要示範如何使用 Python 來執行 網路爬蟲 web crawler 與 basic text mining ，並以爬取<a href="https://news.google.com/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNR3QwTlRFU0JYcG9MVlJYS0FBUAE?hl=zh-TW&amp;gl=TW&amp;ceid=TW%3Azh-Hant" target="_blank" rel="noopener noreferrer">Google News 的「健康」類別新聞</a>為例。筆記包含以下部分：(1) 爬取新聞標題 (2) 爬取新聞連結 (3) 新聞文章斷詞(jieba)與字詞頻率分析(文字雲) 。</p>
+<h2>網路爬蟲 web crawler</h2>
+<p>載入套件、指定目標URL、並解析HTML</p><pre class="crayon-plain-tag">import requests 
+from bs4 import BeautifulSoup
+import pandas as pd
+
+
+url = 'https://news.google.com/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNR3QwTlRFU0JYcG9MVlJYS0FBUAE?hl=zh-TW&amp;gl=TW&amp;ceid=TW%3Azh-Hant'
+r = requests.get(url)
+web_content = r.text
+soup = BeautifulSoup(web_content,'lxml')</pre><p></p>
+<h3></h3>
+<h3>1. 找出所有新聞的標題</h3>
+<p>先檢視新聞標題在HTML的規則。</p>
+<p>可以發現：</p>
+<ul>
+<li>每個文章小卡都是包覆在class = &#8216;xrnccd&#8217;的div物件中
+<ul>
+<li>整個文章小卡點擊區塊連結: class = &#8220;VDXfz&#8221;</li>
+</ul>
+</li>
+<li>文章小卡中的標題則是包覆在class為&#8217;mEaVNd&#8217;的div物件中
+<ul>
+<li>標題文字則是在&lt;span&gt;&lt;/span&gt;標籤中</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" class="alignnone size-full wp-image-2670" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1.png" alt="螢幕快照 2019-03-03 上午9.33.06" width="1599" height="548" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1.png 1599w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-300x103.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-768x263.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-1024x351.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-830x284.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-230x79.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-350x120.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.33.06-1-480x165.png 480w" sizes="(max-width: 1599px) 100vw, 1599px" /></p>
+<p>找出所有文章小卡中class = &#8216;mEaVNd&#8217;的「標題區塊」的元素並儲存為一個list (named title)</p>
+<p>list中每一個「標題區塊」元素是以逗號做區隔</p><pre class="crayon-plain-tag">title = soup.find_all('div', class_='mEaVNd')
+print(title)</pre><p><img loading="lazy" class="alignnone size-full wp-image-2667" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02.png" alt="螢幕快照 2019-03-03 上午9.26.02" width="889" height="484" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02.png 889w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-300x163.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-768x418.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-830x452.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-230x125.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-350x191.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午9.26.02-480x261.png 480w" sizes="(max-width: 889px) 100vw, 889px" /></p>
+<p>再從「標題區塊」list中，找出每個元素的&lt;span&gt;&lt;/span&gt;標籤，並萃取出標題文字</p><pre class="crayon-plain-tag">titles = [t.find('span').text for t in title]
+titles</pre><p></p><pre class="crayon-plain-tag">['腰頸常疼痛嗎？研究發現這或許與糖尿病有關',
+ '不認真刷牙？日本專家：忽略口腔護理，恐引發致命疾病',
+ '不舉、憂鬱、沒精神，恐怕是「男性更年期」來報到？醫生：出現這8種症狀，趕快去檢查',
+ '一餐吃十幾塊蘿蔔糕，血糖就意外飆高…營養師4大建議，吃東西真的要謹慎啊！',
+ '男性更年期同樣讓人崩潰！50歲上下都得注意，醫師3招緩解情緒不穩、早洩問題',
+ '原來做巧克力餅乾這麼簡單！微波爐5分鐘搞定，颱風天在家做做看吧']</pre><p></p>
+<h3></h3>
+<h3>2. 找出新聞標題所對應的資料來源links</h3>
+<p>新聞連結的取得是比較tricky的部分，<span style="text-decoration: underline;">因為google news網頁中html &lt;a&gt; &lt;/a&gt;標籤中的連結是經過另外轉換的</span>，<span style="text-decoration: underline;"><strong><span style="color: #9d6ad4; text-decoration: underline;">所以需要request.get()另外取得轉換後的真實文章URL</span></strong></span>。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2650" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10.png" alt="web-crawler-text-mining" width="2536" height="1074" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10.png 2536w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-300x127.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-768x325.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-1024x434.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-830x352.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-230x97.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-350x148.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.58.10-480x203.png 480w" sizes="(max-width: 2536px) 100vw, 2536px" /></p>
+<p>取得新聞文章真實URL:</p>
+<ol>
+<li>找出標題區塊&lt;a&gt;&lt;/a&gt;標籤並<span style="color: #9d6ad4;">萃取出href的值</span></li>
+<li><span style="color: #9d6ad4;">將href值中&#8217;.&#8217;取代為當下的domain</span>，得到<span style="text-decoration: underline;">須經轉換的URL</span></li>
+<li>將<span style="text-decoration: underline;">須經轉換的URL</span>丟入<span style="color: #9d6ad4;">request.get()</span>函式中，並使用<span style="color: #9f6ad4;">.url</span>取得文章真實的URL</li>
+</ol>
+<p></p><pre class="crayon-plain-tag">newUrls = [requests.get(t.find('a')['href'].replace('.','https://news.google.com',1)).url for t in title]
+newUrls</pre><p></p><pre class="crayon-plain-tag">['https://tw.news.yahoo.com/%E8%85%B0%E9%A0%B8%E5%B8%B8%E7%96%BC%E7%97%9B%E5%97%8E-%E7%A0%94%E7%A9%B6%E7%99%BC%E7%8F%BE%E9%80%99%E6%88%96%E8%A8%B1%E8%88%87%E7%B3%96%E5%B0%BF%E7%97%85%E6%9C%89%E9%97%9C-090011577.html',
+ 'https://n.yam.com/Article/20190301775078',
+ 'https://www.storm.mg/lifestyle/469667',
+ 'https://www.storm.mg/lifestyle/219203',
+ 'https://www.storm.mg/lifestyle/294616',
+ 'https://www.storm.mg/lifestyle/110852']</pre><p></p>
+<h3></h3>
+<h3>3. 將標題與連結合併成data frame</h3>
+<p>這樣就能新聞標題和真實出處URL做一個簡易的資訊表格整理</p><pre class="crayon-plain-tag">df = pd.DataFrame(
+{
+    'title': titles,
+    'links': newUrls
+})
+
+df</pre><p><img loading="lazy" class="alignnone size-full wp-image-2651" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11.png" alt="web-crawler-text-mining" width="1718" height="442" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11.png 1718w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-300x77.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-768x198.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-1024x263.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-830x214.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-230x59.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-350x90.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.02.11-480x123.png 480w" sizes="(max-width: 1718px) 100vw, 1718px" /></p>
+<p>其他爬蟲結果輸出可以參考「<a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener noreferrer">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a>」。</p>
+<p>&nbsp;</p>
+<h2>Text mining 簡易字頻分析 (文字雲 word cloud)</h2>
+<h3>4. 使用jieba套件，進行文章中文斷詞分析</h3>
+<p>先使用某一篇文章內文為範例，我們使用剛剛新聞清單的<a href="https://tw.news.yahoo.com/%E8%85%B0%E9%A0%B8%E5%B8%B8%E7%96%BC%E7%97%9B%E5%97%8E-%E7%A0%94%E7%A9%B6%E7%99%BC%E7%8F%BE%E9%80%99%E6%88%96%E8%A8%B1%E8%88%87%E7%B3%96%E5%B0%BF%E7%97%85%E6%9C%89%E9%97%9C-090011577.html" target="_blank" rel="noopener noreferrer">第一個連結</a>去得到文章內容。並以該文章內容進行字頻分析(文字雲)。</p><pre class="crayon-plain-tag">url = df['links'][0]
+print(url)
+r = requests.get(url)
+web_content = r.text
+soup = BeautifulSoup(web_content,'lxml')</pre><p>看一下文章段落在HTML的規則：</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2652" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00.png" alt="web-crawler-text-mining" width="2522" height="1190" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00.png 2522w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-300x142.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-768x362.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-1024x483.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-830x392.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-230x109.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-350x165.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午4.06.00-480x226.png 480w" sizes="(max-width: 2522px) 100vw, 2522px" /></p>
+<p>擷取文章內容如下:</p><pre class="crayon-plain-tag">articleContent = soup.find_all('p')
+articleContent</pre><p></p><pre class="crayon-plain-tag">[&lt;p&gt;&lt;span class=""&gt;腰頸疼痛是常見的肌肉骨骼疾病，根據統計，大約80%的成年人會經歷腰痛，47%的人會經歷脖子痛。同樣，糖尿病也是一種越來越普遍的慢性病，​​全球大約有3.82億人患有這種代謝疾病。&lt;/span&gt;&lt;/p&gt;,
+ &lt;p&gt;近日，一項刊載於《PLOS ONE》期刊的研究指出，與沒有糖尿病的人相比，糖尿病患者發生腰痛的風險要高35%，脖子痛的風險要高24%。糖尿病患者更容易出現慢性軀體疼痛，包括糖尿病周圍神經病變。而且，同時患有糖尿病和肌肉骨骼疼痛，會導致更高程度的疼痛、殘疾和心理困擾，其所帶來的負擔遠遠大於僅患有其中一種疾病。&lt;/p&gt;,
+ &lt;p&gt;而糖尿病和背痛也有共同的危險因素，比如說肥胖、缺乏體育。年輕的時候身體質量指數（BMI）越高的人，在晚年患糖尿病的可能性，要高出9倍以上；同樣的，肥胖是導致嚴重腰痛的重要因子。糖尿病患者也不太可能經常參加運動活動，因此有較高的風險發展成慢性肌肉骨骼疾病，如背部和頸部疼痛。&lt;/p&gt;,
+ &lt;p&gt;過去的研究表明，糖尿病患者可能會因為繼發性糖尿病相關的腰椎間盤微血管病變，而發展為腰椎間盤疾病。此外，糖尿病動物模型中，椎間盤退變更佳迅速。&lt;/p&gt;,
+ &lt;p&gt;該論文的作者Manuela Ferreira副教授說，目前還沒有足夠的證據證明糖尿病與腰頸疼痛之間存在因果關係，但這種積極聯繫值得進一步調查和研究。論文還建議醫護人員，應該考慮對長期頸痛或腰痛患者進行糖尿病篩查。&lt;/p&gt;,
+ &lt;p&gt;「越來越多的人同時受到頸背疼痛和糖尿病的折磨，」論文共同作者Paulo Ferreira說道，「所以，值得投入更多的資源來研究它們之間的相互關係。改變糖尿病的治療干預措施可，或許以減少背痛的發病率，反之亦然。」&lt;/p&gt;,
+ &lt;p&gt;&lt;strong&gt;參考資料：&lt;/strong&gt;&lt;a class="link rapid-noclick-resp" data-ylk="slk:Study links diabetes and back pain" href="https://medicalxpress.com/news/2019-02-links-diabetes-pain.html" rel="nofollow noopener" target="_blank"&gt;Study links diabetes and back pain&lt;/a&gt;&lt;/p&gt;,
+ &lt;p&gt;&lt;strong&gt;期刊小檔案：&lt;/strong&gt;《PLOS ONE》為一份同行評審的開放獲取科學期刊，由公共科學圖書館自2006年發行，為全世界文章刊載數量最多的期刊，所刊載的文章包含科學及醫學各領域的基礎研究。&lt;/p&gt;,
+ &lt;p&gt;&lt;span&gt;更多Heho健康網文章&lt;/span&gt;&lt;br/&gt;&lt;a class="link rapid-noclick-resp" data-ylk="slk:糖友肺炎風險高2.8倍 醫：加打肺炎鏈球菌疫苗保健康" href="https://heho.com.tw/archives/40152" rel="nofollow noopener" target="_blank"&gt;糖友肺炎風險高2.8倍 醫：加打肺炎鏈球菌疫苗保健康&lt;/a&gt;&lt;br/&gt;&lt;a class="link rapid-noclick-resp" data-ylk="slk:讓其他細胞分泌胰島素 動物實驗逆轉糖尿病！" href="https://heho.com.tw/archives/39757" rel="nofollow noopener" target="_blank"&gt;讓其他細胞分泌胰島素 動物實驗逆轉糖尿病！&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;&lt;/p&gt;,
+ &lt;p&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;/p&gt;,
+ &lt;p&gt;文／林以璿 圖／許嘉真&lt;/p&gt;]</pre><p>將所有&lt;p&gt;&lt;/p&gt;中的text取出並放進list。</p><pre class="crayon-plain-tag"># 將所有tag p中的text取出並放進list。
+article = []
+for p in articleContent:
+    article.append(p.text)</pre><p>將list中的text元素join合併成一個字串，並以特殊字元&#8217;\n&#8217;來間隔 (主要是印出好看用)</p><pre class="crayon-plain-tag">articleAll = '\n'.join(article)
+print(articleAll)</pre><p></p><pre class="crayon-plain-tag">腰頸疼痛是常見的肌肉骨骼疾病，根據統計，大約80%的成年人會經歷腰痛，47%的人會經歷脖子痛。同樣，糖尿病也是一種越來越普遍的慢性病，​​全球大約有3.82億人患有這種代謝疾病。
+近日，一項刊載於《PLOS ONE》期刊的研究指出，與沒有糖尿病的人相比，糖尿病患者發生腰痛的風險要高35%，脖子痛的風險要高24%。糖尿病患者更容易出現慢性軀體疼痛，包括糖尿病周圍神經病變。而且，同時患有糖尿病和肌肉骨骼疼痛，會導致更高程度的疼痛、殘疾和心理困擾，其所帶來的負擔遠遠大於僅患有其中一種疾病。
+而糖尿病和背痛也有共同的危險因素，比如說肥胖、缺乏體育。年輕的時候身體質量指數（BMI）越高的人，在晚年患糖尿病的可能性，要高出9倍以上；同樣的，肥胖是導致嚴重腰痛的重要因子。糖尿病患者也不太可能經常參加運動活動，因此有較高的風險發展成慢性肌肉骨骼疾病，如背部和頸部疼痛。
+過去的研究表明，糖尿病患者可能會因為繼發性糖尿病相關的腰椎間盤微血管病變，而發展為腰椎間盤疾病。此外，糖尿病動物模型中，椎間盤退變更佳迅速。
+該論文的作者Manuela Ferreira副教授說，目前還沒有足夠的證據證明糖尿病與腰頸疼痛之間存在因果關係，但這種積極聯繫值得進一步調查和研究。論文還建議醫護人員，應該考慮對長期頸痛或腰痛患者進行糖尿病篩查。
+「越來越多的人同時受到頸背疼痛和糖尿病的折磨，」論文共同作者Paulo Ferreira說道，「所以，值得投入更多的資源來研究它們之間的相互關係。改變糖尿病的治療干預措施可，或許以減少背痛的發病率，反之亦然。」
+參考資料：Study links diabetes and back pain
+期刊小檔案：《PLOS ONE》為一份同行評審的開放獲取科學期刊，由公共科學圖書館自2006年發行，為全世界文章刊載數量最多的期刊，所刊載的文章包含科學及醫學各領域的基礎研究。
+更多Heho健康網文章糖友肺炎風險高2.8倍 醫：加打肺炎鏈球菌疫苗保健康讓其他細胞分泌胰島素 動物實驗逆轉糖尿病！</pre><p>載入斷詞分析的套件</p><pre class="crayon-plain-tag">import jieba
+import nltk</pre><p>指定字典(使用預設字典)</p><pre class="crayon-plain-tag">jieba.load_userdict('/user_dict.txt') # 輸入自己字典的路徑</pre><p>移除標點符號 punctuation removal</p><pre class="crayon-plain-tag">d = c.replace('[^\w\s]','').replace('／',"").replace('《','').replace('》','').replace('，','').replace('。','').replace('「','').replace('」','').replace('（','').replace('）','').replace('！','').replace('？','').replace('、','').replace('▲','').replace('…','').replace('：','')
+print(d)</pre><p></p><pre class="crayon-plain-tag">腰頸疼痛是常見的肌肉骨骼疾病根據統計大約80%的成年人會經歷腰痛47%的人會經歷脖子痛同樣糖尿病也是一種越來越普遍的慢性病​​全球大約有3.82億人患有這種代謝疾病
+近日一項刊載於PLOS ONE期刊的研究指出與沒有糖尿病的人相比糖尿病患者發生腰痛的風險要高35%脖子痛的風險要高24%糖尿病患者更容易出現慢性軀體疼痛包括糖尿病周圍神經病變而且同時患有糖尿病和肌肉骨骼疼痛會導致更高程度的疼痛殘疾和心理困擾其所帶來的負擔遠遠大於僅患有其中一種疾病
+而糖尿病和背痛也有共同的危險因素比如說肥胖缺乏體育年輕的時候身體質量指數BMI越高的人在晚年患糖尿病的可能性要高出9倍以上；同樣的肥胖是導致嚴重腰痛的重要因子糖尿病患者也不太可能經常參加運動活動因此有較高的風險發展成慢性肌肉骨骼疾病如背部和頸部疼痛
+過去的研究表明糖尿病患者可能會因為繼發性糖尿病相關的腰椎間盤微血管病變而發展為腰椎間盤疾病此外糖尿病動物模型中椎間盤退變更佳迅速
+該論文的作者Manuela Ferreira副教授說目前還沒有足夠的證據證明糖尿病與腰頸疼痛之間存在因果關係但這種積極聯繫值得進一步調查和研究論文還建議醫護人員應該考慮對長期頸痛或腰痛患者進行糖尿病篩查
+越來越多的人同時受到頸背疼痛和糖尿病的折磨論文共同作者Paulo Ferreira說道所以值得投入更多的資源來研究它們之間的相互關係改變糖尿病的治療干預措施可或許以減少背痛的發病率反之亦然
+參考資料Study links diabetes and back pain
+期刊小檔案PLOS ONE為一份同行評審的開放獲取科學期刊由公共科學圖書館自2006年發行為全世界文章刊載數量最多的期刊所刊載的文章包含科學及醫學各領域的基礎研究
+更多Heho健康網文章糖友肺炎風險高2.8倍 醫加打肺炎鏈球菌疫苗保健康讓其他細胞分泌胰島素 動物實驗逆轉糖尿病
+
+文林以璿 圖許嘉真</pre><p>避免過多的文字log訊息出現</p><pre class="crayon-plain-tag">jieba.setLogLevel(20)</pre><p>分別使用不同斷詞模式</p><pre class="crayon-plain-tag">Sentence = jieba.cut(d, cut_all=True)
+print('全模式'+": "  + "/ ".join(Sentence) + '\n')   
+
+Sentence = jieba.cut(d, cut_all=False)
+print('精確模式'+": " + "/ ".join(Sentence)+ '\n')  
+
+Sentence = jieba.cut(d)  
+print('Default為精確模式'+": " + "/ ".join(Sentence)+ '\n')
+
+Sentence = jieba.cut_for_search(d)  
+print('搜索引擎模式'+": " + "/ ".join(Sentence)+ '\n')</pre><p></p><pre class="crayon-plain-tag">全模式: 腰/ 頸/ 疼痛/ 是/ 常/ 見/ 的/ 肌肉/ 骨骼/ 疾病/ 病根/ 據/ 統/ 計/ 大/ 約/ 80/ / 的/ 成年/ 成年人/ 會/ 經/ 歷/ 腰痛/ 47/ / 的/ 人/ 會/ 經/ 歷/ 脖子/ 痛/ 同/ 樣/ 糖尿/ 糖尿病/ 也/ 是/ 一/ 種/ 越/ 來/ 越/ 普遍/ 的/ 慢性/ 慢性病/ 性病/ / / / 全球/ 大/ 約/ 有/ 3/ 82/ 億/ 人/ 患有/ 這/ 種/ 代/ 謝/ 疾病/ 
+/ 近日/ 一/ 項/ 刊/ 載/ 於/ PLOS/ ONE/ 期刊/ 的/ 研究/ 指出/ 與/ 沒/ 有/ 糖尿/ 糖尿病/ 的/ 人/ 相比/ 糖尿/ 糖尿病/ 病患/ 病患者/ 患者/ 發/ 生/ 腰痛/ 的/ 風/ 險/ 要/ 高/ 35/ / 脖子/ 痛/ 的/ 風/ 險/ 要/ 高/ 24/ / 糖尿/ 糖尿病/ 病患/ 病患者/ 患者/ 更/ 容易/ 出/ 現/ 慢性/ 軀/ 體/ 疼痛/ 包括/ 糖尿/ 糖尿病/ 周/ 圍/ 神/ 經/ 病/ 變/ 而且/ 同/ 時/ 患有/ 糖尿/ 糖尿病/ 和/ 肌肉/ 骨骼/ 疼痛/ 會/ 導/ 致/ 更/ 高程/ 程度/ 的/ 疼痛/ 殘/ 疾/ 和/ 心理/ 困/ 擾/ 其/ 所/ 帶/ 來/ 的/ 負/ 擔/ 遠/ 遠/ 大/ 於/ 僅/ 患有/ 其中/ 一/ 種/ 疾病/ 
+/ 而/ 糖尿/ 糖尿病/ 和/ 背痛/ 也/ 有/ 共同/ 的/ 危/ 險/ 因素/ 比如/ 說/ 肥胖/ 缺乏/ 體/ 育/ 年/ 輕/ 的/ 時/ 候/ 身/ 體/ 質/ 量/ 指/ 數/ BMI/ 越/ 高/ 的/ 人/ 在/ 晚年/ 患/ 糖尿/ 糖尿病/ 的/ 可能/ 可能性/ 要/ 高出/ 9/ 倍/ 以上/ / / 同/ 樣/ 的/ 肥胖/ 是/ 導/ 致/ 嚴/ 重/ 腰痛/ 的/ 重要/ 因子/ 糖尿/ 糖尿病/ 病患/ 病患者/ 患者/ 也/ 不太可能/ 可能/ 經/ 常/ 參/ 加/ 運/ 動/ 活/ 動/ 因此/ 有/ 較/ 高/ 的/ 風/ 險/ 發/ 展/ 成/ 慢性/ 肌肉/ 骨骼/ 疾病/ 如/ 背部/ 和/ 頸/ 部/ 疼痛/ 
+/ 過/ 去/ 的/ 研究/ 表明/ 糖尿/ 糖尿病/ 病患/ 病患者/ 患者/ 可能/ 會/ 因/ 為/ 繼/ 發/ 性/ 糖尿/ 糖尿病/ 相/ 關/ 的/ 腰椎/ 間/ 盤/ 微血管/ 血管/ 血管病/ 變/ 而/ 發/ 展/ 為/ 腰椎/ 間/ 盤/ 疾病/ 此外/ 糖尿/ 糖尿病/ 動/ 物/ 模型/ 中/ 椎/ 間/ 盤/ 退/ 變/ 更佳/ 迅速/ 
+/ 該/ 論/ 文/ 的/ 作者/ Manuela/ Ferreira/ 副教授/ 教授/ 說/ 目前/ 還/ 沒/ 有/ 足/ 夠/ 的/ 證/ 據/ 證/ 明/ 糖尿/ 糖尿病/ 與/ 腰/ 頸/ 疼痛/ 之/ 間/ 存在/ 因果/ 關/ 係/ 但/ 這/ 種/ 積/ 極/ 聯/ 繫/ 值得/ 進/ 一步/ 調/ 查/ 和/ 研究/ 論/ 文/ 還/ 建/ 議/ 醫/ 護/ 人/ 員/ 應/ 該/ 考/ 慮/ 對/ 長/ 期/ 頸/ 痛/ 或/ 腰痛/ 患者/ 進/ 行/ 糖尿/ 糖尿病/ 篩/ 查/ 
+/ 越/ 來/ 越多/ 的/ 人/ 同/ 時/ 受到/ 頸/ 背/ 疼痛/ 和/ 糖尿/ 糖尿病/ 的/ 折磨/ 論/ 文/ 共同/ 作者/ Paulo/ Ferreira/ 說/ 道/ 所以/ 值得/ 投入/ 更多/ 的/ 資/ 源/ 來/ 研究/ 它/ 們/ 之/ 間/ 的/ 相互/ 關/ 係/ 改/ 變/ 糖尿/ 糖尿病/ 的/ 治療/ 干/ 預/ 措施/ 可/ 或/ 許/ 以/ 減/ 少背/ 背痛/ 的/ 發/ 病/ 率/ 反之/ 反之亦然/ 亦然/ 
+/ 參/ 考/ 資/ 料/ Study/ links/ diabetes/ and/ back/ pain
+/ 期刊/ 小/ 檔/ 案/ PLOS/ ONE/ 為/ 一份/ 同行/ 評/ 審/ 的/ 開/ 放/ 獲/ 取/ 科/ 學/ 期刊/ 由/ 公共/ 科/ 學/ 圖/ 書/ 館/ 自/ 2006/ 年/ 發/ 行/ 為/ 全世界/ 世界/ 文章/ 刊/ 載/ 數/ 量/ 最多/ 的/ 期刊/ 所/ 刊/ 載/ 的/ 文章/ 包含/ 科/ 學/ 及/ 醫/ 學/ 各/ 領/ 域/ 的/ 基/ 礎/ 研究/ 
+/ 更多/ Heho/ 健康/ 網/ 文章/ 糖/ 友/ 肺炎/ 風/ 險/ 高/ 2/ 8/ 倍/ / / 醫/ 加打/ 肺炎/ 鏈/ 球菌/ 疫苗/ 保健/ 健康/ 讓/ 其他/ 細/ 胞/ 分泌/ 胰/ 島/ 素/ / / 動/ 物/ 實/ 驗/ 逆/ 轉/ 糖尿/ 糖尿病/ 
+
+/ 文林/ 以/ 璿/ / / 圖/ 許/ 嘉/ 真
+
+精確模式: 腰頸/ 疼痛/ 是/ 常見/ 的/ 肌肉/ 骨骼/ 疾病/ 根據/ 統計大約/ 80%/ 的/ 成年人/ 會經歷/ 腰痛/ 47%/ 的/ 人會/ 經歷/ 脖子/ 痛同樣/ 糖尿病/ 也/ 是/ 一種/ 越來/ 越/ 普遍/ 的/ 慢性病/ ​/ ​/ 全球/ 大約/ 有/ 3.82/ 億人/ 患有/ 這種/ 代謝/ 疾病/ 
+/ 近日/ 一項/ 刊載/ 於/ PLOS/  / ONE/ 期刊/ 的/ 研究/ 指出/ 與/ 沒/ 有/ 糖尿病/ 的/ 人/ 相比/ 糖尿病/ 患者/ 發生/ 腰痛/ 的/ 風險/ 要/ 高/ 35%/ 脖子/ 痛/ 的/ 風險/ 要/ 高/ 24%/ 糖尿病/ 患者/ 更/ 容易/ 出現/ 慢性/ 軀體/ 疼痛/ 包括/ 糖尿病/ 周圍/ 神經/ 病變/ 而且/ 同時/ 患有/ 糖尿病/ 和/ 肌肉/ 骨骼/ 疼痛/ 會導致/ 更/ 高/ 程度/ 的/ 疼痛/ 殘疾/ 和/ 心理/ 困擾/ 其/ 所/ 帶/ 來/ 的/ 負擔/ 遠遠大/ 於僅/ 患有/ 其中/ 一種/ 疾病/ 
+/ 而/ 糖尿病/ 和/ 背痛/ 也/ 有/ 共同/ 的/ 危險/ 因素/ 比如/ 說/ 肥胖/ 缺乏/ 體育/ 年/ 輕/ 的/ 時候/ 身體/ 質量/ 指數/ BMI/ 越高/ 的/ 人/ 在/ 晚年/ 患/ 糖尿病/ 的/ 可能性/ 要/ 高出/ 9/ 倍/ 以上/ ；/ 同樣/ 的/ 肥胖/ 是/ 導致/ 嚴重/ 腰痛/ 的/ 重要/ 因子/ 糖尿病/ 患者/ 也/ 不太可能/ 經常/ 參加/ 運動/ 活動/ 因此/ 有/ 較/ 高/ 的/ 風險/ 發展/ 成/ 慢性/ 肌肉/ 骨骼/ 疾病/ 如/ 背部/ 和/ 頸部/ 疼痛/ 
+/ 過去/ 的/ 研究/ 表明/ 糖尿病/ 患者/ 可能/ 會/ 因為/ 繼發性/ 糖尿病/ 相關/ 的/ 腰椎/ 間盤/ 微血管/ 病變/ 而/ 發展/ 為/ 腰椎/ 間盤/ 疾病/ 此外/ 糖尿病/ 動物/ 模型/ 中椎間/ 盤/ 退變/ 更佳/ 迅速/ 
+/ 該論文/ 的/ 作者/ Manuela/  / Ferreira/ 副教授/ 說/ 目前/ 還沒有/ 足夠/ 的/ 證據/ 證明/ 糖尿病/ 與/ 腰/ 頸/ 疼痛/ 之間/ 存在/ 因果/ 關/ 係/ 但/ 這種/ 積極/ 聯/ 繫/ 值得/ 進/ 一步/ 調查/ 和/ 研究/ 論文/ 還建議/ 醫護/ 人員應/ 該/ 考慮/ 對長/ 期頸痛/ 或/ 腰痛/ 患者/ 進行/ 糖尿病/ 篩查/ 
+/ 越來/ 越/ 多/ 的/ 人/ 同時/ 受到/ 頸/ 背/ 疼痛/ 和/ 糖尿病/ 的/ 折磨/ 論文/ 共同/ 作者/ Paulo/  / Ferreira/ 說道/ 所以/ 值得/ 投入/ 更/ 多/ 的/ 資源/ 來/ 研究/ 它們/ 之間/ 的/ 相互/ 關/ 係/ 改變/ 糖尿病/ 的/ 治療/ 干預/ 措施/ 可/ 或/ 許以/ 減少/ 背痛/ 的/ 發病率/ 反之亦然/ 
+/ 參考/ 資料/ Study/  / links/  / diabetes/  / and/  / back/  / pain/ 
+/ 期刊/ 小檔案/ PLOS/  / ONE/ 為/ 一份/ 同行/ 評審/ 的/ 開放/ 獲取/ 科學/ 期刊/ 由/ 公共/ 科學/ 圖書館/ 自/ 2006/ 年/ 發行/ 為/ 全世界/ 文章/ 刊載/ 數量/ 最/ 多/ 的/ 期刊/ 所刊/ 載/ 的/ 文章/ 包含/ 科學及/ 醫學/ 各/ 領域/ 的/ 基礎/ 研究/ 
+/ 更/ 多/ Heho/ 健康/ 網/ 文章/ 糖友/ 肺炎/ 風險/ 高/ 2.8/ 倍/  / 醫加/ 打/ 肺炎/ 鏈/ 球菌/ 疫苗/ 保/ 健康/ 讓/ 其他/ 細胞/ 分泌/ 胰島素/  / 動物/ 實驗/ 逆轉/ 糖尿病/ 
+/ 
+/ 文林/ 以/ 璿/  / 圖許/ 嘉真
+
+Default為精確模式: 腰頸/ 疼痛/ 是/ 常見/ 的/ 肌肉/ 骨骼/ 疾病/ 根據/ 統計大約/ 80%/ 的/ 成年人/ 會經歷/ 腰痛/ 47%/ 的/ 人會/ 經歷/ 脖子/ 痛同樣/ 糖尿病/ 也/ 是/ 一種/ 越來/ 越/ 普遍/ 的/ 慢性病/ ​/ ​/ 全球/ 大約/ 有/ 3.82/ 億人/ 患有/ 這種/ 代謝/ 疾病/ 
+/ 近日/ 一項/ 刊載/ 於/ PLOS/  / ONE/ 期刊/ 的/ 研究/ 指出/ 與/ 沒/ 有/ 糖尿病/ 的/ 人/ 相比/ 糖尿病/ 患者/ 發生/ 腰痛/ 的/ 風險/ 要/ 高/ 35%/ 脖子/ 痛/ 的/ 風險/ 要/ 高/ 24%/ 糖尿病/ 患者/ 更/ 容易/ 出現/ 慢性/ 軀體/ 疼痛/ 包括/ 糖尿病/ 周圍/ 神經/ 病變/ 而且/ 同時/ 患有/ 糖尿病/ 和/ 肌肉/ 骨骼/ 疼痛/ 會導致/ 更/ 高/ 程度/ 的/ 疼痛/ 殘疾/ 和/ 心理/ 困擾/ 其/ 所/ 帶/ 來/ 的/ 負擔/ 遠遠大/ 於僅/ 患有/ 其中/ 一種/ 疾病/ 
+/ 而/ 糖尿病/ 和/ 背痛/ 也/ 有/ 共同/ 的/ 危險/ 因素/ 比如/ 說/ 肥胖/ 缺乏/ 體育/ 年/ 輕/ 的/ 時候/ 身體/ 質量/ 指數/ BMI/ 越高/ 的/ 人/ 在/ 晚年/ 患/ 糖尿病/ 的/ 可能性/ 要/ 高出/ 9/ 倍/ 以上/ ；/ 同樣/ 的/ 肥胖/ 是/ 導致/ 嚴重/ 腰痛/ 的/ 重要/ 因子/ 糖尿病/ 患者/ 也/ 不太可能/ 經常/ 參加/ 運動/ 活動/ 因此/ 有/ 較/ 高/ 的/ 風險/ 發展/ 成/ 慢性/ 肌肉/ 骨骼/ 疾病/ 如/ 背部/ 和/ 頸部/ 疼痛/ 
+/ 過去/ 的/ 研究/ 表明/ 糖尿病/ 患者/ 可能/ 會/ 因為/ 繼發性/ 糖尿病/ 相關/ 的/ 腰椎/ 間盤/ 微血管/ 病變/ 而/ 發展/ 為/ 腰椎/ 間盤/ 疾病/ 此外/ 糖尿病/ 動物/ 模型/ 中椎間/ 盤/ 退變/ 更佳/ 迅速/ 
+/ 該論文/ 的/ 作者/ Manuela/  / Ferreira/ 副教授/ 說/ 目前/ 還沒有/ 足夠/ 的/ 證據/ 證明/ 糖尿病/ 與/ 腰/ 頸/ 疼痛/ 之間/ 存在/ 因果/ 關/ 係/ 但/ 這種/ 積極/ 聯/ 繫/ 值得/ 進/ 一步/ 調查/ 和/ 研究/ 論文/ 還建議/ 醫護/ 人員應/ 該/ 考慮/ 對長/ 期頸痛/ 或/ 腰痛/ 患者/ 進行/ 糖尿病/ 篩查/ 
+/ 越來/ 越/ 多/ 的/ 人/ 同時/ 受到/ 頸/ 背/ 疼痛/ 和/ 糖尿病/ 的/ 折磨/ 論文/ 共同/ 作者/ Paulo/  / Ferreira/ 說道/ 所以/ 值得/ 投入/ 更/ 多/ 的/ 資源/ 來/ 研究/ 它們/ 之間/ 的/ 相互/ 關/ 係/ 改變/ 糖尿病/ 的/ 治療/ 干預/ 措施/ 可/ 或/ 許以/ 減少/ 背痛/ 的/ 發病率/ 反之亦然/ 
+/ 參考/ 資料/ Study/  / links/  / diabetes/  / and/  / back/  / pain/ 
+/ 期刊/ 小檔案/ PLOS/  / ONE/ 為/ 一份/ 同行/ 評審/ 的/ 開放/ 獲取/ 科學/ 期刊/ 由/ 公共/ 科學/ 圖書館/ 自/ 2006/ 年/ 發行/ 為/ 全世界/ 文章/ 刊載/ 數量/ 最/ 多/ 的/ 期刊/ 所刊/ 載/ 的/ 文章/ 包含/ 科學及/ 醫學/ 各/ 領域/ 的/ 基礎/ 研究/ 
+/ 更/ 多/ Heho/ 健康/ 網/ 文章/ 糖友/ 肺炎/ 風險/ 高/ 2.8/ 倍/  / 醫加/ 打/ 肺炎/ 鏈/ 球菌/ 疫苗/ 保/ 健康/ 讓/ 其他/ 細胞/ 分泌/ 胰島素/  / 動物/ 實驗/ 逆轉/ 糖尿病/ 
+/ 
+/ 文林/ 以/ 璿/  / 圖許/ 嘉真
+
+搜索引擎模式: 腰頸/ 疼痛/ 是/ 常見/ 的/ 肌肉/ 骨骼/ 疾病/ 根據/ 統計大約/ 80%/ 的/ 成年/ 成年人/ 會經歷/ 腰痛/ 47%/ 的/ 人會/ 經歷/ 脖子/ 痛同樣/ 糖尿/ 糖尿病/ 也/ 是/ 一種/ 越來/ 越/ 普遍/ 的/ 慢性/ 性病/ 慢性病/ ​/ ​/ 全球/ 大約/ 有/ 3.82/ 億人/ 患有/ 這種/ 代謝/ 疾病/ 
+/ 近日/ 一項/ 刊載/ 於/ PLOS/  / ONE/ 期刊/ 的/ 研究/ 指出/ 與/ 沒/ 有/ 糖尿/ 糖尿病/ 的/ 人/ 相比/ 糖尿/ 糖尿病/ 患者/ 發生/ 腰痛/ 的/ 風險/ 要/ 高/ 35%/ 脖子/ 痛/ 的/ 風險/ 要/ 高/ 24%/ 糖尿/ 糖尿病/ 患者/ 更/ 容易/ 出現/ 慢性/ 軀體/ 疼痛/ 包括/ 糖尿/ 糖尿病/ 周圍/ 神經/ 病變/ 而且/ 同時/ 患有/ 糖尿/ 糖尿病/ 和/ 肌肉/ 骨骼/ 疼痛/ 會導致/ 更/ 高/ 程度/ 的/ 疼痛/ 殘疾/ 和/ 心理/ 困擾/ 其/ 所/ 帶/ 來/ 的/ 負擔/ 遠遠大/ 於僅/ 患有/ 其中/ 一種/ 疾病/ 
+/ 而/ 糖尿/ 糖尿病/ 和/ 背痛/ 也/ 有/ 共同/ 的/ 危險/ 因素/ 比如/ 說/ 肥胖/ 缺乏/ 體育/ 年/ 輕/ 的/ 時候/ 身體/ 質量/ 指數/ BMI/ 越高/ 的/ 人/ 在/ 晚年/ 患/ 糖尿/ 糖尿病/ 的/ 可能/ 可能性/ 要/ 高出/ 9/ 倍/ 以上/ ；/ 同樣/ 的/ 肥胖/ 是/ 導致/ 嚴重/ 腰痛/ 的/ 重要/ 因子/ 糖尿/ 糖尿病/ 患者/ 也/ 可能/ 不太可能/ 經常/ 參加/ 運動/ 活動/ 因此/ 有/ 較/ 高/ 的/ 風險/ 發展/ 成/ 慢性/ 肌肉/ 骨骼/ 疾病/ 如/ 背部/ 和/ 頸部/ 疼痛/ 
+/ 過去/ 的/ 研究/ 表明/ 糖尿/ 糖尿病/ 患者/ 可能/ 會/ 因為/ 繼發性/ 糖尿/ 糖尿病/ 相關/ 的/ 腰椎/ 間盤/ 血管/ 微血管/ 病變/ 而/ 發展/ 為/ 腰椎/ 間盤/ 疾病/ 此外/ 糖尿/ 糖尿病/ 動物/ 模型/ 中椎間/ 盤/ 退變/ 更佳/ 迅速/ 
+/ 該論文/ 的/ 作者/ Manuela/  / Ferreira/ 教授/ 副教授/ 說/ 目前/ 還沒有/ 足夠/ 的/ 證據/ 證明/ 糖尿/ 糖尿病/ 與/ 腰/ 頸/ 疼痛/ 之間/ 存在/ 因果/ 關/ 係/ 但/ 這種/ 積極/ 聯/ 繫/ 值得/ 進/ 一步/ 調查/ 和/ 研究/ 論文/ 還建議/ 醫護/ 人員應/ 該/ 考慮/ 對長/ 期頸痛/ 或/ 腰痛/ 患者/ 進行/ 糖尿/ 糖尿病/ 篩查/ 
+/ 越來/ 越/ 多/ 的/ 人/ 同時/ 受到/ 頸/ 背/ 疼痛/ 和/ 糖尿/ 糖尿病/ 的/ 折磨/ 論文/ 共同/ 作者/ Paulo/  / Ferreira/ 說道/ 所以/ 值得/ 投入/ 更/ 多/ 的/ 資源/ 來/ 研究/ 它們/ 之間/ 的/ 相互/ 關/ 係/ 改變/ 糖尿/ 糖尿病/ 的/ 治療/ 干預/ 措施/ 可/ 或/ 許以/ 減少/ 背痛/ 的/ 發病率/ 反之/ 亦然/ 反之亦然/ 
+/ 參考/ 資料/ Study/  / links/  / diabetes/  / and/  / back/  / pain/ 
+/ 期刊/ 小檔案/ PLOS/  / ONE/ 為/ 一份/ 同行/ 評審/ 的/ 開放/ 獲取/ 科學/ 期刊/ 由/ 公共/ 科學/ 圖書館/ 自/ 2006/ 年/ 發行/ 為/ 世界/ 全世界/ 文章/ 刊載/ 數量/ 最/ 多/ 的/ 期刊/ 所刊/ 載/ 的/ 文章/ 包含/ 科學及/ 醫學/ 各/ 領域/ 的/ 基礎/ 研究/ 
+/ 更/ 多/ Heho/ 健康/ 網/ 文章/ 糖友/ 肺炎/ 風險/ 高/ 2.8/ 倍/  / 醫加/ 打/ 肺炎/ 鏈/ 球菌/ 疫苗/ 保/ 健康/ 讓/ 其他/ 細胞/ 分泌/ 胰島素/  / 動物/ 實驗/ 逆轉/ 糖尿/ 糖尿病/ 
+/ 
+/ 文林/ 以/ 璿/  / 圖許/ 嘉真</pre><p></p>
+<h3>5.將字詞頻率以word cloud(文字雲)呈現</h3>
+<p>將字詞頻率以文字雲繪出<br />
+載入文字雲套件</p><pre class="crayon-plain-tag">import matplotlib.pyplot as plt
+from wordcloud import WordCloud</pre><p>設定停用字stopwords(排除常用詞、無法代表特殊意義的字詞)，投入WordClour()函數中，其中參數stopwords形式可以是：</p>
+<ul>
+<li>dictionary {key : value}的格式</li>
+<li>set {&#8216;a&#8217;, &#8216;b&#8217;, &#8216;c&#8217;, &#8230;}的格式</li>
+</ul>
+<p>*stopwords中， \n 是前面因為避免印出一長串沒有換行符號的article而加入的，故這邊再另外挑除</p><pre class="crayon-plain-tag"># 設定停用字詞 
+stopwords = {}.fromkeys(["也","但","來","個","再","的","和","是","有","更","會","可能","有何","從","對","就", '\n','越','為','這種','多','越來',' '])
+#stopwords = {"也","但","來","個","再","的","和","是","有","更","會","可能","有何","從","對","就",'\n','越','為','這種','多','越來',' '}</pre><p><strong>產生文字雲(方法1): 使用<span style="color: #9f6ad4;">generate_from_frequencies()</span></strong></p>
+<ul>
+<li><span style="color: #9f6ad4;">generate_from_frequencies()方法會忽略stopwords參數的部分</span>，<span style="text-decoration: underline;">故在產生hash dictionary字詞頻率的時候，須先自行處理挑除stopwords的部分</span>。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag"># 使用cut_for_search(搜尋引擎)斷詞模式並產生字詞頻率的dictionary (並剔除stopwords的計算)
+Sentence = jieba.cut_for_search(d) 
+
+# create a python dictionary
+hash = {}
+for item in Sentence:
+
+    if item in stopwords:
+        continue
+    
+    if item in hash:
+        hash[item] += 1
+    else:
+        hash[item] = 1
+
+# 文字雲樣式設定
+wc = WordCloud(font_path="/Users/hsuanlee/Library/Fonts/NotoSansCJKtc-Regular.otf", #設置字體
+               background_color="white", #背景顏色
+               max_words = 2000 ,        #文字雲顯示最大詞數
+               stopwords=stopwords)      #停用字詞
+
+# 使用dictionary的內容產生文字雲
+wc.generate_from_frequencies(hash)
+
+# 視覺化呈現
+plt.imshow(wc)
+plt.axis("off")
+plt.figure(figsize=(20,10), dpi =200)
+plt.show()</pre><p><img loading="lazy" class="alignnone size-full wp-image-2699" src="/wp-content/uploads/2019/03/文章文字雲3.png" alt="文章文字雲3" width="385" height="202" srcset="/wp-content/uploads/2019/03/文章文字雲3.png 385w, /wp-content/uploads/2019/03/文章文字雲3-300x157.png 300w, /wp-content/uploads/2019/03/文章文字雲3-230x121.png 230w, /wp-content/uploads/2019/03/文章文字雲3-350x184.png 350w" sizes="(max-width: 385px) 100vw, 385px" /></p>
+<p><strong>產生文字雲(方法2): 使用generate_from_text()</strong></p>
+<ul>
+<li>由於generate_from_text()方法會採納stopwords參數，故事前不需要特別對text做stopwords的挑除</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">Sentence = jieba.cut_for_search(d) 
+text = ' '.join(Sentence)
+
+# 文字雲樣式設定
+wc = WordCloud(font_path="/Users/hsuanlee/Library/Fonts/NotoSansCJKtc-Regular.otf", #設置字體
+               background_color="white", #背景顏色
+               max_words = 2000 ,        #文字雲顯示最大詞數
+               stopwords=stopwords)      #停用字詞
+
+# 直接使用結巴斷詞後的文字來產生文字雲
+wc.generate_from_text(text)
+
+# 視覺化呈現
+plt.imshow(wc)
+plt.axis("off")
+plt.figure(figsize=(20,10), dpi =200)
+plt.show()</pre><p><img loading="lazy" class="alignnone size-full wp-image-2700" src="/wp-content/uploads/2019/03/文章文字雲4.png" alt="文章文字雲4" width="385" height="202" srcset="/wp-content/uploads/2019/03/文章文字雲4.png 385w, /wp-content/uploads/2019/03/文章文字雲4-300x157.png 300w, /wp-content/uploads/2019/03/文章文字雲4-230x121.png 230w, /wp-content/uploads/2019/03/文章文字雲4-350x184.png 350w" sizes="(max-width: 385px) 100vw, 385px" /></p>
+<h3>6. 將dictionary轉換成data frame(並以key當作row: orient = &#8216;index&#8217;)</h3>
+<p>將字詞頻率統計表依照「詞頻」由多至寡排列。</p><pre class="crayon-plain-tag">artDf = pd.DataFrame.from_dict(hash, orient='index', columns = ['詞頻'])
+artDf.sort_values(by= ['詞頻'], ascending= False)</pre><p><img loading="lazy" class="alignnone size-full wp-image-2701" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-下午12.06.24.png" alt="螢幕快照 2019-03-03 下午12.06.24" width="101" height="295" /></p>
+<hr />
+<p>文章參考連結：</p>
+<h3><a title="Python網路爬蟲：大數據擷取、清洗、儲存與分析：王者歸來" href="https://tinyurl.com/yc6la3vd" target="_blank" rel="mid_name noopener noreferrer"><span style="font-size: 12pt;">Python<em>網路</em><em>爬蟲</em>：大數據擷取、清洗、儲存與分析：王者歸來</span></a></h3>
+<p><a href="https://amueller.github.io/word_cloud/generated/wordcloud.WordCloud.html#wordcloud.WordCloud.generate_from_frequencies" target="_blank" rel="noopener noreferrer">wordcloud.WordCloud</a></p>
+<hr />
+<p>更多Python網路爬蟲學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener noreferrer">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/" target="_blank" rel="noopener noreferrer">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/" target="_blank" rel="noopener noreferrer">Text Mining &amp; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a></p>
+<p>這篇文章 <a rel="nofollow" href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/">Text Mining &#038; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>網路爬蟲 web crawler &#124; 奇摩電影 yahoo movies &#124; using Python</title>
+		<link>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/</link>
+					<comments>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/#comments</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Sun, 03 Mar 2019 03:12:25 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<guid isPermaLink="false">/?p=2603</guid>
+
+					<description><![CDATA[<p>本篇學習筆記將要示範如何使用 Python 來執行 網路爬蟲 web crawler，並以爬取雅虎奇摩電影的「每週新片」頁面資訊為例。筆記包含以下部分：(1)解 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇學習筆記將要示範如何使用 Python 來執行 網路爬蟲 web crawler，並以爬取雅虎奇摩電影的「<a href="https://movies.yahoo.com.tw/movie_thisweek.html" target="_blank" rel="noreferrer noopener" aria-label="每週新片 (在新分頁中開啟)">每週新片</a>」頁面資訊為例。筆記包含以下部分：(1)解讀網頁資訊 (2) 萃取資訊 (3) 將資訊整理成data frame (4) 將電影爬蟲寫成函式 (5) 自動化判斷所有分頁url並套用電影爬蟲函數。</p>
+<h3>(1) 解讀網頁資訊</h3>
+<h4>載入所需套件</h4>
+<p></p><pre class="crayon-plain-tag"># import libraries
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup</pre><p></p>
+<h4>指定URL資訊</h4>
+<p></p><pre class="crayon-plain-tag"># 指定所要爬網的URL
+url = 'https://movies.yahoo.com.tw/movie_thisweek.html'
+# GET request from url and parse via BeautifulSoup
+r = requests.get(url)
+# 擷取request回傳的文字部分
+web_content = r.text</pre><p></p>
+<h4>解讀(parse)網頁HTML</h4>
+<p></p><pre class="crayon-plain-tag"># 使用BeautifulSoup來parse HTMl
+soup = BeautifulSoup(web_content,'lxml')</pre><p></p>
+<h3></h3>
+<h3>(2) 將「每週新片」的中英文片名、電影介紹、預告片連結爬下來</h3>
+<h4>2-1. 中英文片名</h4>
+<p>先找到中英文片名在html架構中的規則(可<strong><span style="color: #9f6ad4;">右鍵點擊</span></strong>感興趣物件，並選擇「<span style="color: #9f6ad4;"><strong>檢查</strong></span>」)(如下圖)。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2628" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30.png" alt="網路爬蟲-web-crawler" width="2344" height="1106" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30.png 2344w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-300x142.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-768x362.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-1024x483.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-830x392.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-230x109.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-350x165.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午12.54.30-480x226.png 480w" sizes="(max-width: 2344px) 100vw, 2344px" /></p>
+<p>並使用.find_all()找出soup中物件為&#8217;div&#8217;且class_類別為&#8221;release_movie_name&#8221;的所有元素，集結成一個list (named newMovie2)，每個元素彼此使用逗號間隔。</p><pre class="crayon-plain-tag">newMovie2 = soup.find_all('div', class_ = "release_movie_name")
+newMovie2</pre><p></p><pre class="crayon-plain-tag">[&lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','為副不仁']" href="https://movies.yahoo.com.tw/movieinfo_main/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-vice-8963"&gt;
+                   為副不仁&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','為副不仁']" href="https://movies.yahoo.com.tw/movieinfo_main/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-vice-8963"&gt;
+                     Vice&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;62%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.4" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','吉娃娃羅曼死']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-chiwawa-9256"&gt;
+                   吉娃娃羅曼死&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','吉娃娃羅曼死']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-chiwawa-9256"&gt;
+                     Chiwawa&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;43%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.8" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','酷寒殺手']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-cold-pursuit-9377"&gt;
+                   酷寒殺手&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','酷寒殺手']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-cold-pursuit-9377"&gt;
+                     Cold Pursuit&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;87%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.4" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','法律女王']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-on-the-basis-of-sex-9389"&gt;
+                   法律女王&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','法律女王']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-on-the-basis-of-sex-9389"&gt;
+                     On the Basis of Sex&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;78%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.4" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','恭喜八婆']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-miss-behavior-9432"&gt;
+                   恭喜八婆&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','恭喜八婆']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-miss-behavior-9432"&gt;
+                     Miss Behavior&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;88%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.8" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','非．虛構情事']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-non-fiction-9475"&gt;
+                   非．虛構情事&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','非．虛構情事']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-non-fiction-9475"&gt;
+                     Non-fiction&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;23%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="2.6" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','地獄自拍']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-selfie-from-hell-9494"&gt;
+                   地獄自拍&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','地獄自拍']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-selfie-from-hell-9494"&gt;
+                     Selfie From Hell&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;57%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="1.4" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','證人']" href="https://movies.yahoo.com.tw/movieinfo_main/%E8%AD%89%E4%BA%BA-innocent-witness-9552"&gt;
+                   證人&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','證人']" href="https://movies.yahoo.com.tw/movieinfo_main/%E8%AD%89%E4%BA%BA-innocent-witness-9552"&gt;
+                     Innocent Witness&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;96%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="4.8" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','溫泉屋小女將']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-okkos-inn-9562"&gt;
+                   溫泉屋小女將&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','溫泉屋小女將']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-okkos-inn-9562"&gt;
+                     Okko’s Inn&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;80%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="3.7" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;, &lt;div class="release_movie_name"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','密弑遊戲']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-escape-room-9572"&gt;
+                   密弑遊戲&lt;/a&gt;
+ &lt;div class="en"&gt;
+ &lt;a class="gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','密弑遊戲']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-escape-room-9572"&gt;
+                     Escape Room&lt;/a&gt;
+ &lt;/div&gt;
+ &lt;dl class="levelbox"&gt;
+ &lt;dt&gt;
+ &lt;div class="level_name"&gt;期待度&lt;/div&gt;
+ &lt;div class="leveltext"&gt;
+ &lt;span&gt;84%&lt;/span&gt;
+                     網友想看
+                   &lt;/div&gt;
+ &lt;/dt&gt;
+ &lt;dd&gt;
+ &lt;div class="level_name"&gt;滿意度&lt;/div&gt;
+ &lt;div class="leveltext starwithnum"&gt;
+ &lt;span class="count" data-num="4.4" data-run="0"&gt;0&lt;/span&gt;&lt;span&gt;分&lt;/span&gt;
+ &lt;div class="starbox starnumbox"&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="star"&gt;
+ &lt;div class="starovr"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/dd&gt;
+ &lt;/dl&gt;
+ &lt;/div&gt;]</pre><p>但每個class = &#8221;release_movie_name&#8221;的元素中，並不是每個標籤都是我們感興趣的，為了萃取感興趣資訊，<span style="text-decoration: underline; color: #9f6ad4;">我們再從newMovies2 list中，一個一個元素去找出class = &#8216;gabtn&#8217; 的&lt;a&gt;&lt;/a&gt;標籤中的文字(如下段落所示)，並將換行與空白字符取消，存取成一個新的list (named NameCHs)</span>。</p>
+<p><span style="text-decoration: underline;"><span style="font-size: 12pt;"><em>&lt;a class=&#8221;</em>gabtn<em>&#8221; data-ga=&#8221;[&#8216;本週新片&#8217;,&#8217;本週新片_本週新片第1頁&#8217;,&#8217;密弑遊戲&#8217;]&#8221;<br />
+href=&#8221;https://movies.yahoo.com.tw/movieinfo_main/<br />
+</em></span></span><span style="text-decoration: underline;"><span style="font-size: 12pt;"><em>%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-escape-room-9572&#8243;&gt;</em><em><span style="color: #0000ff; text-decoration: underline;">密弑遊戲</span>&lt;/a&gt;</em></span></span></p><pre class="crayon-plain-tag">NameCHs = [t.find('a', class_='gabtn').text.replace('\n','').replace(' ','') for t in newMovie2]
+NameCHs</pre><p></p><pre class="crayon-plain-tag">['為副不仁',
+ '吉娃娃羅曼死',
+ '酷寒殺手',
+ '法律女王',
+ '恭喜八婆',
+ '非．虛構情事',
+ '地獄自拍',
+ '證人',
+ '溫泉屋小女將',
+ '密弑遊戲']</pre><p>同理，找出英文片名的文字。</p><pre class="crayon-plain-tag">NameENs = [t.find('div', class_='en').find('a').text.replace('\n','').replace(' ','') for t in newMovie2]
+NameENs</pre><p></p><pre class="crayon-plain-tag">['Vice',
+ 'Chiwawa',
+ 'ColdPursuit',
+ 'OntheBasisofSex',
+ 'MissBehavior',
+ 'Non-fiction',
+ 'SelfieFromHell',
+ 'InnocentWitness',
+ 'Okko’sInn',
+ 'EscapeRoom']</pre><p></p>
+<h4>2-2. 預告片連結</h4>
+<p>一樣，檢視感興趣目標在HTML中的結構規則。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2638" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14.png" alt="網路爬蟲-web-crawler" width="2352" height="1126" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14.png 2352w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-300x144.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-768x368.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-1024x490.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-830x397.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-230x110.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-350x168.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.05.14-480x230.png 480w" sizes="(max-width: 2352px) 100vw, 2352px" /></p>
+<p>找出所有class_為release_btn color_btnbox的div。</p><pre class="crayon-plain-tag">newMovie3 = soup.find_all('div',class_="release_btn color_btnbox")
+newMovie3</pre><p></p><pre class="crayon-plain-tag">[&lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','為副不仁']" href="https://movies.yahoo.com.tw/movieinfo_main/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-vice-8963"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','為副不仁']" href="https://movies.yahoo.com.tw/video/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-021801838.html?movie_id=8963"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=8963"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','為副不仁']" href="https://movies.yahoo.com.tw/movietime_result.html/id=8963"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','吉娃娃羅曼死']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-chiwawa-9256"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','吉娃娃羅曼死']" href="https://movies.yahoo.com.tw/video/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-%E7%B2%BE%E5%BD%A9%E7%89%87%E9%A0%AD%E6%90%B6%E5%85%88%E7%9C%8B-090102582.html?movie_id=9256"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9256"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','吉娃娃羅曼死']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9256"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','酷寒殺手']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-cold-pursuit-9377"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','酷寒殺手']" href="https://movies.yahoo.com.tw/video/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-105035779.html?movie_id=9377"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9377"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','酷寒殺手']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9377"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','法律女王']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-on-the-basis-of-sex-9389"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','法律女王']" href="https://movies.yahoo.com.tw/video/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-093658482.html?movie_id=9389"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9389"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','法律女王']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9389"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','恭喜八婆']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-miss-behavior-9432"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','恭喜八婆']" href="https://movies.yahoo.com.tw/video/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-025738371.html?movie_id=9432"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9432"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','恭喜八婆']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9432"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','非．虛構情事']" href="https://movies.yahoo.com.tw/movieinfo_main/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-non-fiction-9475"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','非．虛構情事']" href="https://movies.yahoo.com.tw/video/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-023735492.html?movie_id=9475"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9475"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','非．虛構情事']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9475"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','地獄自拍']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-selfie-from-hell-9494"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','地獄自拍']" href="https://movies.yahoo.com.tw/video/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-144352730.html?movie_id=9494"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9494"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','地獄自拍']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9494"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','證人']" href="https://movies.yahoo.com.tw/movieinfo_main/%E8%AD%89%E4%BA%BA-innocent-witness-9552"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','證人']" href="https://movies.yahoo.com.tw/video/%E8%AD%89%E4%BA%BA-%E5%82%AC%E6%B7%9A%E9%9F%B3%E6%A8%82%E7%89%88%E9%A0%90%E5%91%8A-231957458.html?movie_id=9552"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9552"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','證人']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9552"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','溫泉屋小女將']" href="https://movies.yahoo.com.tw/movieinfo_main/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-okkos-inn-9562"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','溫泉屋小女將']" href="https://movies.yahoo.com.tw/video/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-105610983.html?movie_id=9562"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9562"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','溫泉屋小女將']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9562"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;, &lt;div class="release_btn color_btnbox"&gt;
+ &lt;a class="btn_s_introduction" data-ga="['本週新片','本週新片_本週新片第1頁','密弑遊戲']" href="https://movies.yahoo.com.tw/movieinfo_main/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-escape-room-9572"&gt;電影介紹&lt;/a&gt;
+ &lt;a class="btn_s_vedio gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','密弑遊戲']" href="https://movies.yahoo.com.tw/video/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-100235196.html?movie_id=9572"&gt;
+                   預告片
+                 &lt;/a&gt;
+ &lt;a class="btn_s_foto" href="https://movies.yahoo.com.tw/movieinfo_photos.html/id=9572"&gt;劇照&lt;/a&gt;
+ &lt;a class="btn_s_time gabtn" data-ga="['本週新片','本週新片_本週新片第1頁','密弑遊戲']" href="https://movies.yahoo.com.tw/movietime_result.html/id=9572"&gt;
+                   時刻表
+                 &lt;/a&gt;
+ &lt;/div&gt;]</pre><p>並從newMovie3 list中，進一步取出元素中class_為btn_s_vedio gabtn&lt;a&gt;&lt;/a&gt;連結標籤中的連結href。</p><pre class="crayon-plain-tag">links = [t.find('a',class_="btn_s_vedio gabtn")['href'] for t in newMovie3]
+links</pre><p></p><pre class="crayon-plain-tag">['https://movies.yahoo.com.tw/video/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-021801838.html?movie_id=8963',
+ 'https://movies.yahoo.com.tw/video/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-%E7%B2%BE%E5%BD%A9%E7%89%87%E9%A0%AD%E6%90%B6%E5%85%88%E7%9C%8B-090102582.html?movie_id=9256',
+ 'https://movies.yahoo.com.tw/video/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-105035779.html?movie_id=9377',
+ 'https://movies.yahoo.com.tw/video/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-093658482.html?movie_id=9389',
+ 'https://movies.yahoo.com.tw/video/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-025738371.html?movie_id=9432',
+ 'https://movies.yahoo.com.tw/video/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-023735492.html?movie_id=9475',
+ 'https://movies.yahoo.com.tw/video/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-%E6%9C%80%E6%96%B0%E9%A0%90%E5%91%8A-144352730.html?movie_id=9494',
+ 'https://movies.yahoo.com.tw/video/%E8%AD%89%E4%BA%BA-%E5%82%AC%E6%B7%9A%E9%9F%B3%E6%A8%82%E7%89%88%E9%A0%90%E5%91%8A-231957458.html?movie_id=9552',
+ 'https://movies.yahoo.com.tw/video/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-105610983.html?movie_id=9562',
+ 'https://movies.yahoo.com.tw/video/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-%E4%B8%AD%E6%96%87%E9%A0%90%E5%91%8A-100235196.html?movie_id=9572']</pre><p></p>
+<h4>2-3. 電影介紹文</h4>
+<p>檢查介紹文的HTML規則，發現介紹文會夾帶在class = &#8216;release_text&#8217;的div中。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2639" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21.png" alt="網路爬蟲-web-crawler" width="2352" height="1110" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21.png 2352w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-300x142.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-768x362.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-1024x483.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-830x392.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-230x109.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-350x165.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.16.21-480x227.png 480w" sizes="(max-width: 2352px) 100vw, 2352px" /></p><pre class="crayon-plain-tag">newMovie4 = soup.find_all('div',class_="release_text")
+newMovie4</pre><p></p><pre class="crayon-plain-tag">[&lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E7%82%BA%E5%89%AF%E4%B8%8D%E4%BB%81-vice-8963"&gt;
+                   ★奧斯卡金獎得主亞當麥凱繼《大賣空》後，攜手克里斯汀貝爾、史提夫卡爾三巨頭再度合作
+ ★「蝙蝠俠」克里斯汀貝爾再展變色龍演技，傳神詮釋史上最有權勢副總統迪克錢尼
+ ★奧斯卡最佳男配角山姆洛克威爾與克里斯汀貝爾聯袂扮老，精湛化身小布希
+ ★布萊德彼特與《月光下的藍色男孩》監製共同打造，強勢問鼎2019奧斯卡最佳影片、影帝等獎項！
+  
+ 《為副不仁》講述美國史上最有權勢的副總統迪克錢尼（克里斯汀貝爾 飾），如何從白宮幕僚逐漸爬上權力的頂峰，成為全世界最有權勢的人－－美國總統小布希（山姆洛克威爾 飾）的副手，以及他的政策如何重塑美國並影響至今我們身處的世界。
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E5%90%89%E5%A8%83%E5%A8%83%E7%BE%85%E6%9B%BC%E6%AD%BB-chiwawa-9256"&gt;
+                   ★《惡女羅曼死》原著作者又一爭議話題傑作改編電影化！
+ ★ 殺人分屍案死者身份確認，完全沒想到，竟然就是我的好友！
+ ★ 現代東京版《羅生門》，懸疑曲折超越《渴望》、《聽說桐島退社了》！ 
+ ★ 新生代實力演員群，共同演繹謳歌青春電影傑作！
+ ★ 絢爛畫面搭配動感配樂，滿足視覺與聽覺的雙重饗宴！
+ ★ 藤岡靛、吉岡里帆、櫻井友紀、白石和彌等日本影視圈名人爭相力讚！
+  
+ 話題人物慘遭殺害，連鎖效應在好友圈無限蔓延
+ 一群揮霍青春的青年男女，其中一位長相可愛貌美，猶如眾人「吉祥物」般存在、暱稱為「吉娃娃」的20歲少女，某天驚傳遭人分屍的命案，部分屍體並在東京灣尋獲。她周遭的好友們，開始聚在一起回憶青春，緬懷他們心目中的吉娃娃。大家這時才發現，根本沒人知道她的真名、境遇還有真正的個性。原來在大家對她毫無了解的情況下，她就跟眾人混在一起、談戀愛、甚至發生性關係。究竟真正的「吉娃娃」，到底是位什麼樣的女孩呢？
+  
+ 【關於電影】
+  
+ 《惡女羅曼死》作者話題傑作，懸疑曲折超越《聽說桐島退社了》
+ 《吉娃娃羅曼死》改編自日本知名漫畫家岡崎京子的短篇漫畫作品。曾打造《惡女羅曼死》等轟動不已作品的岡崎京子，特別擅長描繪情慾與悖德，並透過毫無忌諱的性愛場面表現人物內在。這部短篇漫畫，終於在2019年翻拍成劇情長片登上大銀幕。全片描述個性活潑好動、集萬千寵愛於一身的20歲美少女「吉娃娃」，某天竟被殘忍分屍，而她的遭遇也在朋友圈中引發連鎖效應。眾人開始回想自己與「吉娃娃」的每個相處細節，竟發現自己連她的本名、境遇與背景都不知道。也因為好友們各說各話，在不同說法中拼湊出吉娃娃的生活與背景，更讓本片頗有現代女性版《羅生門》的懸疑性，更猶如《渴望》、《聽說桐島退社了》的加乘綜合版。
+  
+ 本片找來曾執導《裸睡美人》的二宮健擔任導演。二宮導演透露，親手拍攝《吉娃娃羅曼史》的真人電影版，一直是他給自己設立的目標，他並回憶：「初次拜讀原作，是我22歲剛從大阪到東京來的時候。那時我雖然想在東京拍攝更大規模的電影，卻諸事不順；即便想讓自己做些什麼，到頭來總是繞回原點，恰好就是那樣的時期，讓我遇到了這部作品。」他並補充：「只花34頁篇幅描繪的青春群像劇，卻帶來非常大的震撼。這群想試著跨越些什麼而掙扎的人物，逐漸跟我的自身形象交疊，以致於在看完原作的瞬間，我就決定要把這部作品給拍成電影。」值得一提的是，二宮導演的作品總有著最前衛的影像，以及動感的配樂，讓他的導演風格非常鮮明並深受好評。尤其本片的派對群戲眾多，導演這次也採用讓演員自由發揮的即興表演，再由鏡頭一一收錄，讓全片的派對、玩樂、性愛等場面顯得特別真實。
+  
+ 本片演員也是一時之選，找來2019年新科藍絲帶獎影后門脇麥擔綱演出「美樹」這個角色，而讀完劇本的她也覺得「非常有趣，很想試試看」而馬上答應邀約。至於靈魂人物「吉娃娃」，則找來新銳女星吉田志織擔綱。她獨特又魅力十足，時而無邪、時而深沉，立體的人物塑造和強烈的存在感，讓人簡直無法相信這是她的首部主演作品。此外，本片也集結成田凌、寬一郎、村上虹郎、玉城蒂娜、栗山千明、淺野忠信等多位新銳、資深實力派演員共同演繹，聯手呈現年輕人面對愛情、金錢、嫉妒、慾望等如夢境般閃亮不已的絢爛青春世界。而全片所勾勒「青春的爆發」與「告終的覺悟」，導演也精準使用過去日本電影從未有過的影像與音樂勾勒出來，勢必滿足觀眾視覺與聽覺的雙重享受，一同進入青春大無畏的美麗與哀愁！
+  
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E9%85%B7%E5%AF%92%E6%AE%BA%E6%89%8B-cold-pursuit-9377"&gt;
+                   ★2019開春最受期待復仇爽片! 冷暴力美學、血花散遍!
+ ★地表最強老爸-連恩尼遜，重拾槍火即刻開戰!  復仇是人性最原始的反撲!
+  
+ 殺我兒，我滅你全團!
+  
+ 剷雪車司機-尼爾剛獲頒榮譽市民表揚，卻收到兒子吸毒致死的訊息，讓他生活頓時起了波瀾。他堅信兒子清白，便開始追查，赫然發現幕後有黑道組織操刀，他從朋友手中獲得黑道兇嫌名單，並依姓名順序送凶手上斷頭台。冰天雪地中，黑道們一個個死於非命，尼爾的復仇行為讓毒梟跟槍火幫派，以為是雙方在找麻煩，進而引發兩個幫派大火拼。為了幫兒子報仇，尼爾也陷入這場世紀廝殺中，雙方頓時火力全開，復仇計畫大快人心…
+  
+ 【幕後花絮】
+  
+ 《酷寒殺手》翻拍自爛番茄新鮮度90％超強好評《該死的順序》，導演漢斯彼得穆蘭開創新暴力美學風格，電影公司買下版權後並無改換導演，仍由漢斯繼續拍攝美語版本，融入更多美式暴力作風。導演當時會想拍這部片，是來自本身被霸凌的怨念：「我從小就喜歡報仇，只要有人欺負我，我就會反擊。」導演認為，復仇是人類非常原始的直覺，儘管沒有達到報仇目的，也能享受到樂趣。
+  
+ 《該死的順序》當年在柏林影展首映之後，全球影評佳評如潮！帝國雜誌給予極高的讚賞，「這才是我們期待已久的復仇爽片！」知名影評網站爛番茄新鮮度近90％超強好評！國際評論對於《該死的順序》師法柯恩兄弟，也超越昆汀塔倫提諾和盧貝松的暴力美學大加讚揚！
+  
+ 片商看中電影超強口碑便著手進行翻拍，將新暴力美學旋風帶入好萊塢；找來具有票房號召力男星-連恩尼遜擔任片中的復仇老爸。雖然連恩尼遜演出這類型的電影並不陌生，但在新片中，導演讓連恩尼遜有更多的內心戲與謀略策畫，他也不再英勇無敵，沒有特務、警察等背景，單純是一位平凡的復仇父親。
+  
+ 在製作方面，麥可雪恩伯格曾擔任過《決殺令》製片，負責本片的暴力美學演繹，而《疾速救援》製片-麥可德雷爾，則擔綱起片中動作炫技保證，讓電影《酷寒殺手》重新定義暴力極致。
+  
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E6%B3%95%E5%BE%8B%E5%A5%B3%E7%8E%8B-on-the-basis-of-sex-9389"&gt;
+                   ★真人實事改編 一生致力平權 美國傳奇女法官成功奇蹟登上大銀幕 
+ ★《愛的萬物論》金獎提名費莉絲蒂瓊斯X《以你的名字呼喚我》艾米漢默 聯手主演
+ ★《彗星撞地球》票房女導演咪咪蕾德 睽違大銀幕多年最新力作
+ ★為信念奮鬥不懈 為歧視挺身而出 繼《永不妥協》後又一激勵人心銀幕佳作 
+ ★故事主角露絲拜德金斯伯格 親自客串演出 
+  
+ 「如果連法律都不能一視同仁，兩性如何平權？」取材自現今美國最高法院唯二女大法官露絲拜德金斯伯格（菲莉絲蒂瓊斯 飾）的真實成功故事，本片聚焦在年紀輕輕、剛踏出法學院校門的她，如何在男性至上、女性不被重視的工作環境中，力爭上游成為律師，為兩性爭取平權，成為美國史上最有影響力的法官之一，現在仍任職於最高法院大法官。
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E6%81%AD%E5%96%9C%E5%85%AB%E5%A9%86-miss-behavior-9432"&gt;
+                   ★2019開年最爆笑噴飯喜劇，香港鬼才彭浩翔瘋狂作品，《春嬌與志明》班底火力全開，一定要你笑翻天
+ ★ 香港最不可思議的八婆女星大集合，為了一瓶奶！？展開瘋狂大作戰
+  
+ 由8個閨密組成的「八婆」whatsapp群組，因彼此的恩怨，讓群組不再對話。
+ 而June也在認識了現在的老公後，漸漸疏遠其他7位閨密。她的女魔頭上司最近生了小孩，需要定時抽母奶放進冰箱。沒想到，June竟然誤把母奶加進咖啡裡，還被大老闆喝個精光，要是被發現肯定工作不保。
+  
+ 情急之下，她只好找回很久沒聯絡的群組成員，希望在下班前，幫忙找到母奶頂替。此時，即將襲港的颱風逼近，交通大亂，八婆們能否在時間之內，完成尋奶任務呢？
+  
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E9%9D%9E-%E8%99%9B%E6%A7%8B%E6%83%85%E4%BA%8B-non-fiction-9475"&gt;
+                   亞倫是法國出版界的風雲人物，然而時代在變，亞倫也忙於適應電子世代帶給出版業的衝擊，他不僅要學習如何發行電子書，就連讀者的消費取向也令他匪夷所思。人氣博主、暢銷部落客只要將在社群媒體發表的短文集結成冊，也能成為暢銷書？亞倫拒絕出版與他年紀相仿且合作多年的作家李奧納多的新書，他的作品寫得多半是自己的真實經驗，再將筆下人物稍加改名換姓，他的前妻、前任女友以及被影射的周遭人物深受其擾。這次的新書是李奧納多跟某個名人芝麻綠豆般的緋聞軼事，亞倫質疑他根本沒有創意以及想像力，然而出人意表的是亞倫身為名人的妻子卻認為這是李奧納多最好的作品…
+  
+ 曾經榮獲坎城影展最佳導演、法國中生代最知名的導演奧利維耶阿薩亞斯今年入圍威尼斯影展競賽之作，這也是他與茱麗葉畢諾許第三度合作。導演精心設計的日常對話，涵蓋文化、民主、政治以及時事等多面向，幽默諷刺又饒富哲學寓意，尤其對現實世界女明星茱麗葉畢諾許的一番嘲弄，令人會心一笑。茱麗葉畢諾許與吉翁卡列精彩的演出令人驚艷。
+  
+ 【關於電影】
+  
+ 強勢挑戰大時代議題 阿薩亞斯回歸16釐米力抗數位狂潮
+ 《非．虛構情事》講述近年討論度最高的議題之一——傳統紙本出版業與電子書的價值觀拉扯。在銳不可擋的現代數位化潮流當中，阿薩亞斯從未停止關注紙本書出版面臨到的夕陽產業議題，延續了過去作品《夏日時光》、《星光雲寂》中對於全球化、經濟、科技以及文化在時代下變遷的討論，從個人及群體角度出發，採用了輕鬆幽默卻又充滿哲學性的論調，讓觀眾能夠輕巧的進入議題核心。本片透過絕妙對話──無論是兩人世界或是團體聚會，還是身為編輯與明星、作家與政治狂熱組合的夫妻檔、偷情對象、工作夥伴──建構出不同背景的人們處於變遷的世界中，被傳統以及新潮拉扯的糾結感。另外，在片中描述面對現代化的掙扎時，阿薩亞斯的敘事角度選擇欣然理解當前數位化的崇高地位，但在技術方面卻選擇回歸以16釐米膠捲拍攝，盼望以創作初衷，在與資本主義的抗衡中找到更多討論空間。
+ 被問到劇中作家因大量採用自身故事作為創作題材而備受爭議，阿薩亞斯笑說：「我應該比他有道德一點吧！」法文片名原意為「雙面人生」，跟英文片名「非．虛構情事」交錯出真實與虛構從來就無法完全切割的深層寓意；電影中出版社提議可以找大明星茱麗葉畢諾許來為有聲書配音，以刺激銷量，飾演女主角瑟琳娜的正是茱麗葉本人，她在片中神回覆「我認識她的經紀人，或許可以關說一下」。劇中被嘲諷的茱麗葉畢諾許同時活靈活現地存在在電影裡，「故事無非就是現實生活的一面鏡子啊」。
+  
+ 阿薩亞斯三度合作大滿貫影后 全新卡司歡樂滿堂
+ 茱麗葉畢諾許的影后身影無庸置疑是片中一大亮點，《非．虛構情事》是她第三次與阿薩亞斯合作，相知多年的兩人早有絕佳默契，阿薩亞斯受訪時表示：「她的不羈、詼諧都讓我的靈感源源不絕。」並認為只有她能夠讓瑟琳娜的幽默立體化；而曾被封為法國最帥男演員的吉翁卡列則是在阿薩亞斯寫作過程中逐漸成形的想法，認為身為這一代最有代表性的男演員之一，只有他有資格撐得起這個角色的權威感，成功吸引觀眾的目光；而出身舞台劇演員及導演的文森馬格恩也自帶氣場，讓劇中金牌編輯與風流作家的對手戲，與吉翁卡列第一次合作就激盪出充滿電力的精彩火花。
+ 除了茱麗葉畢諾許與阿薩亞斯以外，其他卡司皆是首度合作，但執導過程中，阿薩亞斯忍不住盛讚演員們，「比我更清楚如何演繹出腳本中的幽默，甚至共鳴出新的層次！」
+  
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E5%9C%B0%E7%8D%84%E8%87%AA%E6%8B%8D-selfie-from-hell-9494"&gt;
+                   ★ 改編自2015年在YouTube創下逾2000萬次點閱同名恐怖短片
+ ★ 《愛殺瑪莉》製片群傾力打造，驚嚇程度直逼《鬼關燈》《陰兒房》！
+ ★ 21世紀的科技驚悚預言，直達地獄的恐怖自拍！
+ ★ 新世紀文明病，這次真的會送命！
+  
+ 德國部落客茱莉亞來到美國拜訪她的姪女漢娜，卻在抵達後突然怪病纏身，臥床不起。漢娜家也開始接二連三地出現各種不尋常的超自然現象，不堪其擾的漢娜不禁懷疑一切乃因茱莉亞而起。當漢娜找到了茱莉亞的部落格後，發現茱莉亞沉迷暗網多時，並將蟄伏在暗網深處的恐怖力量帶到了現實之中，沾有嗜血意志的自拍照正威脅每一個人……
+  
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E8%AD%89%E4%BA%BA-innocent-witness-9552"&gt;
+                   ★《與神同行》超人氣女星金香起突破演技暖心動人力作！
+ ★「男神」鄭雨盛、「國民萌妹」金香起睽違17年再度攜手！
+ ★《向左愛向右愛》《記憶中的美好歌聲》票房大導李翰再執導演筒！
+ ★「小迷糊」李奎炯、鄭雨盛韓國兩大型男互飆演技！
+  
+ 信任 是全世界最有力的證詞
+ 律師楊淳鎬（鄭雨盛飾）加入了一家知名的法律事務所，為一名被指控殺害雇主一家的女傭辯護，這樁謀殺案廣受媒體與社會關注，淳鎬必須贏得官司才能成為事務所合夥人。然案發現場的唯一目擊證人林智友（金香起飾）是一名自閉症少女，淳鎬必須想盡辦法讓智友敞開心房出庭作證才能贏得官司。這兩個不同世界的人漸漸成為了朋友，但在案情膠著的壓力下，他必須在有限的時間內，讓智友說出真相…
+  
+ 【關於電影】
+  
+ 金香起繼《與神同行》後演技再突破　搭檔男神鄭雨盛續17年之緣！
+  
+ 以賣座強片《與神同行》系列電影爆紅的「國民妹妹」金香起奪下青龍電影獎「最佳女配角獎」後，睽違17年再度與「國民暖男」鄭雨盛攜手演出催淚動人新作《證人》，而金香起在２歲時拍攝第一支廣告就是和鄭雨盛合作，讓鄭雨盛驚訝表示這是非常神奇的緣分。
+  
+ 金香起在6歲時從廣告界踏入影壇，超齡的演技天賦讓她獲得「天才童星」的美譽，即使與黃晸玟、宋允兒、宋仲基、朴寶英、河正宇、車太鉉、朱智勛、李政宰等影帝后級別的知名影星合作也絲毫不遜色，而她在新作《證人》中首次挑戰演出自閉症少女，金香起表示：「其實接演的時候我猶豫了很久，因為這個角色難度很高。」她擔心自己無法完美詮釋，但高難度的演技挑戰又讓她躍躍欲試，最終她決定接受挑戰。鄭雨盛則表示：「金香起對表演的專注力非常驚人，她的演技魅力自然而然就流露出來了。」導演李翰也坦言金香起在《證人》中的表演非常令人動容，有好幾場戲都讓劇組人員忍不住淚灑現場，他說：「金香起的演出非常多變，你會被她真摯的演技觸動，忍不住為她哭、為她笑。」因此在所有同輩女星中，金香起是導演選角的第一人選。
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E6%BA%AB%E6%B3%89%E5%B1%8B%E5%B0%8F%E5%A5%B3%E5%B0%87-okkos-inn-9562"&gt;
+                   ★ 熱銷300萬冊，日本超人氣國民讀物改編！
+ ★《神隱少女》《崖上的波妞》作畫監督x《電影版聲之形》知名編劇攜手打造溫暖新作！
+ ★ 榮獲2019年每日映畫大賞最佳動畫片！
+ ★ 入選2019年日本奧斯卡優秀動畫電影獎！
+ ★ 入選2018法國安錫動畫影展競賽片！
+  
+ 就讀小學六年級的小織，父母不幸在車禍中喪生，由經營「春之屋」溫泉旅館的奶奶收養了她，因這場意外獲得通靈能力的她，也認識了旅館中三個心地善良卻調皮的幽靈。在旅館面臨後繼無人將被收購的困境時，年僅12歲的小織在奶奶的幫助下，展開一場成為旅館老闆娘必經的「小女將修行」之路，雖然每天都遭遇嘲笑與挫折，但天性樂觀的她勇於接受挑戰，絕不認輸！《溫泉屋小女將》將於2019年2月27日上映，更多電影資訊歡迎上官方粉絲團查詢：https://www.facebook.com/VVPfans。
+                 &lt;/span&gt;
+ &lt;/div&gt;, &lt;div class="release_text"&gt;
+ &lt;span class="jq_text_overflow_180 jq_text_overflow_href_list" data-url="https://movies.yahoo.com.tw/movieinfo_main/%E5%AF%86%E5%BC%91%E9%81%8A%E6%88%B2-escape-room-9572"&gt;
+                   索尼影業最新電影《密弑遊戲》以時下最流行的密室逃脫遊戲為主題，由《陰兒房第4章：鎖命亡靈》亞當羅勃提爾導演執導、《玩命關頭》系列億萬製片打造，並由《太空迷航》影集的泰勒羅素與《親愛的初戀》羅根米勒等明星主演，台灣將於2月27日上映。
+  
+ 《密弑遊戲》電影講述6名從不同意外中生還的陌生人，在努力回歸正常生活時，突然收到不明來歷的密室逃脫遊戲邀請。遊戲中總共有5大關卡：「毒火煉獄」、「冰天雪地」、「顛倒世界」、「毒氣密室」與「迷幻空間」，在不同闖關過程中，他們亦被迫面對自我最黑暗的過往瘡疤，他們也才意識到這不只是場遊戲，為求生存與贏取高達百萬美元的獎金，所有人不僅需互相幫助，還必須賭上性命互相傷害，因為最後只能有一位贏家倖存…
+                 &lt;/span&gt;
+ &lt;/div&gt;]</pre><p>取出介紹文，並清理換行等符號。</p><pre class="crayon-plain-tag">Intros = [t.find('span').text.replace('\n','').replace('\r','').replace('\xa0','').replace(' ','') for t in newMovie4]
+Intros</pre><p></p><pre class="crayon-plain-tag">['★奧斯卡金獎得主亞當麥凱繼《大賣空》後，攜手克里斯汀貝爾、史提夫卡爾三巨頭再度合作★「蝙蝠俠」克里斯汀貝爾再展變色龍演技，傳神詮釋史上最有權勢副總統迪克錢尼★奧斯卡最佳男配角山姆洛克威爾與克里斯汀貝爾聯袂扮老，精湛化身小布希★布萊德彼特與《月光下的藍色男孩》監製共同打造，強勢問鼎2019奧斯卡最佳影片、影帝等獎項！《為副不仁》講述美國史上最有權勢的副總統迪克錢尼（克里斯汀貝爾飾），如何從白宮幕僚逐漸爬上權力的頂峰，成為全世界最有權勢的人－－美國總統小布希（山姆洛克威爾飾）的副手，以及他的政策如何重塑美國並影響至今我們身處的世界。',
+ '★《惡女羅曼死》原著作者又一爭議話題傑作改編電影化！★殺人分屍案死者身份確認，完全沒想到，竟然就是我的好友！★現代東京版《羅生門》，懸疑曲折超越《渴望》、《聽說桐島退社了》！★新生代實力演員群，共同演繹謳歌青春電影傑作！★絢爛畫面搭配動感配樂，滿足視覺與聽覺的雙重饗宴！★藤岡靛、吉岡里帆、櫻井友紀、白石和彌等日本影視圈名人爭相力讚！話題人物慘遭殺害，連鎖效應在好友圈無限蔓延一群揮霍青春的青年男女，其中一位長相可愛貌美，猶如眾人「吉祥物」般存在、暱稱為「吉娃娃」的20歲少女，某天驚傳遭人分屍的命案，部分屍體並在東京灣尋獲。她周遭的好友們，開始聚在一起回憶青春，緬懷他們心目中的吉娃娃。大家這時才發現，根本沒人知道她的真名、境遇還有真正的個性。原來在大家對她毫無了解的情況下，她就跟眾人混在一起、談戀愛、甚至發生性關係。究竟真正的「吉娃娃」，到底是位什麼樣的女孩呢？【關於電影】《惡女羅曼死》作者話題傑作，懸疑曲折超越《聽說桐島退社了》《吉娃娃羅曼死》改編自日本知名漫畫家岡崎京子的短篇漫畫作品。曾打造《惡女羅曼死》等轟動不已作品的岡崎京子，特別擅長描繪情慾與悖德，並透過毫無忌諱的性愛場面表現人物內在。這部短篇漫畫，終於在2019年翻拍成劇情長片登上大銀幕。全片描述個性活潑好動、集萬千寵愛於一身的20歲美少女「吉娃娃」，某天竟被殘忍分屍，而她的遭遇也在朋友圈中引發連鎖效應。眾人開始回想自己與「吉娃娃」的每個相處細節，竟發現自己連她的本名、境遇與背景都不知道。也因為好友們各說各話，在不同說法中拼湊出吉娃娃的生活與背景，更讓本片頗有現代女性版《羅生門》的懸疑性，更猶如《渴望》、《聽說桐島退社了》的加乘綜合版。本片找來曾執導《裸睡美人》的二宮健擔任導演。二宮導演透露，親手拍攝《吉娃娃羅曼史》的真人電影版，一直是他給自己設立的目標，他並回憶：「初次拜讀原作，是我22歲剛從大阪到東京來的時候。那時我雖然想在東京拍攝更大規模的電影，卻諸事不順；即便想讓自己做些什麼，到頭來總是繞回原點，恰好就是那樣的時期，讓我遇到了這部作品。」他並補充：「只花34頁篇幅描繪的青春群像劇，卻帶來非常大的震撼。這群想試著跨越些什麼而掙扎的人物，逐漸跟我的自身形象交疊，以致於在看完原作的瞬間，我就決定要把這部作品給拍成電影。」值得一提的是，二宮導演的作品總有著最前衛的影像，以及動感的配樂，讓他的導演風格非常鮮明並深受好評。尤其本片的派對群戲眾多，導演這次也採用讓演員自由發揮的即興表演，再由鏡頭一一收錄，讓全片的派對、玩樂、性愛等場面顯得特別真實。本片演員也是一時之選，找來2019年新科藍絲帶獎影后門脇麥擔綱演出「美樹」這個角色，而讀完劇本的她也覺得「非常有趣，很想試試看」而馬上答應邀約。至於靈魂人物「吉娃娃」，則找來新銳女星吉田志織擔綱。她獨特又魅力十足，時而無邪、時而深沉，立體的人物塑造和強烈的存在感，讓人簡直無法相信這是她的首部主演作品。此外，本片也集結成田凌、寬一郎、村上虹郎、玉城蒂娜、栗山千明、淺野忠信等多位新銳、資深實力派演員共同演繹，聯手呈現年輕人面對愛情、金錢、嫉妒、慾望等如夢境般閃亮不已的絢爛青春世界。而全片所勾勒「青春的爆發」與「告終的覺悟」，導演也精準使用過去日本電影從未有過的影像與音樂勾勒出來，勢必滿足觀眾視覺與聽覺的雙重享受，一同進入青春大無畏的美麗與哀愁！',
+ '★2019開春最受期待復仇爽片!冷暴力美學、血花散遍!★地表最強老爸-連恩尼遜，重拾槍火即刻開戰!復仇是人性最原始的反撲!殺我兒，我滅你全團!剷雪車司機-尼爾剛獲頒榮譽市民表揚，卻收到兒子吸毒致死的訊息，讓他生活頓時起了波瀾。他堅信兒子清白，便開始追查，赫然發現幕後有黑道組織操刀，他從朋友手中獲得黑道兇嫌名單，並依姓名順序送凶手上斷頭台。冰天雪地中，黑道們一個個死於非命，尼爾的復仇行為讓毒梟跟槍火幫派，以為是雙方在找麻煩，進而引發兩個幫派大火拼。為了幫兒子報仇，尼爾也陷入這場世紀廝殺中，雙方頓時火力全開，復仇計畫大快人心…【幕後花絮】《酷寒殺手》翻拍自爛番茄新鮮度90％超強好評《該死的順序》，導演漢斯彼得穆蘭開創新暴力美學風格，電影公司買下版權後並無改換導演，仍由漢斯繼續拍攝美語版本，融入更多美式暴力作風。導演當時會想拍這部片，是來自本身被霸凌的怨念：「我從小就喜歡報仇，只要有人欺負我，我就會反擊。」導演認為，復仇是人類非常原始的直覺，儘管沒有達到報仇目的，也能享受到樂趣。《該死的順序》當年在柏林影展首映之後，全球影評佳評如潮！帝國雜誌給予極高的讚賞，「這才是我們期待已久的復仇爽片！」知名影評網站爛番茄新鮮度近90％超強好評！國際評論對於《該死的順序》師法柯恩兄弟，也超越昆汀塔倫提諾和盧貝松的暴力美學大加讚揚！片商看中電影超強口碑便著手進行翻拍，將新暴力美學旋風帶入好萊塢；找來具有票房號召力男星-連恩尼遜擔任片中的復仇老爸。雖然連恩尼遜演出這類型的電影並不陌生，但在新片中，導演讓連恩尼遜有更多的內心戲與謀略策畫，他也不再英勇無敵，沒有特務、警察等背景，單純是一位平凡的復仇父親。在製作方面，麥可雪恩伯格曾擔任過《決殺令》製片，負責本片的暴力美學演繹，而《疾速救援》製片-麥可德雷爾，則擔綱起片中動作炫技保證，讓電影《酷寒殺手》重新定義暴力極致。',
+ '★真人實事改編一生致力平權美國傳奇女法官成功奇蹟登上大銀幕★《愛的萬物論》金獎提名費莉絲蒂瓊斯X《以你的名字呼喚我》艾米漢默聯手主演★《彗星撞地球》票房女導演咪咪蕾德睽違大銀幕多年最新力作★為信念奮鬥不懈為歧視挺身而出繼《永不妥協》後又一激勵人心銀幕佳作★故事主角露絲拜德金斯伯格親自客串演出「如果連法律都不能一視同仁，兩性如何平權？」取材自現今美國最高法院唯二女大法官露絲拜德金斯伯格（菲莉絲蒂瓊斯飾）的真實成功故事，本片聚焦在年紀輕輕、剛踏出法學院校門的她，如何在男性至上、女性不被重視的工作環境中，力爭上游成為律師，為兩性爭取平權，成為美國史上最有影響力的法官之一，現在仍任職於最高法院大法官。',
+ '★2019開年最爆笑噴飯喜劇，香港鬼才彭浩翔瘋狂作品，《春嬌與志明》班底火力全開，一定要你笑翻天★香港最不可思議的八婆女星大集合，為了一瓶奶！？展開瘋狂大作戰由8個閨密組成的「八婆」whatsapp群組，因彼此的恩怨，讓群組不再對話。而June也在認識了現在的老公後，漸漸疏遠其他7位閨密。她的女魔頭上司最近生了小孩，需要定時抽母奶放進冰箱。沒想到，June竟然誤把母奶加進咖啡裡，還被大老闆喝個精光，要是被發現肯定工作不保。情急之下，她只好找回很久沒聯絡的群組成員，希望在下班前，幫忙找到母奶頂替。此時，即將襲港的颱風逼近，交通大亂，八婆們能否在時間之內，完成尋奶任務呢？',
+ '亞倫是法國出版界的風雲人物，然而時代在變，亞倫也忙於適應電子世代帶給出版業的衝擊，他不僅要學習如何發行電子書，就連讀者的消費取向也令他匪夷所思。人氣博主、暢銷部落客只要將在社群媒體發表的短文集結成冊，也能成為暢銷書？亞倫拒絕出版與他年紀相仿且合作多年的作家李奧納多的新書，他的作品寫得多半是自己的真實經驗，再將筆下人物稍加改名換姓，他的前妻、前任女友以及被影射的周遭人物深受其擾。這次的新書是李奧納多跟某個名人芝麻綠豆般的緋聞軼事，亞倫質疑他根本沒有創意以及想像力，然而出人意表的是亞倫身為名人的妻子卻認為這是李奧納多最好的作品…曾經榮獲坎城影展最佳導演、法國中生代最知名的導演奧利維耶阿薩亞斯今年入圍威尼斯影展競賽之作，這也是他與茱麗葉畢諾許第三度合作。導演精心設計的日常對話，涵蓋文化、民主、政治以及時事等多面向，幽默諷刺又饒富哲學寓意，尤其對現實世界女明星茱麗葉畢諾許的一番嘲弄，令人會心一笑。茱麗葉畢諾許與吉翁卡列精彩的演出令人驚艷。【關於電影】強勢挑戰大時代議題阿薩亞斯回歸16釐米力抗數位狂潮《非．虛構情事》講述近年討論度最高的議題之一——傳統紙本出版業與電子書的價值觀拉扯。在銳不可擋的現代數位化潮流當中，阿薩亞斯從未停止關注紙本書出版面臨到的夕陽產業議題，延續了過去作品《夏日時光》、《星光雲寂》中對於全球化、經濟、科技以及文化在時代下變遷的討論，從個人及群體角度出發，採用了輕鬆幽默卻又充滿哲學性的論調，讓觀眾能夠輕巧的進入議題核心。本片透過絕妙對話──無論是兩人世界或是團體聚會，還是身為編輯與明星、作家與政治狂熱組合的夫妻檔、偷情對象、工作夥伴──建構出不同背景的人們處於變遷的世界中，被傳統以及新潮拉扯的糾結感。另外，在片中描述面對現代化的掙扎時，阿薩亞斯的敘事角度選擇欣然理解當前數位化的崇高地位，但在技術方面卻選擇回歸以16釐米膠捲拍攝，盼望以創作初衷，在與資本主義的抗衡中找到更多討論空間。被問到劇中作家因大量採用自身故事作為創作題材而備受爭議，阿薩亞斯笑說：「我應該比他有道德一點吧！」法文片名原意為「雙面人生」，跟英文片名「非．虛構情事」交錯出真實與虛構從來就無法完全切割的深層寓意；電影中出版社提議可以找大明星茱麗葉畢諾許來為有聲書配音，以刺激銷量，飾演女主角瑟琳娜的正是茱麗葉本人，她在片中神回覆「我認識她的經紀人，或許可以關說一下」。劇中被嘲諷的茱麗葉畢諾許同時活靈活現地存在在電影裡，「故事無非就是現實生活的一面鏡子啊」。阿薩亞斯三度合作大滿貫影后全新卡司歡樂滿堂茱麗葉畢諾許的影后身影無庸置疑是片中一大亮點，《非．虛構情事》是她第三次與阿薩亞斯合作，相知多年的兩人早有絕佳默契，阿薩亞斯受訪時表示：「她的不羈、詼諧都讓我的靈感源源不絕。」並認為只有她能夠讓瑟琳娜的幽默立體化；而曾被封為法國最帥男演員的吉翁卡列則是在阿薩亞斯寫作過程中逐漸成形的想法，認為身為這一代最有代表性的男演員之一，只有他有資格撐得起這個角色的權威感，成功吸引觀眾的目光；而出身舞台劇演員及導演的文森馬格恩也自帶氣場，讓劇中金牌編輯與風流作家的對手戲，與吉翁卡列第一次合作就激盪出充滿電力的精彩火花。除了茱麗葉畢諾許與阿薩亞斯以外，其他卡司皆是首度合作，但執導過程中，阿薩亞斯忍不住盛讚演員們，「比我更清楚如何演繹出腳本中的幽默，甚至共鳴出新的層次！」',
+ '★改編自2015年在YouTube創下逾2000萬次點閱同名恐怖短片★《愛殺瑪莉》製片群傾力打造，驚嚇程度直逼《鬼關燈》《陰兒房》！★21世紀的科技驚悚預言，直達地獄的恐怖自拍！★新世紀文明病，這次真的會送命！德國部落客茱莉亞來到美國拜訪她的姪女漢娜，卻在抵達後突然怪病纏身，臥床不起。漢娜家也開始接二連三地出現各種不尋常的超自然現象，不堪其擾的漢娜不禁懷疑一切乃因茱莉亞而起。當漢娜找到了茱莉亞的部落格後，發現茱莉亞沉迷暗網多時，並將蟄伏在暗網深處的恐怖力量帶到了現實之中，沾有嗜血意志的自拍照正威脅每一個人……',
+ '★《與神同行》超人氣女星金香起突破演技暖心動人力作！★「男神」鄭雨盛、「國民萌妹」金香起睽違17年再度攜手！★《向左愛向右愛》《記憶中的美好歌聲》票房大導李翰再執導演筒！★「小迷糊」李奎炯、鄭雨盛韓國兩大型男互飆演技！信任是全世界最有力的證詞律師楊淳鎬（鄭雨盛飾）加入了一家知名的法律事務所，為一名被指控殺害雇主一家的女傭辯護，這樁謀殺案廣受媒體與社會關注，淳鎬必須贏得官司才能成為事務所合夥人。然案發現場的唯一目擊證人林智友（金香起飾）是一名自閉症少女，淳鎬必須想盡辦法讓智友敞開心房出庭作證才能贏得官司。這兩個不同世界的人漸漸成為了朋友，但在案情膠著的壓力下，他必須在有限的時間內，讓智友說出真相…【關於電影】金香起繼《與神同行》後演技再突破\u3000搭檔男神鄭雨盛續17年之緣！以賣座強片《與神同行》系列電影爆紅的「國民妹妹」金香起奪下青龍電影獎「最佳女配角獎」後，睽違17年再度與「國民暖男」鄭雨盛攜手演出催淚動人新作《證人》，而金香起在２歲時拍攝第一支廣告就是和鄭雨盛合作，讓鄭雨盛驚訝表示這是非常神奇的緣分。金香起在6歲時從廣告界踏入影壇，超齡的演技天賦讓她獲得「天才童星」的美譽，即使與黃晸玟、宋允兒、宋仲基、朴寶英、河正宇、車太鉉、朱智勛、李政宰等影帝后級別的知名影星合作也絲毫不遜色，而她在新作《證人》中首次挑戰演出自閉症少女，金香起表示：「其實接演的時候我猶豫了很久，因為這個角色難度很高。」她擔心自己無法完美詮釋，但高難度的演技挑戰又讓她躍躍欲試，最終她決定接受挑戰。鄭雨盛則表示：「金香起對表演的專注力非常驚人，她的演技魅力自然而然就流露出來了。」導演李翰也坦言金香起在《證人》中的表演非常令人動容，有好幾場戲都讓劇組人員忍不住淚灑現場，他說：「金香起的演出非常多變，你會被她真摯的演技觸動，忍不住為她哭、為她笑。」因此在所有同輩女星中，金香起是導演選角的第一人選。',
+ '★熱銷300萬冊，日本超人氣國民讀物改編！★《神隱少女》《崖上的波妞》作畫監督x《電影版聲之形》知名編劇攜手打造溫暖新作！★榮獲2019年每日映畫大賞最佳動畫片！★入選2019年日本奧斯卡優秀動畫電影獎！★入選2018法國安錫動畫影展競賽片！就讀小學六年級的小織，父母不幸在車禍中喪生，由經營「春之屋」溫泉旅館的奶奶收養了她，因這場意外獲得通靈能力的她，也認識了旅館中三個心地善良卻調皮的幽靈。在旅館面臨後繼無人將被收購的困境時，年僅12歲的小織在奶奶的幫助下，展開一場成為旅館老闆娘必經的「小女將修行」之路，雖然每天都遭遇嘲笑與挫折，但天性樂觀的她勇於接受挑戰，絕不認輸！《溫泉屋小女將》將於2019年2月27日上映，更多電影資訊歡迎上官方粉絲團查詢：https://www.facebook.com/VVPfans。',
+ '索尼影業最新電影《密弑遊戲》以時下最流行的密室逃脫遊戲為主題，由《陰兒房第4章：鎖命亡靈》亞當羅勃提爾導演執導、《玩命關頭》系列億萬製片打造，並由《太空迷航》影集的泰勒羅素與《親愛的初戀》羅根米勒等明星主演，台灣將於2月27日上映。《密弑遊戲》電影講述6名從不同意外中生還的陌生人，在努力回歸正常生活時，突然收到不明來歷的密室逃脫遊戲邀請。遊戲中總共有5大關卡：「毒火煉獄」、「冰天雪地」、「顛倒世界」、「毒氣密室」與「迷幻空間」，在不同闖關過程中，他們亦被迫面對自我最黑暗的過往瘡疤，他們也才意識到這不只是場遊戲，為求生存與贏取高達百萬美元的獎金，所有人不僅需互相幫助，還必須賭上性命互相傷害，因為最後只能有一位贏家倖存…']</pre><p>檢查NameCHs, NameENs, Intros, links陣列的長度是否相同(結果皆為10)。</p><pre class="crayon-plain-tag">len(NameCHs)
+len(NameENs)
+len(Intros)
+len(links)</pre><p></p>
+<h3></h3>
+<h3>(3) 將以上欄位合併成data frame</h3>
+<p></p><pre class="crayon-plain-tag">df = pd.DataFrame(
+{
+    'Name':NameCHs,
+    'EnName':NameENs,
+    'Intro': Intros,
+    'Trailer': links
+})
+df</pre><p><img loading="lazy" class="alignnone size-full wp-image-2641" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33.png" alt="網路爬蟲-web-crawler" width="1780" height="968" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33.png 1780w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-300x163.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-768x418.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-1024x557.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-830x451.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-230x125.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-350x190.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-480x261.png 480w" sizes="(max-width: 1780px) 100vw, 1780px" /></p>
+<p>由於以上只是「本週新片」中的其中一個分頁的電影爬蟲結果，如果想要快速爬取其他分頁的資訊，可將電影爬蟲寫成一個function。</p>
+<h3></h3>
+<h3>(4) 將電影爬網規則寫成function</h3>
+<p>define 一個名為「yahooMovieParser」的函數，並以url為投入參數。</p><pre class="crayon-plain-tag"># create function
+def yahooMovieParser(url):
+    r = requests.get(url)
+    web_content = r.text
+    soup = BeautifulSoup(web_content,'lxml')
+    
+    # 中英文片名
+    newMovie2 = soup.find_all('div', class_ = "release_movie_name")
+    NameCHs = [t.find('a', class_='gabtn').text.replace('\n','').replace(' ','') for t in newMovie2]
+    NameENs = [t.find('div', class_='en').find('a').text.replace('\n','').replace(' ','') for t in newMovie2]
+    # 預告片
+    newMovie3 = soup.find_all('div',class_="release_btn color_btnbox")
+    links = [t.find('a',class_="btn_s_vedio gabtn")['href'] for t in newMovie3]
+    # 電影介紹
+    newMovie4 = soup.find_all('div',class_="release_text")
+    Intros = [t.find('span').text.replace('\n','').replace('\r','').replace('\xa0','').replace(' ','') for t in newMovie4]
+    #合併成data frame
+    df = pd.DataFrame(
+    {
+        'Name':NameCHs,
+        'EnName':NameENs,
+        'Intro': Intros,
+        'Trailer': links
+    })
+    return df</pre><p>執行單一URL: 手動指定url並投入函式。</p><pre class="crayon-plain-tag">url = "https://movies.yahoo.com.tw/movie_thisweek.html"
+df1 = yahooMovieParser(url)
+df1</pre><p><img loading="lazy" class="alignnone size-full wp-image-2641" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33.png" alt="網路爬蟲-web-crawler" width="1780" height="968" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33.png 1780w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-300x163.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-768x418.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-1024x557.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-830x451.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-230x125.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-350x190.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午2.29.33-480x261.png 480w" sizes="(max-width: 1780px) 100vw, 1780px" /></p>
+<p>執行多個URLs</p>
+<p>將多個 url包成一個陣列 list 使用迴圈執行並回傳一個data frame</p><pre class="crayon-plain-tag">urlList = ['https://movies.yahoo.com.tw/movie_thisweek.html','https://movies.yahoo.com.tw/movie_thisweek.html?page=2']
+MovieInfo = None
+
+for u in urlList:
+    d1 = yahooMovieParser(u)
+    if MovieInfo is None:
+        MovieInfo = d1
+    else:
+        MovieInfo = MovieInfo.append(d1,ignore_index=True)
+    
+MovieInfo</pre><p><img loading="lazy" class="alignnone size-full wp-image-2674" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13.png" alt="螢幕快照 2019-03-03 上午10.32.13" width="888" height="674" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13.png 888w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-300x228.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-768x583.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-830x630.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-230x175.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-350x266.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-480x364.png 480w" sizes="(max-width: 888px) 100vw, 888px" /></p>
+<p>但由於分頁的URLs都還是人工判斷，如果可以用程式規則判斷並蒐集所有分頁，將省去更多工。</p>
+<h3></h3>
+<h3>(5) 自動判斷分頁資訊，蒐集urlList</h3>
+<p>首先，一樣先找到分頁資訊的區塊，並檢視其HTML結構。發現分頁資訊會被包含在class = &#8216;page_numbox&#8217;的div物件中。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2644" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54.png" alt="網路爬蟲-web-crawler" width="2352" height="1226" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54.png 2352w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-300x156.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-768x400.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-1024x534.png 1024w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-830x433.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-230x120.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-350x182.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-02-下午3.10.54-480x250.png 480w" sizes="(max-width: 2352px) 100vw, 2352px" /></p><pre class="crayon-plain-tag">url = "https://movies.yahoo.com.tw/movie_thisweek.html"
+r = requests.get(url)
+web_content = r.text
+soup = BeautifulSoup(web_content,'lxml')
+pageInfo = soup.find('div', class_='page_numbox')
+pageInfo</pre><p></p><pre class="crayon-plain-tag">&lt;div class="page_numbox"&gt;
+&lt;ul&gt;
+&lt;li class="num_ar"&gt;‹&lt;/li&gt;
+&lt;li class="prevtxt disabled"&gt;&lt;span&gt;上一頁&lt;/span&gt;&lt;/li&gt;
+&lt;li class="active"&gt;&lt;span&gt;1&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://movies.yahoo.com.tw/movie_thisweek.html?page=2"&gt;2&lt;/a&gt;&lt;/li&gt;
+&lt;li class="nexttxt"&gt;&lt;a href="http://movies.yahoo.com.tw/movie_thisweek.html?page=2" rel="next"&gt;下一頁&lt;/a&gt;&lt;/li&gt;
+&lt;li class="num_ar"&gt;›&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;</pre><p>撰寫一個萃取分頁URL資訊的函式。</p>
+<ul>
+<li>將分頁資訊的每個&lt;li&gt;&lt;/li&gt;元素中的連結取出，假設沒有連結資訊，則回傳None。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">def getNext(url):
+    r = requests.get(url)
+    web_content = r.text
+    soup = BeautifulSoup(web_content,'lxml')
+    pageInfo = soup.find('div', class_='page_numbox')
+    tagA = pageInfo.find('li', class_="nexttxt").find('a')
+    if tagA:
+        return tagA['href']
+    else:
+        return None</pre><p>測試函式getNext()執行一次的結果。</p><pre class="crayon-plain-tag">url = "https://movies.yahoo.com.tw/movie_thisweek.html"
+url2 = getNext(url)
+url2</pre><p></p><pre class="crayon-plain-tag">'http://movies.yahoo.com.tw/movie_thisweek.html?page=2'</pre><p>使用while迴圈反覆執行，直到getNext()回傳None。</p><pre class="crayon-plain-tag">url = 'http://movies.yahoo.com.tw/movie_thisweek.html'
+urlList = []
+
+while url:
+    urlList.append(url)
+    url = getNext(url)</pre><p>檢視所有的分頁連結 (當分頁數很多時特別有效)</p><pre class="crayon-plain-tag">urlList</pre><p></p><pre class="crayon-plain-tag">['http://movies.yahoo.com.tw/movie_thisweek.html',
+ 'http://movies.yahoo.com.tw/movie_thisweek.html?page=2']</pre><p>綜合(1) ~ (5)電影爬蟲程式碼，自動化執行url List蒐集並爬取每個分頁下的最新電影資訊的程式碼如下：</p><pre class="crayon-plain-tag">url = 'http://movies.yahoo.com.tw/movie_thisweek.html'
+urlList = []
+
+while url:
+    urlList.append(url)
+    url = getNext(url)
+    
+MovieInfo = None
+
+for u in urlList:
+    d1 = yahooMovieParser(u)
+    if MovieInfo is None:
+        MovieInfo = d1
+    else:
+        MovieInfo = MovieInfo.append(d1,ignore_index=True)
+
+MovieInfo</pre><p><img loading="lazy" class="alignnone size-full wp-image-2674" src="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13.png" alt="螢幕快照 2019-03-03 上午10.32.13" width="888" height="674" srcset="/wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13.png 888w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-300x228.png 300w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-768x583.png 768w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-830x630.png 830w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-230x175.png 230w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-350x266.png 350w, /wp-content/uploads/2019/03/螢幕快照-2019-03-03-上午10.32.13-480x364.png 480w" sizes="(max-width: 888px) 100vw, 888px" /></p>
+<hr />
+<p>更多Python網路爬蟲學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener noreferrer">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/" target="_blank" rel="noopener noreferrer">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/" target="_blank" rel="noopener noreferrer">Text Mining &amp; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a></p>
+<p>這篇文章 <a rel="nofollow" href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/feed/</wfw:commentRss>
+			<slash:comments>2</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Reshaping Data using tidyr &#124; 資料合併與分離、變長或變寬的小技巧 &#124; R 統計</title>
+		<link>/tidyr-reshaping-data/</link>
+					<comments>/tidyr-reshaping-data/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Thu, 06 Dec 2018 04:17:02 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<guid isPermaLink="false">/?p=2230</guid>
+
+					<description><![CDATA[<p>介紹 tidyr 套件中四款基本資料整理函數，包括gather(), spread(), separate(), unite()。其中gather()和spre [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/tidyr-reshaping-data/">Reshaping Data using tidyr | 資料合併與分離、變長或變寬的小技巧 | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>介紹 tidyr 套件中四款基本資料整理函數，包括gather(), spread(), separate(), unite()。其中gather()和spread()功能互補，一個將「寬」資料堆疊成「長」資料，另一個則將「長」資料擴展為「寬」資料。而separate()和unite()則是用做分裂或合併變數。</p>
+<h3>tidyr package</h3>
+<p>本學習筆記會介紹 tidyr 套件所提供數據整理的基本四種功能，包括：</p>
+<ul>
+<li>gather(): 將「寬」資料變「長」</li>
+<li>spread(): 將「長」資料變「寬」</li>
+<li>separate(): 將單一欄位切分成多個欄位</li>
+<li>unite(): 將多個欄位合併成單一欄位</li>
+</ul>
+<p>以下載入所需套件 tydyr和dplyr</p><pre class="crayon-plain-tag">library(tidyr)
+library(dplyr)</pre><p></p>
+<h3>%&gt;% Operator</h3>
+<p></p><pre class="crayon-plain-tag">library(magrittr)</pre><p>雖然非必要，但套件tidyr和dplyr都會使用magrittr套件中的pipe operator %&gt;%，可以方便快速的串接多行指令。該運算元會將前一個指令或函數運算所產生的結果投入下一個指令或函數，比如說，在篩選資料時的指令：</p>
+<p>filter(data, variable == <em>numeric_value</em>)</p>
+<p>or</p>
+<p>data %&gt;% filter(variable == <em>numeric_value</em>)</p>
+<p>以上兩者的結果會是一樣的。</p>
+<h3>gather() function</h3>
+<p><strong>目的</strong>: 將「寬」資料重塑成「長」資料</p>
+<p><strong>說明</strong>: 有時會遇到資料沒有妥當堆疊，諸多感興趣的共同屬性分在多個欄位，此時就需要將這些感興趣的共同屬性重新聚合成單一變數，透過gather()函數，可將多個欄位折疊為成對的key-value。比如說：</p><pre class="crayon-plain-tag"># original data frame
+df</pre><p></p><pre class="crayon-plain-tag">## # A tibble: 12 x 6
+##    Group  Year Qtr.1 Qtr.2 Qtr.3 Qtr.4
+##  1     1  2006    15    16    19    17
+##  2     1  2007    12    13    27    23
+##  3     1  2008    22    22    24    20
+##  4     1  2009    10    14    20    16
+##  5     2  2006    12    13    25    18
+##  6     2  2007    16    14    21    19
+##  7     2  2008    13    11    29    15
+##  8     2  2009    23    20    26    20
+##  9     3  2006    11    12    22    16
+## 10     3  2007    13    11    27    21
+## 11     3  2008    17    12    23    19
+## 12     3  2009    14     9    31    24</pre><p></p><pre class="crayon-plain-tag">long_df &lt;- df %&gt;% gather(key = Quarter, value = Revenue, Qtr.1:Qtr.4)
+head(long_df,24)</pre><p></p><pre class="crayon-plain-tag">## # A tibble: 24 x 4
+##    Group  Year Quarter Revenue
+##  1     1  2006 Qtr.1        15
+##  2     1  2007 Qtr.1        12
+##  3     1  2008 Qtr.1        22
+##  4     1  2009 Qtr.1        10
+##  5     2  2006 Qtr.1        12
+##  6     2  2007 Qtr.1        16
+##  7     2  2008 Qtr.1        13
+##  8     2  2009 Qtr.1        23
+##  9     3  2006 Qtr.1        11
+## 10     3  2007 Qtr.1        13
+## # ... with 14 more rows</pre><p>而以下指令亦可產生相同結果</p><pre class="crayon-plain-tag">df %&gt;% gather(Quarter, Revenue, Qtr.1:Qtr.4)
+df %&gt;% gather(Quarter, Revenue, -Group, -Year)
+df %&gt;% gather(Quarter, Revenue, 3:6)
+df %&gt;% gather(Quarter, Revenue, Qtr.1, Qtr.2, Qtr.3, Qtr.4)</pre><p></p>
+<h3>separate() function</h3>
+<p><strong>目的</strong>: 將單一變數一切為二</p>
+<p><strong>說明</strong>: 很多時候單一變數欄位會包含多個變數，或是部分變數你不感興趣，如以下範例：</p><pre class="crayon-plain-tag">## # A tibble: 9 x 5
+##   Grp_Ind Yr_Mo    City_State       First_Last        Extra_variable      
+## 1 1.a     2006_Jan Dayton (OH)      George Washington XX01person_1  
+## 2 1.b     2006_Feb Grand Forks (ND) John Adams        XX02person_2  
+## 3 1.c     2006_Mar Fargo (ND)       Thomas Jefferson  XX03person_3  
+## 4 2.a     2007_Jan Rochester (MN)   James Madison     XX04person_4  
+## 5 2.b     2007_Feb Dubuque (IA)     James Monroe      XX05person_5  
+## 6 2.c     2007_Mar Ft. Collins (CO) John Adams        XX06person_6  
+## 7 3.a     2008_Jan Lake City (MN)   Andrew Jackson    XX07person_7  
+## 8 3.b     2008_Feb Rushford (MN)    Martin Van Buren  XX08person_8  
+## 9 3.c     2008_Mar Unknown          William Harrison  XX09person_9</pre><p>在這個範例中，我們目標是希望將每個變數字串分離。可以使用separate()函數來達成此目標，將單一字串變數拆分成多個欄位。</p><pre class="crayon-plain-tag">separate_df &lt;- 
+  df2 %&gt;% 
+  separate(col = Yr_Mo, into = c("Year","Month")) %&gt;% 
+  separate(col = City_State, into = c("City","State"), sep = " \\(") %&gt;% 
+  mutate(State = gsub(pattern = "\\)",replacement = "",x = State)) %&gt;% 
+  separate(col = First_Last, into = c("First", "Last"))
+head(separate_df)</pre><p></p><pre class="crayon-plain-tag">## # A tibble: 6 x 8
+##   Grp_Ind Year  Month City        State First  Last       Extra_variable
+## 1 1.a     2006  Jan   Dayton      OH    George Washington XX01person_1  
+## 2 1.b     2006  Feb   Grand Forks ND    John   Adams      XX02person_2  
+## 3 1.c     2006  Mar   Fargo       ND    Thomas Jefferson  XX03person_3  
+## 4 2.a     2007  Jan   Rochester   MN    James  Madison    XX04person_4  
+## 5 2.b     2007  Feb   Dubuque     IA    James  Monroe     XX05person_5  
+## 6 2.c     2007  Mar   Ft. Collins CO    John   Adams      XX06person_6</pre><p>而以下指令亦可產生相同效果</p><pre class="crayon-plain-tag">df2 %&gt;% separate(col = Yr_Mo, into = c("Year","Month"))
+df2 %&gt;% separate(col = Yr_Mo, into = c("Year","Month"), sep = "_")
+
+df2 %&gt;% separate(col = First_Last, into = c("First", "Last"))
+df2 %&gt;% separate(col = First_Last, into = c("First", "Last"), sep = " ")</pre><p></p>
+<h3>unite() function:</h3>
+<p><strong>目的</strong>: 將兩個變數合併為一</p>
+<p><strong>說明</strong>: 很多時候會想將兩個變數合併成一個新的變數，此時就可透過unite()函數來達成(與separate()為互補函數)，如以下範例：</p>
+<p>separate_df</p><pre class="crayon-plain-tag">unite_df &lt;- 
+  separate_df %&gt;% 
+  unite(col = City_State, City, State, sep = " (") %&gt;% 
+  mutate(City_State = paste(City_State,")", sep = "")) %&gt;% 
+  unite(Year_Month, Year, Month, sep = "_") %&gt;% 
+  unite(First_Last, First, Last, sep = " ")
+head(unite_df)</pre><p></p><pre class="crayon-plain-tag">## # A tibble: 6 x 5
+##   Grp_Ind Year_Month City_State       First_Last        Extra_variable
+## 1 1.a     2006_Jan   Dayton (OH)      George Washington XX01person_1  
+## 2 1.b     2006_Feb   Grand Forks (ND) John Adams        XX02person_2  
+## 3 1.c     2006_Mar   Fargo (ND)       Thomas Jefferson  XX03person_3  
+## 4 2.a     2007_Jan   Rochester (MN)   James Madison     XX04person_4  
+## 5 2.b     2007_Feb   Dubuque (IA)     James Monroe      XX05person_5  
+## 6 2.c     2007_Mar   Ft. Collins (CO) John Adams        XX06person_6</pre><p>而以下指令亦可產生相同效果</p><pre class="crayon-plain-tag"># 如果沒有指定sep，則會預設使用"_"
+separate_df %&gt;% unite(Year_Month, Year, Month)
+separate_df %&gt;% unite(Year_Month, Year, Month, sep = "_")</pre><p></p>
+<h3>spread() function:</h3>
+<p><strong>目的</strong>: 將「長」資料重塑成「寬」資料</p>
+<p><strong>說明</strong>: 有時會我們會需要將長的資料轉換成寬的資料，spread()函數則能將指定的成對key-value擴展成多個欄位（是gather()函數的互補函數）。</p><pre class="crayon-plain-tag">wide_df &lt;- long_df %&gt;% spread(key = Quarter, value = Revenue)
+head(wide_df)</pre><p></p><pre class="crayon-plain-tag">## # A tibble: 6 x 6
+##   Group  Year Qtr.1 Qtr.2 Qtr.3 Qtr.4
+## 1     1  2006    15    16    19    17
+## 2     1  2007    12    13    27    23
+## 3     1  2008    22    22    24    20
+## 4     1  2009    10    14    20    16
+## 5     2  2006    12    13    25    18
+## 6     2  2007    16    14    21    19</pre><p></p>
+<hr />
+<p>更多資料處理學習筆記：</p>
+<ol>
+<li><a href="/r-data-processing-top-10-faq-%E8%B3%87%E6%96%99%E8%99%95%E7%90%86/" target="_blank" rel="noopener noreferrer">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a></li>
+</ol>
+<hr />
+<p>參考資料連結：</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="https://uc-r.github.io/tidyr#spread" target="_blank" rel="noopener noreferrer">Reshaping Your Data with tidyr</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/tidyr-reshaping-data/">Reshaping Data using tidyr | 資料合併與分離、變長或變寬的小技巧 | R 統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/tidyr-reshaping-data/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>資料處理-實用的10個小技巧 &#124; Data Processing Basics FAQ &#124; R 語言</title>
+		<link>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/</link>
+					<comments>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Sat, 01 Sep 2018 08:09:49 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[data frame]]></category>
+		<category><![CDATA[data pre processing]]></category>
+		<category><![CDATA[data processing]]></category>
+		<category><![CDATA[R]]></category>
+		<guid isPermaLink="false">/?p=1736</guid>
+
+					<description><![CDATA[<p>本篇整理了使用R語言進行 資料處理(Data Processing) 的 Top 10 FAQ，為了節省健忘的自己反覆google stackoverflow的 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇整理了使用R語言進行 資料處理(Data Processing) 的 Top 10 FAQ，為了節省健忘的自己反覆google stackoverflow的時間，想要把常見的 資料處理 語法筆記下來。包括資料欄位重新命名、產生隨機亂數、產生data frame、數值區隔化(binning)、資料萃取等。</p>
+<h3>資料處理 Data Processing 實用的10個小技巧</h3>
+<h4>1. 產生均一分佈(uniform distribution)和常態分佈(normal distribution)的隨機數值(n=100)</h4>
+<p>產生100個均一分佈(uniform distribution)的隨機數值向量（並使用種子參數，固定隨機結果）</p><pre class="crayon-plain-tag">set.seed(125)
+(vector1 &lt;- runif(n = 100, min = 50, max = 100))
+# [1] 91.23372 55.84255 64.98903 67.82804 98.25975 98.37803 76.65462 66.60778 82.69219 80.72748 50.70648 88.16897 67.96526 55.06754
+# [15] 77.83986 71.21092 70.96414 96.67055 83.60329 87.93464 68.69401 86.41751 84.19229 64.76608 78.88808 53.22125 88.13211 56.14755
+# [29] 58.42466 50.32025 87.44001 52.76610 97.55393 73.19850 94.65054 80.09208 52.96008 54.36781 94.07018 71.41990 85.78686 64.34257
+# [43] 93.64899 63.62392 55.36854 78.86193 87.65080 77.84359 65.02133 75.92287 82.07423 84.34672 51.64452 73.84293 85.64133 67.92616
+# [57] 90.67720 50.76088 82.69066 69.70544 76.52618 91.38894 99.59023 80.40770 59.27992 55.20893 88.90397 95.32379 97.02632 68.20486
+# [71] 93.56424 96.10821 70.03725 96.28664 56.70781 86.41269 94.10011 60.09537 52.10116 75.80777 78.15360 98.07568 62.58464 76.18880
+# [85] 91.73484 91.92365 53.81340 97.19763 88.37050 92.86988 67.39574 80.36109 60.43717 83.97030 65.76207 64.23523 96.80940 95.01764
+# [99] 62.68376 60.57814</pre><p>檢視此分佈次數長條圖</p><pre class="crayon-plain-tag">hist(vector1)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1739" src="/wp-content/uploads/2018/09/Rplot01-2.jpeg" alt="資料處理" width="700" height="773" srcset="/wp-content/uploads/2018/09/Rplot01-2.jpeg 700w, /wp-content/uploads/2018/09/Rplot01-2-272x300.jpeg 272w, /wp-content/uploads/2018/09/Rplot01-2-230x254.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-2-350x387.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-2-480x530.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>檢視此分佈的密度機率圖</p><pre class="crayon-plain-tag">plot(density(vector1))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1740" src="/wp-content/uploads/2018/09/Rplot02-1.jpeg" alt="資料處理" width="700" height="773" srcset="/wp-content/uploads/2018/09/Rplot02-1.jpeg 700w, /wp-content/uploads/2018/09/Rplot02-1-272x300.jpeg 272w, /wp-content/uploads/2018/09/Rplot02-1-230x254.jpeg 230w, /wp-content/uploads/2018/09/Rplot02-1-350x387.jpeg 350w, /wp-content/uploads/2018/09/Rplot02-1-480x530.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>產生100個常態分佈(normal distribution)的隨機數值向量（並使用種子參數，固定隨機結果）。預設的常態平均值為0，標準差為1，我們將之改之為平均數80，標準差20。</p><pre class="crayon-plain-tag"># default的平均數為0標準差為1
+set.seed(125)
+(vector2 &lt;- rnorm(n = 100,mean = 80, sd = 20))
+# [1]  94.570870  98.860533  87.227846 101.200558  94.796854   7.888396  97.381079  53.707525  79.820673  65.226583  83.604616
+# [12]  56.674802  71.379024  65.341515  87.235630  58.500588  75.307624 108.529317  67.545379  88.757267  91.186797  80.637498
+# [23]  58.256334  67.982055  55.808330  77.750359 112.401569  73.330030  73.434837 100.468880  80.106676  76.615631  84.601009
+# [34]  92.579101  88.146062 107.731379 113.084699  83.316553 110.208551  81.149520  79.759604  49.380636 112.434828  87.833169
+# [45]  91.378179  97.054735 122.659543  61.942937  25.111649  82.308347  79.105285 109.440641  79.853266  75.837099  82.781623
+# [56]  42.761641 102.445376  69.369917 101.587147  66.119959  60.815382  88.419203  86.486531  68.378261  95.710587  91.941595
+# [67]  78.080758  61.061284  79.886693  77.463590  82.142727  68.684041  44.079131 113.286471  65.865280  78.415170  79.630492
+# [78]  53.089088  82.405446  83.816031  70.476195 123.994033  64.910649  75.873647  88.055012 102.208292  78.195002  74.755952
+# [89]  63.820298  83.646523  96.931187  84.085811  27.184622  68.838557  66.301864  61.246448  60.270783  68.055789 109.457474
+# [100]  94.410342</pre><p>檢視此分佈次數長條圖</p><pre class="crayon-plain-tag">hist(vector2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1746" src="/wp-content/uploads/2018/09/Rplot03-3.jpeg" alt="Rplot03" width="700" height="602" srcset="/wp-content/uploads/2018/09/Rplot03-3.jpeg 700w, /wp-content/uploads/2018/09/Rplot03-3-300x258.jpeg 300w, /wp-content/uploads/2018/09/Rplot03-3-230x198.jpeg 230w, /wp-content/uploads/2018/09/Rplot03-3-350x301.jpeg 350w, /wp-content/uploads/2018/09/Rplot03-3-480x413.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>檢視此分佈的密度機率圖</p><pre class="crayon-plain-tag">plot(density(vector2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1747" src="/wp-content/uploads/2018/09/Rplot04-2.jpeg" alt="Rplot04" width="700" height="602" srcset="/wp-content/uploads/2018/09/Rplot04-2.jpeg 700w, /wp-content/uploads/2018/09/Rplot04-2-300x258.jpeg 300w, /wp-content/uploads/2018/09/Rplot04-2-230x198.jpeg 230w, /wp-content/uploads/2018/09/Rplot04-2-350x301.jpeg 350w, /wp-content/uploads/2018/09/Rplot04-2-480x413.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>2. concatenate strings 串連字串 using paste() / paste0()</h4>
+<p><span style="color: #9f6ad4;">使用<span style="text-decoration: underline;">paste(),paste0()函數</span>，會先將物件轉換成字元型態(as.character)再合併成新字串</span>。</p>
+<p>paste()跟paste0()最大差異就是參數差異如下:</p>
+<ul>
+<li><span style="color: #9f6ad4;">(1) paste()有sep參數: </span>可以調整合併時的字串間的間隔，預設為空白。</li>
+<li><span style="color: #9f6ad4;">(2) paste0()有collapse參數: <span style="color: #333333;">可將所有合併後的新字串合併成一個字串</span></span><span style="color: #333333;">。</span></li>
+</ul>
+<p>我們因為沒有要將100列的新字串合併成單一新字串，因此單純使用paste()即可。</p>
+<p>我們這裡示範將數值串連百分比%符號合成新字串。因為sep預設為空白格，我們將空白拿掉。</p><pre class="crayon-plain-tag">(vector3 &lt;- paste(round(rnorm(100),2),"%", sep = ""))
+
+# [1] "0.46%"  "-1.46%" "0.58%"  "-1.28%" "0.35%"  "1.06%"  "1.65%"  "0.81%"  "0.49%"  "2.48%"  "-0.43%" "-0.26%" "1.57%"  "1.03%" 
+# [15] "0.4%"   "0.01%"  "-0.7%"  "-0.16%" "1.43%"  "-1.67%" "0.75%"  "0.49%"  "-0.24%" "1.14%"  "-0.56%" "-0.12%" "1.08%"  "-0.51%"
+# [29] "-0.01%" "-0.06%" "-0.43%" "-1.52%" "0.26%"  "1.46%"  "1.09%"  "0.39%"  "-0.85%" "0.08%"  "-0.94%" "0.06%"  "0.79%"  "-0.44%"
+# [43] "-0.75%" "-1.04%" "1.44%"  "-1.28%" "-1.39%" "0.1%"   "-0.92%" "1.75%"  "0.61%"  "0.82%"  "-0.8%"  "-1.13%" "0.54%"  "-1.07%"
+# [57] "-0.91%" "1%"     "-0.15%" "-2.07%" "0.56%"  "2.27%"  "-2.53%" "-0.38%" "0.86%"  "0.58%"  "-0.58%" "-1.85%" "-0.64%" "-1.24%"
+# [71] "-2.18%" "-0.85%" "-1.2%"  "0.05%"  "-1.11%" "-2.7%"  "0.36%"  "-0.77%" "0.56%"  "-0.37%" "0.11%"  "0.76%"  "-0.45%" "-1.3%" 
+# [85] "1.8%"   "-0.18%" "1.17%"  "-1.01%" "0.22%"  "-0.17%" "-0.67%" "0.68%"  "1.38%"  "0.67%"  "-2.06%" "0.62%"  "1.17%"  "0.48%" 
+# [99] "-1.77%" "-2.4%"</pre><p></p>
+<h4>3. 產生時間序列</h4>
+<p>可以使用<span style="color: #9f6ad4;">seq.Date()函數</span>，只要設定區間起始日期(from= &#8230;, to=&#8230;)，和間隔(by = <code>"day"</code>, <code>"week"</code>, <code>"month"</code>, <code>"quarter"</code> or <code>"year"</code>)，即可自動產生時間序列。</p><pre class="crayon-plain-tag">(vector4 &lt;- seq.Date(from = as.Date("2018-08-01"), to = as.Date("2018-11-08"), by = "day"))
+
+# [1] "2018-08-01" "2018-08-02" "2018-08-03" "2018-08-04" "2018-08-05" "2018-08-06" "2018-08-07" "2018-08-08" "2018-08-09"
+# [10] "2018-08-10" "2018-08-11" "2018-08-12" "2018-08-13" "2018-08-14" "2018-08-15" "2018-08-16" "2018-08-17" "2018-08-18"
+# [19] "2018-08-19" "2018-08-20" "2018-08-21" "2018-08-22" "2018-08-23" "2018-08-24" "2018-08-25" "2018-08-26" "2018-08-27"
+# [28] "2018-08-28" "2018-08-29" "2018-08-30" "2018-08-31" "2018-09-01" "2018-09-02" "2018-09-03" "2018-09-04" "2018-09-05"
+# [37] "2018-09-06" "2018-09-07" "2018-09-08" "2018-09-09" "2018-09-10" "2018-09-11" "2018-09-12" "2018-09-13" "2018-09-14"
+# [46] "2018-09-15" "2018-09-16" "2018-09-17" "2018-09-18" "2018-09-19" "2018-09-20" "2018-09-21" "2018-09-22" "2018-09-23"
+# [55] "2018-09-24" "2018-09-25" "2018-09-26" "2018-09-27" "2018-09-28" "2018-09-29" "2018-09-30" "2018-10-01" "2018-10-02"
+# [64] "2018-10-03" "2018-10-04" "2018-10-05" "2018-10-06" "2018-10-07" "2018-10-08" "2018-10-09" "2018-10-10" "2018-10-11"
+# [73] "2018-10-12" "2018-10-13" "2018-10-14" "2018-10-15" "2018-10-16" "2018-10-17" "2018-10-18" "2018-10-19" "2018-10-20"
+# [82] "2018-10-21" "2018-10-22" "2018-10-23" "2018-10-24" "2018-10-25" "2018-10-26" "2018-10-27" "2018-10-28" "2018-10-29"
+# [91] "2018-10-30" "2018-10-31" "2018-11-01" "2018-11-02" "2018-11-03" "2018-11-04" "2018-11-05" "2018-11-06" "2018-11-07"
+# [100] "2018-11-08"</pre><p></p>
+<h4>4. 產生data frame</h4>
+<p>這邊示範如何自行建置一個二維的data frame，<span style="color: #9f6ad4;">欄位名稱為&#8221;=&#8221;符號左側之名稱</span>。data frame各組成向量可以是不同的資料型態，只要注意向量長度需相同則行。</p><pre class="crayon-plain-tag">df &lt;- data.frame(維度一 = 1: 100, 維度二 = c(letters, LETTERS , rep('a', 48)))
+head(df)
+#   維度一 維度二
+# 1      1      a
+# 2      2      b
+# 3      3      c
+# 4      4      d
+# 5      5      e
+# 6      6      f
+
+tail(df)
+#     維度一 維度二
+# 95      95      a
+# 96      96      a
+# 97      97      a
+# 98      98      a
+# 99      99      a
+# 100    100      a</pre><p></p>
+<h4>5. 將不同向量vector 與data frame合併成新的data frame</h4>
+<p>使用的是<span style="color: #9f6ad4;">cbind()函數</span>(column bind)。而<span style="color: #9f6ad4;">cbind.data.frame()函數</span>則是事前先把物件都轉換成data frame型態 (as.data.frame())。進行cbind時僅需確保資料長度是相同的。</p><pre class="crayon-plain-tag">df.new &lt;- cbind.data.frame(df,vector1, vector2, vector3, vector4)
+head(df.new)
+#   維度一 維度二  vector1    vector2 vector3    vector4
+# 1      1      a 91.23372  94.570870   0.46% 2018-08-01
+# 2      2      b 55.84255  98.860533  -1.46% 2018-08-02
+# 3      3      c 64.98903  87.227846   0.58% 2018-08-03
+# 4      4      d 67.82804 101.200558  -1.28% 2018-08-04
+# 5      5      e 98.25975  94.796854   0.35% 2018-08-05
+# 6      6      f 98.37803   7.888396   1.06% 2018-08-06
+class(df.new)
+# [1] "data.frame"
+str(df.new)
+# 'data.frame':	100 obs. of  6 variables:
+# $ 維度一 : int  1 2 3 4 5 6 7 8 9 10 ...
+# $ 維度二 : Factor w/ 52 levels "a","A","b","B",..: 1 3 5 7 9 11 13 15 17 19 ...
+# $ vector1: num  91.2 55.8 65 67.8 98.3 ...
+# $ vector2: num  94.6 98.9 87.2 101.2 94.8 ...
+# $ vector3: Factor w/ 93 levels "-0.01%","-0.06%",..: 61 38 66 35 57 78 88 74 63 93 ...
+# $ vector4: Date, format: "2018-08-01" "2018-08-02" "2018-08-03" "2018-08-04" ...</pre><p>（＊若是要將資料列合併，則使用rbind()，此時要注意的就是資料維度要一樣。）</p>
+<h4>6. 重新命名資料欄位名稱</h4>
+<p>如果遇到欄位名稱太長或是為中文時，會想要重新命名。</p>
+<p>全部都重新命名。</p><pre class="crayon-plain-tag">names(df.new) &lt;- c('order','letters','random.uniform', 'random.normal', 'percentage', 'date')
+head(df.new)
+#   order letters random.uniform random.normal percentage       date
+# 1     1       a       91.23372     94.570870      0.46% 2018-08-01
+# 2     2       b       55.84255     98.860533     -1.46% 2018-08-02
+# 3     3       c       64.98903     87.227846      0.58% 2018-08-03
+# 4     4       d       67.82804    101.200558     -1.28% 2018-08-04
+# 5     5       e       98.25975     94.796854      0.35% 2018-08-05
+# 6     6       f       98.37803      7.888396      1.06% 2018-08-06</pre><p>只取部分欄位進行重新命名。</p><pre class="crayon-plain-tag">names(df.new)[colnames(df.new)=='order'] &lt;- 'row.order'
+head(df.new)
+
+#   row.order letters random.uniform random.normal percentage       date
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06</pre><p></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>7. 根據資料pattern萃取所需資訊 : using <span style="color: #9f6ad4;">sub()</span></h4>
+<p>假設想要萃取percentage欄位的數值資訊，並將資料型態改為數值型。我們使用sub()和as.numeric()。</p>
+<p>(*更多<a href="http://astrostatistics.psu.edu/su07/R/html/base/html/grep.html">Pattern Matching and Replacement</a>函數用法介紹)</p><pre class="crayon-plain-tag">df.new$percentage &lt;- as.numeric(sub(pattern = "%",replacement = "",x = df.new$percentage))/100.00
+head(df.new)
+
+#   row.order random.uniform random.normal percentage       date
+# 1         1       91.23372     94.570870     0.0046 2018-08-01
+# 2         2       55.84255     98.860533    -0.0146 2018-08-02
+# 3         3       64.98903     87.227846     0.0058 2018-08-03
+# 4         4       67.82804    101.200558    -0.0128 2018-08-04
+# 5         5       98.25975     94.796854     0.0035 2018-08-05
+# 6         6       98.37803      7.888396     0.0106 2018-08-06</pre><p></p>
+<h4>8. 連續變數區間化(bin, segmentation) : using <span style="color: #9f6ad4;">cut()</span>。</h4>
+<p>比如說年齡資訊，在進行統計分析時，都會將數值組成新的區間以利摘要。</p>
+<p>最長使用的函數為<span style="color: #9f6ad4;">cut()系列，包括cut_interval(), cut_number(), cut_width()</span>。</p>
+<ul>
+<li>cut_interval()：會確保每一個間隔區間(range)是等分的。</li>
+<li>cut_number() : 會確保每一組內觀測值數目（幾乎）是相同的。</li>
+<li>cut_width() : 會確保每一組的寬度(width)相同，並且能調整長條圖的邊界(boundary)和中心點(center)。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">set.seed(423)
+df.new$age &lt;- rnorm(n = 100, mean = 50, sd = 20)
+df.new$seg.age &lt;- cut_width(x = df.new$age, width = 10, boundary = 0, closed = "left")
+table(df.new$seg.age)
+# [0,10)  [10,20)  [20,30)  [30,40)  [40,50)  [50,60)  [60,70)  [70,80)  [80,90) [90,100] 
+#      1        4       10       16       19       21       16        7        5        1</pre><p>將年齡區間分佈以長條圖畫出。</p><pre class="crayon-plain-tag">plot(df.new$seg.age)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1750" src="/wp-content/uploads/2018/09/Rplot05-2.jpeg" alt="Rplot05" width="885" height="675" srcset="/wp-content/uploads/2018/09/Rplot05-2.jpeg 885w, /wp-content/uploads/2018/09/Rplot05-2-300x229.jpeg 300w, /wp-content/uploads/2018/09/Rplot05-2-768x586.jpeg 768w, /wp-content/uploads/2018/09/Rplot05-2-830x633.jpeg 830w, /wp-content/uploads/2018/09/Rplot05-2-230x175.jpeg 230w, /wp-content/uploads/2018/09/Rplot05-2-350x267.jpeg 350w, /wp-content/uploads/2018/09/Rplot05-2-480x366.jpeg 480w" sizes="(max-width: 885px) 100vw, 885px" /></p>
+<h4>9. 刪除不感興趣的資料欄位</h4>
+<p>有時在分析時，我們會捨棄一些對分析沒幫著的維度。</p>
+<p>我們先隨機產生一個不需要的欄位稱作&#8221;nouse&#8221;</p><pre class="crayon-plain-tag">set.seed(423)
+df.new$nouse &lt;- rnorm(n = 100, mean = 70, sd = 30)
+head(df.new)
+#   row.order letters random.uniform random.normal percentage       date      age seg.age     nouse
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01 25.35967 [20,30)  33.03950
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02 88.41891 [80,90) 127.62837
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03 35.08060 [30,40)  47.62090
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04 60.08320 [60,70)  85.12480
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05 24.58924 [20,30)  31.88386
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06 33.34497 [30,40)  45.01745</pre><p>再使用下列指令將該欄位捨棄。</p><pre class="crayon-plain-tag">df.new &lt;- df.new[,!(colnames(df.new)== 'nouse')]
+head(df.new)
+
+#   row.order letters random.uniform random.normal percentage       date      age seg.age
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01 25.35967 [20,30)
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02 88.41891 [80,90)
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03 35.08060 [30,40)
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04 60.08320 [60,70)
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05 24.58924 [20,30)
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06 33.34497 [30,40)</pre><p></p>
+<h4>10. 根據分析目的更換資料欄位順序</h4>
+<p>法1: 使用欄位指標column index來重新排列欄位</p><pre class="crayon-plain-tag">df.final &lt;- df.new[c(1,6,2,3,4,5,7,8)]
+head(df.final)
+#   row.order       date letters random.uniform random.normal percentage      age seg.age
+# 1         1 2018-08-01       a       91.23372     94.570870      0.46% 25.35967 [20,30)
+# 2         2 2018-08-02       b       55.84255     98.860533     -1.46% 88.41891 [80,90)
+# 3         3 2018-08-03       c       64.98903     87.227846      0.58% 35.08060 [30,40)
+# 4         4 2018-08-04       d       67.82804    101.200558     -1.28% 60.08320 [60,70)
+# 5         5 2018-08-05       e       98.25975     94.796854      0.35% 24.58924 [20,30)
+# 6         6 2018-08-06       f       98.37803      7.888396      1.06% 33.34497 [30,40)</pre><p>法2: 使用欄位名稱column name來重新排列欄位</p><pre class="crayon-plain-tag">df.final &lt;- df.new[c('row.order','date','letters','random.uniform','random.normal', 'percentage', 'seg.age', 'age')]
+head(df.final)
+#   row.order       date letters random.uniform random.normal percentage seg.age      age
+# 1         1 2018-08-01       a       91.23372     94.570870      0.46% [20,30) 25.35967
+# 2         2 2018-08-02       b       55.84255     98.860533     -1.46% [80,90) 88.41891
+# 3         3 2018-08-03       c       64.98903     87.227846      0.58% [30,40) 35.08060
+# 4         4 2018-08-04       d       67.82804    101.200558     -1.28% [60,70) 60.08320
+# 5         5 2018-08-05       e       98.25975     94.796854      0.35% [20,30) 24.58924
+# 6         6 2018-08-06       f       98.37803      7.888396      1.06% [30,40) 33.34497</pre><p></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多資料處理相關學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p>這篇文章 <a rel="nofollow" href="/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Missing Value Treatment &#124; 遺失值處理 &#124; 統計 R語言</title>
+		<link>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/</link>
+					<comments>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 28 Aug 2018 10:50:19 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[統計模型]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[knn]]></category>
+		<category><![CDATA[mice]]></category>
+		<category><![CDATA[missing value treatment]]></category>
+		<category><![CDATA[rpart]]></category>
+		<category><![CDATA[遺失值處理]]></category>
+		<guid isPermaLink="false">/?p=743</guid>
+
+					<description><![CDATA[<p>在進行資料分析時，常遇到的問題就是遺失值處理(Missing Value Treatment)。特別是重要特徵變數有遺失值時，是無法輕易忽略的。比如說，在進行回 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/">Missing Value Treatment | 遺失值處理 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>在進行資料分析時，常遇到的問題就是遺失值處理(Missing Value Treatment)。特別是重要特徵變數有遺失值時，是無法輕易忽略的。比如說，在進行回歸模型建置時，資料列若有任一特徵值是NA(Not Available)時，整列資料就將 被忽略不使用，這樣無疑會使我們失去很多資訊。</p>
+<h3>Missing Value Treatment</h3>
+<p>一般來說，我們會先判斷遺失資料在整體資料中所佔比例，若極小比例，是可以直接刪除資料列。但如果特徵變數中有超過5％的遺失比例，就得進行遺失值處理(Missing Value Treatment)。</p>
+<p>本篇將介紹常用的幾種Missing Value Treatment，依據不同狀況而使用，包括：</p>
+<ol>
+<li>刪除有遺失值的資料列</li>
+<li>刪除特徵變數</li>
+<li>使用平均數(mean)/中位數(median)/眾數(mode)填補</li>
+<li>預測(Prediction)
+<ol>
+<li>kNN (k-Nearest Neighbours)</li>
+<li>rpart (決策樹)</li>
+<li>MICE (Multivariate Imputation by Chained Equations)</li>
+</ol>
+</li>
+</ol>
+<h3>資料集準備</h3>
+<p>我們將使用mlbench package中的BostonHousing資料集來進行遺失值處理示範。由於BostonHousing原始資料集是沒有遺失值的，所以我們會隨機插入遺失值。最後則將預測值與實際值進行比較，以評估各個遺失值處理法的效果好壞。</p>
+<p>首先，我們載入資料集，並隨機將變數rad和ptraio的40列變成遺失值NA。</p><pre class="crayon-plain-tag">data("BostonHousing", package = "mlbench")
+original &lt;- BostonHousing
+
+set.seed(100)
+BostonHousing[sample(1:nrow(BostonHousing),40),"rad"] &lt;- NA
+BostonHousing[sample(1:nrow(BostonHousing),40), "ptratio"] &lt;- NA
+head(BostonHousing)</pre><p>檢視隨機插入遺失值得資料頭幾列。</p><pre class="crayon-plain-tag">&gt; head(BostonHousing)
+crim zn indus chas nox rm age dis rad tax ptratio b lstat medv
+1 0.00632 18 2.31 0 0.538 6.58 65.2 4.09 1 296 15.3 397 4.98 24.0
+2 0.02731 0 7.07 0 0.469 6.42 78.9 4.97 2 242 17.8 397 9.14 21.6
+3 0.02729 0 7.07 0 0.469 7.18 61.1 4.97 2 242 17.8 393 4.03 34.7
+4 0.03237 0 2.18 0 0.458 7.00 45.8 6.06 3 222 18.7 395 2.94 33.4
+5 0.06905 0 2.18 0 0.458 7.15 54.2 6.06 3 222 18.7 397 5.33 36.2
+6 0.02985 0 2.18 0 0.458 6.43 58.7 6.06 3 222 18.7 394 5.21 28.7</pre><p>接著，我們使用的mice套件檢視資料遺失值分佈的pattern。</p><pre class="crayon-plain-tag">install.packages("mice")
+library(mice)
+md.pattern(BostonHousing) # missing data pattern
+
+# crim zn indus chas nox rm age dis rad tax ptratio b lstat medv
+# 1 0.00632 18 2.31 0 0.538 6.58 65.2 4.09 1 296 15.3 397 4.98 24.0
+# 2 0.02731 0 7.07 0 0.469 6.42 78.9 4.97 2 242 17.8 397 9.14 21.6
+# 3 0.02729 0 7.07 0 0.469 7.18 61.1 4.97 2 242 17.8 393 4.03 34.7
+# 4 0.03237 0 2.18 0 0.458 7.00 45.8 6.06 3 222 18.7 395 2.94 33.4
+# 5 0.06905 0 2.18 0 0.458 7.15 54.2 6.06 3 222 18.7 397 5.33 36.2
+# 6 0.02985 0 2.18 0 0.458 6.43 58.7 6.06 3 222 18.7 394 5.21 28.7</pre><p></p>
+<h3>1. 刪除資料列法</h3>
+<p>如果資料集數量夠大，且要預測的事件在訓練資料集中有足夠具代表性的比重，可以選擇忽略遺失資料列。可以在建立模型時，將參數設成na.action=na.omit。務必要確保：(1)資料量夠大，模型不會失去預測能力(2)不構成偏差，即原始目標事件比例不會因為刪除遺失值而發生改變</p><pre class="crayon-plain-tag"># example 1
+lm(medv ~ ptratio + rad, data = BostonHousing, na.action = na.omit) # 雖然na.omit是預設值</pre><p></p>
+<h3>2. 刪除特徵變數法</h3>
+<p>如果該特徵變數遺失值得數量較其他變數都來的多，而且如果移除該變數你可以拯救許多筆資料，你可以考慮將該變數移除，除非該變數在業務經驗中是很重要的變數。屬於一種「變數重要性」與「遺失資料數」之間的抉擇。</p>
+<h3>3. 使用平均數(mean)/中位數(median)/眾數(mode)填補</h3>
+<p>使用平均數/中位數/眾數填補遺失值是一個較粗糙的手段，視情況而定，如果該變數變異性低或是對目標變數的影響利沒這麼高，則此粗略的近似法是可被接受，且可能可以產生不錯的結果。</p><pre class="crayon-plain-tag"># 可以使用Hmisc套件的imputte()來填補
+library(Hmisc)
+impute(BostonHousing$ptratio, mean)  # replace with mean
+impute(BostonHousing$ptratio, median)  # median
+impute(BostonHousing$ptratio, 20)  # replace specific number
+# 或是手動填補
+BostonHousing$ptratio[is.na(BostonHousing$ptratio)] &lt;- mean(BostonHousing$ptratio, na.rm = T)  # not run</pre><p>我們來計算使用平均值填補的正確率。</p><pre class="crayon-plain-tag">library(DMwR)
+actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- rep(mean(BostonHousing$ptratio, na.rm = TRUE), length(actuals))
+regr.eval(trues = actuals,preds = predicteds)
+
+# &gt; regr.eval(trues = actuals,preds = predicteds)
+#   mae    mse   rmse   mape 
+#   1.6232 4.1931 2.0477 0.0955</pre><p><span style="color: #333333;">其中幾個</span><span style="color: #0000ff;"><span style="color: #333333;">衡量</span><span style="color: #9f6ad4;">預測精準(Forcast Accuracy)</span></span>的方法如下：</p>
+<p><span style="color: #9f6ad4;">MAPE代表的是平均絕對誤差百分比(mean absolute percentage error)</span>。</p>
+<p>$$MAPE=\frac{1}{n}\sum_{t=1}^n\left|\frac{y_{t}-\hat{y_{t}}}{y_{t}}\right|$$</p>
+<p>其中，\(\hat{y_{t}}\)代表預測值，\(y_{t}\)則為實際值。</p>
+<p><span style="color: #9f6ad4;">RSME代表均方根誤差(Root-Square-Mean Error)</span>。</p>
+<p>$$RSME=\sqrt\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})^2}{n}$$</p>
+<p><span style="color: #9f6ad4;">MSE代表均方誤差(Mean-Square Error)</span>。即絕對誤差的平均值。</p>
+<p>$$MSE=\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})^2}{n}$$</p>
+<p><span style="color: #9f6ad4;">MAE代表平均絕對誤差(mean absolute error)</span>。</p>
+<p>$$MAE=\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})}{n}$$</p>
+<p>我們可以看到平均值填補的MAPE(平均絕對誤差百分比)為0.0955。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>4. 預測(Prediction)</h3>
+<h4>4-1. kNN法(k-Nearest Neighbours)</h4>
+<p>套件DMwR中的knnImputation法，使用k個最鄰近的資料點來做估計遺失值。簡單來說，就是會根據每個遺失資料點，去計算歐幾里得距離找出最鄰近的k個資料點，並計算這k個資料加權平均值(使用距離加權)來填補。<span style="color: #9f6ad4;">優點是，你可以呼叫一次此函數，即可一次填補完所有特徵變數中的遺失值</span>。你也不需要指定要填補的變數，因為該函數式使用所有資料集當作參數。<span style="color: #9f6ad4;">但必須注意，不能將目標變數納入預測參數中</span>，因為在測試/正式預測環境中，如果資料有遺失值，你是無法使用未知的目標變數來當作預測變數的。</p><pre class="crayon-plain-tag">library(DMwR)
+# 將目標變數移除，進行knn預測填補
+knnOutput &lt;- knnImputation(data = BostonHousing[,!names(BostonHousing)%in% 'medv'])
+anyNA(knnOutput)
+
+# &gt; anyNA(knnOutput)
+#   [1] FALSE</pre><p>計算使用k-NN法的精準度。</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- knnOutput[is.na(BostonHousing$ptratio), "ptratio"]
+regr.eval(actuals, predicteds)
+
+#        mae        mse       rmse       mape 
+# 1.00188715 1.97910183 1.40680554 0.05859526</pre><p>其中MAPE(平均絕對誤差百分比)為0.059(&lt;0.0955)。誤差值較平均值填補法改善(降低)了38%。</p>
+<h4>4-2. 決策樹(rpart)</h4>
+<p><span style="text-decoration: underline;">kNN法的限制就是，如果<span style="color: #9f6ad4; text-decoration: underline;">遺失值是factor(類別變數)</span>，則不能使用</span>。而<span style="color: #9f6ad4;">函數rpat()和mice()則能處理這個情況。函數rpart()的優勢就是，預測變數中，只要有一個變數沒有遺失值即可</span>。(更多有關決策樹遺失值填補: <a href="/decision_tree_surrogate_in_cart/" target="_blank" rel="noopener noreferrer">Tree Surrogate in CART</a>)</p>
+<p>我們來使用rpart()處理遺失直預測。</p>
+<ul>
+<li>如果要預測的目標變數為類別變數，則將參數設定為method=class。</li>
+<li>如果要預測的目標變數為數值變數，則間參數設定為method=anova。</li>
+<li>並同樣注意，不要將目標變數投入為預測變數了。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(rpart)
+
+# 預測類別變數model
+class_mod &lt;- rpart(formula = rad ~ . -medv, data = BostonHousing[!is.na(BostonHousing$rad),], method = "class", na.action = na.omit)
+# 預測數值變數model
+anova_mod &lt;- rpart(formula = ptratio ~ . -medv, data = BostonHousing[!is.na(BostonHousing$ptratio),], method = "anova", na.action = na.omit)
+
+rad_predict &lt;- predict(object = class_mod,newdata = BostonHousing[is.na(BostonHousing$rad),])
+ptratio_predict &lt;- predict(object = anova_mod, newdata = BostonHousing[is.na(BostonHousing$ptratio),])</pre><p>計算使用rpart決策樹法填補ptratio的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- ptratio_predict
+regr.eval(trues = actuals, preds = predicteds)
+
+#        mae        mse       rmse       mape 
+# 0.71061673 0.99693845 0.99846805 0.04099908</pre><p>比較起kNN法，MAPE(平均絕對誤差百分比)改善(降低)了30%(from 0.059 to 0.041)。</p>
+<p>計算使用rpart決策樹法填補rad的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$rad[is.na(BostonHousing$rad)]
+predicteds &lt;- as.numeric(colnames(rad_predict)[apply(rad_predict, 1, which.max)])
+mean(actuals != predicteds)
+# &gt; mean(actuals != predicteds)
+#   [1] 0.25</pre><p></p>
+<h4>4-3. MICE (Multivariate Imputation by Chained Equations)</h4>
+<ul>
+<li>MICE是 Multivariate Imputation by Chained Equations 的縮寫，是一套R進階處理遺失值得套件。</li>
+<li>他的做法稍微特殊一點，將遺失值處理分成兩階段來進行，先是使用mice()來建立預測模型，在使用complete()來產生填補完整後的資料集。</li>
+<li>mice(df)會產生多組不同資料填補後的資料集結果，而complete()則會使用其中一組填補結果來完整資料集，預設為第一組。</li>
+</ul>
+<div><strong>MICE代表： Multivariate Imputations by Chained Equations (MICE)，具有以下幾個特點：</strong></div>
+<ul>
+<li>
+<div>主要可用來產生多元變數(multivariate)的多組空值填補值(multiple imputations)（可透過mice()函式中的參數m，number of mutiple imputations，來指定要產生幾組填補值解，預設為5組）。</div>
+</li>
+<li>
+<div>透過<a href="https://zh.wikipedia.org/wiki/%E5%90%89%E5%B8%83%E6%96%AF%E9%87%87%E6%A0%B7">Gibbs sampling</a>法來對多元變數產稱多組空值填補值。</div>
+</li>
+<li>
+<div>MICE填補方法是採用Fully Conditional Specification，即每一個不完整的變數都是分別用獨立的模型來預測空值的。</div>
+</li>
+<li>
+<div>MICE可處理連續型變數(continuous)、二元變數(binary)、無順序類別型變數(unordered categorical)、有序類別變數(ordered categorical)。</div>
+</li>
+<li>
+<div>MICE在預測目標欄位時(target column)，預設會使用其他非目標欄位來作為預測變數(predictors)。如遇預測變數本身也不完整的情況，最新產生的一組填補值會被用來完整預測變數，再進行目標變數的填補預測。</div>
+</li>
+<li>
+<div>我們可以替不同欄位指定各自的單變數填補模型(univariate imputation model)，使用方法範例：mice(data, meth=c(&#8216;sample&#8217;,&#8217;pmm&#8217;,&#8217;logreg&#8217;,&#8217;norm&#8217;)))。</div>
+</li>
+<li>
+<div>單變數填補模型可以使用內建的方法或是自訂方法(mice.impute.myfunc)(mice(method = c(&#8220;xxx&#8221;, &#8220;myfunc&#8221;))。</div>
+</li>
+<li>
+<div>常見的幾種內建填補模型包括：</div>
+</li>
+<li>
+<ul>
+<li>
+<div>pmm (Predictive mean matching) : 任何變數型態</div>
+</li>
+<li>
+<div>cart (Classification and regression trees) : 任何變數型態</div>
+</li>
+<li>
+<div>rf (Random forest imputations) : 任何變數型態</div>
+</li>
+<li>
+<div>logreg (Logistic regression) : 二元類別型態 (binary)</div>
+</li>
+</ul>
+</li>
+</ul>
+<div><strong>MICE package套件中的主要函式說明：</strong></div>
+<ul>
+<li>
+<div>md.pattern() : inspect the missing data pattern</div>
+</li>
+<li>
+<div>mice(): impute the missing values *m* times</div>
+</li>
+<li>
+<div>with(): analyzed completed data sets =&gt; Performs a computation of each of imputed datasets in data. with (data, expr = formula, &#8230;)。將產生的m組填補值套用到計算公式。</div>
+</li>
+<li>
+<div>pool(): combine parameter estimates =&gt; Pool the results of the repeated analyses。綜合m組填補數據所產生的模型的估計係數(estimates)、標準差(std.error)、和p-value。</div>
+</li>
+<li>
+<div><a href="https://www.rdocumentation.org/packages/mice/versions/3.3.0/topics/pool.compare">pool.compare()</a> : pool.compare(fit1, fit0, method = c(&#8220;wald&#8221;, &#8220;likelihood&#8221;), data = NULL)。使用方法&#8221;wald&#8221;或&#8221;likelihood&#8221;來比較兩種模型公式套用在所有填補數據的綜合結果。</div>
+</li>
+<li>
+<div>complete(): export imputed data 儲存和輸出其中一組完整填補數據</div>
+</li>
+<li>
+<div>ampute(): generate missing data =&gt; Generate simulated incomplete data 產生模擬的不完整數據</div>
+</li>
+</ul>
+<p>我們來看看如何使用mice()法來預測ptratio和rad。</p><pre class="crayon-plain-tag">library(mice)
+miceMod &lt;- mice(data = BostonHousing[,!names(BostonHousing) %in% "medv"],
+                method = "rf", #可以指定單一或多個補值法for不同的欄位，If specified as a single string, the same method will be used for all blocks
+                m = 5, #可以指定產生幾組預測果，預設為五組
+                maxit = 5 #可以指定迭代次數，預設為五次
+                ) # perform mice imputation, based on random forests.
+miceOutput &lt;- complete(miceMod,action = 1) #Complete a data frame with missing combinations of data. 預設action為第一組資料。
+
+anyNA(miceOutput)
+# [1] FALSE</pre><p>計算使用MICE法填補ptratio的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- miceOutput[is.na(BostonHousing$ptratio),"ptratio"]
+regr.eval(actuals,predicteds)
+
+#        mae        mse       rmse       mape 
+# 0.35000000 0.77700000 0.88147603 0.01965896</pre><p>使用MICE法填補ptraio的MAPE(平均絕對誤差百分比)較rpart決策樹法改進（降低）了48% (from 0.041 to 0.020)。</p>
+<p>計算使用MICE法填補rad的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$rad[is.na(BostonHousing$rad)]
+predicteds &lt;- miceOutput[is.na(BostonHousing$rad),"rad"]
+mean(actuals != predicteds) 
+# [1] 0.225</pre><p>使用MICE法填補rad的誤差較rpart決策樹法改進（降低）了10% （from 0.25 to 0.225)。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多遺失值處理參考文章：</p>
+<ol>
+<li><a href="https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/" target="_blank" rel="noopener noreferrer">Tutorial on 5 Powerful R Packages used for imputing missing values</a></li>
+<li><a href="https://www.r-bloggers.com/imputing-missing-data-with-r-mice-package/" target="_blank" rel="noopener noreferrer">Imputing missing data with R; MICE package</a></li>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/">Missing Value Treatment | 遺失值處理 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>網路爬蟲 Web Crawler &#124; 資料不求人 基礎篇 &#124; using Python BeautifulSoup</title>
+		<link>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/</link>
+					<comments>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 08 May 2018 13:00:34 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[BeautifulSoup]]></category>
+		<category><![CDATA[crawler]]></category>
+		<category><![CDATA[python]]></category>
+		<category><![CDATA[爬蟲]]></category>
+		<category><![CDATA[網頁爬蟲]]></category>
+		<guid isPermaLink="false">/?p=1404</guid>
+
+					<description><![CDATA[<p>料理一道菜必須要有好的食材，就像豐富有趣的資料是好的資料分析基礎。有時為了有效蒐集我們感興趣的資料，我們得自己寫網路爬蟲(web crawler)。本篇文章將示 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>料理一道菜必須要有好的食材，就像豐富有趣的資料是好的資料分析基礎。有時為了有效蒐集我們感興趣的資料，我們得自己寫網路爬蟲(web crawler)。本篇文章將示範如利用python的 <span style="color: #9f6ad4;">requests</span> 及 <span style="color: #9f6ad4;">BeautifulSoup</span> 套件抓取網頁上感興趣的資料。我們將以著名的PTT批踢踢網站為例，爬取每日各時點人氣看板與人氣資訊。</p>
+<p>&nbsp;</p>
+<h3>Step 1: 觀察網頁資料</h3>
+<p>我們的目標網頁是 <a href="https://www.ptt.cc/bbs/hotboards.html">https://www.ptt.cc/bbs/hotboards.html</a> (PTT 熱門看板)<br />
+用瀏覽器打開頁面並按右鍵點觀看網頁原始碼會看到以下內容:</p><pre class="crayon-plain-tag">...
+
+&lt;div id="main-container"&gt;
+	&lt;div id="action-bar-container"&gt;
+		&lt;div class="action-bar"&gt;
+			&lt;div class="btn-group btn-group-cls"&gt;
+				&lt;a class="btn selected" href="/bbs/hotboards.html"&gt;熱門看板&lt;/a&gt;
+                &lt;a class="btn" href="/cls/1"&gt;分類看板&lt;/a&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;div class="b-list-container action-bar-margin bbs-screen"&gt;
+        
+        &lt;div class="b-ent"&gt;
+            &lt;a class="board" href="/bbs/Gossiping/index.html"&gt;
+                &lt;div class="board-name"&gt;Gossiping&lt;/div&gt;
+                &lt;div class="board-nuser"&gt;&lt;span class="hl f6"&gt;12807&lt;/span&gt;&lt;/div&gt;
+                &lt;div class="board-class"&gt;綜合&lt;/div&gt;
+                &lt;div class="board-title"&gt;&amp;#9678;[八卦] 守護肉燥飯，嚴防非洲豬瘟&lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+        
+        &lt;div class="b-ent"&gt;
+            &lt;a class="board" href="/bbs/NBA/index.html"&gt;
+                &lt;div class="board-name"&gt;NBA&lt;/div&gt;
+                &lt;div class="board-nuser"&gt;&lt;span class="hl f1"&gt;4345&lt;/span&gt;&lt;/div&gt;
+                &lt;div class="board-class"&gt;籃球&lt;/div&gt;
+                &lt;div class="board-title"&gt;&amp;#9678;[NBA]        VC 25000&lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+
+...</pre><p>我們可以看到這個網頁的HTML結構，以及我們想爬取的資料如 (<span style="color: #9f6ad4;">看板名稱</span>、<span style="color: #9f6ad4;">當前看板人氣</span>…等) 所在的Elements.</p>
+<p>例如我們想爬取這個網頁中所有出現的<span style="color: #9f6ad4;">看板名稱</span>，而這些資料所在的 Element 是一個 &lt;div&gt; ，並且用一個 <span style="color: #9f6ad4;">&#8220;board-name&#8221;</span> 來指定套用樣式，所以我們就可以找出所有的 class 是 &#8220;board-name&#8221; 的 &lt;div&gt; Element。</p>
+<p>有了策略之後，我們就可以把網頁自動下載下來，並用 BeautifulSoup 對 HTML 進行解析來快速取出我們想要的部分。</p>
+<h3></h3>
+<h3>step 2: 自動下載網頁原始碼</h3>
+<p>以往我們必續手動打開頁面，檢視網頁原始碼，按右鍵儲存。<br />
+但我們希望可以利用機器自動抓取，之後就能設定時間，使它每隔一段時間抓取一次。<br />
+在python中，我們可以利用 <span style="color: #9f6ad4;">requests <span style="color: #000000;">套件自動地抓取</span></span>網頁原始碼。</p><pre class="crayon-plain-tag"># 如果先前沒安裝過requests 套件則這邊會失敗, 因此需要先安裝, 可用這個指令: pip install requests
+import requests
+
+# 指定要抓取的網頁URL
+url = "https://www.ptt.cc/bbs/hotboards.html"
+
+# 使用requests.get() 來得到網頁回傳內容
+r = requests.get(url)
+
+# request.get()回傳的是一個物件 
+# 若抓成功(即r.status_code==200), 則網頁原始碼會放在物件的text屬性, 我們把它存在一個變數 'web_content'
+web_content = r.text
+
+#print(web_content) 可以印出來看看, 會跟從網頁右鍵查看原始碼看到的一樣</pre><p></p>
+<h3></h3>
+<h3>step 3: 解析HTML原始碼</h3>
+<p>我們使用著名的<span style="color: #9f6ad4;">BeautifulSoup套件來解析原始碼</span>。並取出我們想要的部分。</p><pre class="crayon-plain-tag"># 載入BeautifulSoup套件, 若沒有的話可以先: pip install beautifulsoup4
+from bs4 import BeautifulSoup
+
+# 以 Beautiful Soup 解析 HTML 程式碼 : 
+soup = BeautifulSoup(web_content, 'html.parser')
+
+# 找出所有class為"board-name"的div elements
+boardNameElements = soup.find_all('div', class_="board-name")
+boardNameElements</pre><p>會得到一個list of elements, 順序為他們在原始網頁程式碼出現的順序</p><pre class="crayon-plain-tag">[&lt;div class="board-name"&gt;Gossiping&lt;/div&gt;,
+&lt;div class="board-name"&gt;NBA&lt;/div&gt;,
+&lt;div class="board-name"&gt;C_Chat&lt;/div&gt;, 
+...略...
+&lt;div class="board-name"&gt;TY_Research&lt;/div&gt;]</pre><p>將每個element的文字部分(看板名稱)取出</p><pre class="crayon-plain-tag">boardNames = [e.text for e in boardNameElements]
+boardNames</pre><p>會得到一個 list of strings</p><pre class="crayon-plain-tag">['Gossiping',
+ 'NBA',
+ 'C_Chat',
+ ...略...
+ 'TY_Research']</pre><p>上面已經將網頁中出現的看板名稱依序取出了, 也可以依樣畫葫蘆將當下的看板人氣也依序取出:</p><pre class="crayon-plain-tag"># 觀察網頁原始碼後看到
+# 雖然&lt;div class="board-nuser"&gt;裡面還有用&lt;span&gt;夾住我們想要的資料(人氣值)
+# 不過我們會用.text 直接取出所包含的文字部分即可 
+popularityElements = soup.find_all('div', class_="board-nuser")
+# 取出的文字的類型是字串, 我們可用int()轉成數字類型
+popularities = [int(e.text) for e in popularityElements]
+popularities</pre><p>會得到list of integers</p><pre class="crayon-plain-tag">[12807,
+ 4345,
+ 2103,
+ ... 略...
+ 48]</pre><p>爬完囉! 秀出結果來看看吧</p><pre class="crayon-plain-tag">print(len(boardNames), len(popularities))
+# 128 128 == &gt; 一個看板名稱對應一個人氣值, 該PTT頁面共顯示前128個當下最熱門的看板.
+
+for pop, bn in zip(popularities, boardNames):
+    print(pop, bn)
+
+# 上面兩行也許不熟悉python的新手會看不太懂.
+# 我的目的是想要按順序一行一行印出來看, 而且每一行是這樣:"人氣值 看板名稱"
+# 所以我用python的 'zip' 函數, 將'popularites'及'boardNames'這兩個list夾鏈起來, 就可以一起跌代.
+# 第一次迴圈拿到雙方list的第一個item,  第二次迴圈拿到雙方list的第二個item... 等依此類推.</pre><p></p><pre class="crayon-plain-tag"># 顯示結果如下
+12807 Gossiping
+4345 NBA
+2103 C_Chat
+1608 sex
+1246 HatePolitics
+1228 Baseball
+1074 movie
+1024 Stock
+951 MobileComm
+915 Lifeismoney
+830 car
+691 Beauty
+670 WomenTalk
+634 Tech_Job
+617 marvel
+613 LoL
+594 Japan_Travel
+592 Boy-Girl
+545 e-shopping
+521 MayDay
+489 AllTogether
+483 creditcard
+475 BabyMother
+448 KoreaStar
+427 StupidClown
+408 joke
+407 Kaohsiung
+403 Hearthstone
+402 Steam
+370 ToS
+354 MakeUp
+341 KR_Entertain
+336 PlayStation
+325 NSwitch
+324 PC_Shopping
+315 marriage
+313 Tainan
+290 japanavgirls
+289 SportLottery
+281 PokemonGO
+272 KoreaDrama
+268 iOS
+225 BeautySalon
+215 TaichungBun
+205 home-sale
+194 CFantasy
+182 FATE_GO
+166 CVS
+163 HardwareSale
+159 TWICE
+158 Drama-Ticket
+155 ONE_PIECE
+154 basketballTW
+153 WOW
+152 BuyTogether
+149 Japandrama
+148 Salary
+140 Food
+139 Hsinchu
+138 AC_In
+137 PCReDive
+133 biker
+132 TypeMoon
+130 MLB
+129 MuscleBeach
+126 Examination
+124 Gamesale
+121 NBA_Film
+118 YuanChuang
+115 MH
+115 cat
+113 Headphone
+111 Aviation
+110 GetMarry
+109 LGBT_SEX
+109 PathofExile
+107 PublicServan
+102 China-Drama
+102 PHX-Suns
+99 cookclub
+98 DSLR
+95 mobilesales
+95 gay
+91 KoreanPop
+90 TW_Entertain
+89 CarShop
+89 Wanted
+89 lesbian
+87 Finance
+85 Palmar_Drama
+80 Soft_Job
+79 MacShop
+79 Zastrology
+78 EAseries
+77 BTS
+76 PuzzleDragon
+75 medstudent
+74 feminine_sex
+74 forsale
+73 give
+72 Nogizaka46
+72 MobilePay
+72 Gov_owned
+69 DMM_GAMES
+68 BB-Love
+67 watch
+65 KanColle
+65 HelpBuy
+64 fastfood
+63 BabyProducts
+63 RealmOfValor
+61 Actuary
+58 hypermall
+56 Spurs
+56 part-time
+56 FITNESS
+55 ChungLi
+55 IZONE
+54 E-appliance
+53 Taoyuan
+53 Lakers
+53 graduate
+50 DC_SALE
+50 GBF
+49 Chiayi
+49 facelift
+49 Bank_Service
+48 TY_Research</pre><p></p>
+<h3></h3>
+<h3>step 4: 爬蟲結果輸出</h3>
+<h4>將 data 輸出到sqlite 儲存</h4>
+<p></p><pre class="crayon-plain-tag">import sqlite3
+# 在目前的目錄下尋找一個叫test.db的檔案並建立連線, 若不存在則會在你目錄下自動建立這個檔案.
+# 以SQL的概念來說, 它就是一個"database"
+conn = sqlite3.connect("test.db")
+
+# 後面都用這個 cursor來做SQL操作.
+c = conn.cursor()</pre><p>在SQLite中create table</p><pre class="crayon-plain-tag"># Create 一個叫做"records" 的table
+
+# 如果想要刪除原本已經存在的records table的話, 就拿掉下面這一行的註解.
+# c.execute('drop table records')
+
+# SQLite 欄位資料類型很簡單 
+# 文字就是"text"
+# 數字就是"int"
+# 時間就是"datetime"
+
+c.execute('''
+CREATE TABLE records
+ (boardnames text,
+  popularity int,
+  timestamp datetime)
+''')</pre><p>使用for迴圈，逐列將資料一筆一筆insert到&#8221;records&#8221; table中, 並紀錄每一筆資料對應的時間點.</p><pre class="crayon-plain-tag">import datetime
+now_dt = datetime.datetime.now()
+
+for bn, pop in zip(boardNames, popularities):
+    c.execute('INSERT INTO records VALUES (?,?,?)', (bn, pop, now_dt))
+
+# 將指令送出, 確保前述所有操作已生效
+conn.commit()</pre><p>查看table內容</p><pre class="crayon-plain-tag">c.execute("select * from records;").fetchall()</pre><p></p><pre class="crayon-plain-tag">[('Gossiping', 10001, '2019-03-03 10:45:43'),
+ ('NBA', 5145, '2019-03-03 10:45:43'),
+ ('C_Chat', 2562, '2019-03-03 10:45:43'),
+ ('Baseball', 1414, '2019-03-03 10:45:43'),
+ ('sex', 1392, '2019-03-03 10:45:43'),
+ ('WomenTalk', 1285, '2019-03-03 10:45:43'),
+ ('Hearthstone', 1117, '2019-03-03 10:45:43'),
+ ('car', 1016, '2019-03-03 10:45:43'),
+ ('HatePolitics', 1001, '2019-03-03 10:45:43'),
+ ('MobileComm', 988, '2019-03-03 10:45:43'),
+ ('movie', 851, '2019-03-03 10:45:43'),
+ ('Lifeismoney', 778, '2019-03-03 10:45:43'),
+ ('Stock', 775, '2019-03-03 10:45:43'),
+ ('marvel', 771, '2019-03-03 10:45:43'),
+ ('Boy-Girl', 723, '2019-03-03 10:45:43'),
+ ('BabyMother', 645, '2019-03-03 10:45:43'),
+ ('Beauty', 612, '2019-03-03 10:45:43'),
+ ('Japan_Travel', 597, '2019-03-03 10:45:43'),
+ ('ToS', 547, '2019-03-03 10:45:43'),
+ ('Tech_Job', 518, '2019-03-03 10:45:43'),
+ ('LoL', 497, '2019-03-03 10:45:43'),
+ ('marriage', 485, '2019-03-03 10:45:43'),
+ ('AllTogether', 414, '2019-03-03 10:45:43'),
+ ('KoreaStar', 410, '2019-03-03 10:45:43'),
+ ('e-shopping', 403, '2019-03-03 10:45:43'),
+ ('MakeUp', 360, '2019-03-03 10:45:43'),
+ ('home-sale', 350, '2019-03-03 10:45:43'),
+ ('PC_Shopping', 348, '2019-03-03 10:45:43'),
+ ('Kaohsiung', 345, '2019-03-03 10:45:43'),
+ ('PlayStation', 341, '2019-03-03 10:45:43'),
+ ('joke', 322, '2019-03-03 10:45:43'),
+ ('NSwitch', 311, '2019-03-03 10:45:43'),
+ ('PokemonGO', 308, '2019-03-03 10:45:43'),
+ ('SportLottery', 305, '2019-03-03 10:45:43'),
+ ('creditcard', 292, '2019-03-03 10:45:43'),
+ ('TaichungBun', 288, '2019-03-03 10:45:43'),
+ ('KR_Entertain', 283, '2019-03-03 10:45:43'),
+ ('Steam', 275, '2019-03-03 10:45:43'),
+ ('Tainan', 271, '2019-03-03 10:45:43'),
+ ('Road_Running', 265, '2019-03-03 10:45:43'),
+ ('KoreaDrama', 265, '2019-03-03 10:45:43'),
+ ('StupidClown', 258, '2019-03-03 10:45:43'),
+ ('Lakers', 248, '2019-03-03 10:45:43'),
+ ('Tennis', 242, '2019-03-03 10:45:43'),
+ ('iOS', 237, '2019-03-03 10:45:43'),
+ ('japanavgirls', 213, '2019-03-03 10:45:43'),
+ ('China-Drama', 198, '2019-03-03 10:45:43'),
+ ('Salary', 184, '2019-03-03 10:45:43'),
+ ('GetMarry', 178, '2019-03-03 10:45:43'),
+ ('BeautySalon', 176, '2019-03-03 10:45:43'),
+ ('Japandrama', 175, '2019-03-03 10:45:43'),
+ ('HardwareSale', 173, '2019-03-03 10:45:43'),
+ ('basketballTW', 165, '2019-03-03 10:45:43'),
+ ('CFantasy', 161, '2019-03-03 10:45:43'),
+ ('PCReDive', 158, '2019-03-03 10:45:43'),
+ ('Examination', 157, '2019-03-03 10:45:43'),
+ ('YuanChuang', 154, '2019-03-03 10:45:43'),
+ ('BuyTogether', 149, '2019-03-03 10:45:43'),
+ ('Gamesale', 147, '2019-03-03 10:45:43'),
+ ('AC_In', 146, '2019-03-03 10:45:43'),
+ ('MLB', 146, '2019-03-03 10:45:43'),
+ ('CVS', 143, '2019-03-03 10:45:43'),
+ ('Hsinchu', 135, '2019-03-03 10:45:43'),
+ ('NBA_Film', 128, '2019-03-03 10:45:43'),
+ ('Food', 124, '2019-03-03 10:45:43'),
+ ('ONE_PIECE', 122, '2019-03-03 10:45:43'),
+ ('MuscleBeach', 117, '2019-03-03 10:45:43'),
+ ('biker', 117, '2019-03-03 10:45:43'),
+ ('FATE_GO', 116, '2019-03-03 10:45:43'),
+ ('TypeMoon', 112, '2019-03-03 10:45:43'),
+ ('EAseries', 108, '2019-03-03 10:45:43'),
+ ('WOW', 107, '2019-03-03 10:45:43'),
+ ('mobilesales', 105, '2019-03-03 10:45:43'),
+ ('Aviation', 103, '2019-03-03 10:45:43'),
+ ('KoreanPop', 101, '2019-03-03 10:45:43'),
+ ('Soft_Job', 100, '2019-03-03 10:45:43'),
+ ('PuzzleDragon', 99, '2019-03-03 10:45:43'),
+ ('Headphone', 99, '2019-03-03 10:45:43'),
+ ('gay', 99, '2019-03-03 10:45:43'),
+ ('cat', 96, '2019-03-03 10:45:43'),
+ ('Gov_owned', 96, '2019-03-03 10:45:43'),
+ ('MobilePay', 95, '2019-03-03 10:45:43'),
+ ('Palmar_Drama', 95, '2019-03-03 10:45:43'),
+ ('OverWatch', 94, '2019-03-03 10:45:43'),
+ ('RealmOfValor', 94, '2019-03-03 10:45:43'),
+ ('TW_Entertain', 94, '2019-03-03 10:45:43'),
+ ('PingTung', 92, '2019-03-03 10:45:43'),
+ ('forsale', 91, '2019-03-03 10:45:43'),
+ ('CarShop', 90, '2019-03-03 10:45:43'),
+ ('lesbian', 89, '2019-03-03 10:45:43'),
+ ('Finance', 88, '2019-03-03 10:45:43'),
+ ('TaiwanDrama', 86, '2019-03-03 10:45:43'),
+ ('Zastrology', 86, '2019-03-03 10:45:43'),
+ ('graduate', 85, '2019-03-03 10:45:43'),
+ ('PublicServan', 82, '2019-03-03 10:45:43'),
+ ('Brand', 79, '2019-03-03 10:45:43'),
+ ('watch', 79, '2019-03-03 10:45:43'),
+ ('E-appliance', 78, '2019-03-03 10:45:43'),
+ ('KanColle', 77, '2019-03-03 10:45:43'),
+ ('give', 77, '2019-03-03 10:45:43'),
+ ('Elephants', 75, '2019-03-03 10:45:43'),
+ ('StarCraft', 73, '2019-03-03 10:45:43'),
+ ('MacShop', 72, '2019-03-03 10:45:43'),
+ ('HelpBuy', 71, '2019-03-03 10:45:43'),
+ ('LGBT_SEX', 71, '2019-03-03 10:45:43'),
+ ('SENIORHIGH', 71, '2019-03-03 10:45:43'),
+ ('Badminton', 71, '2019-03-03 10:45:43'),
+ ('TWICE', 68, '2019-03-03 10:45:43'),
+ ('AKB48', 67, '2019-03-03 10:45:43'),
+ ('Bank_Service', 66, '2019-03-03 10:45:43'),
+ ('FITNESS', 66, '2019-03-03 10:45:43'),
+ ('DSLR', 65, '2019-03-03 10:45:43'),
+ ('fastfood', 65, '2019-03-03 10:45:43'),
+ ('facelift', 65, '2019-03-03 10:45:43'),
+ ('cookclub', 65, '2019-03-03 10:45:43'),
+ ('hypermall', 63, '2019-03-03 10:45:43'),
+ ('feminine_sex', 62, '2019-03-03 10:45:43'),
+ ('BabyProducts', 61, '2019-03-03 10:45:43'),
+ ('nb-shopping', 61, '2019-03-03 10:45:43'),
+ ('part-time', 60, '2019-03-03 10:45:43'),
+ ('SuperJunior', 59, '2019-03-03 10:45:43'),
+ ('Wanted', 59, '2019-03-03 10:45:43'),
+ ('studyabroad', 58, '2019-03-03 10:45:43'),
+ ('Railway', 57, '2019-03-03 10:45:43'),
+ ('DC_SALE', 56, '2019-03-03 10:45:43'),
+ ('ShuangHe', 56, '2019-03-03 10:45:43'),
+ ('Drama-Ticket', 55, '2019-03-03 10:45:43'),
+ ('IZONE', 54, '2019-03-03 10:45:43')]</pre><p>最後記得關閉連線。</p><pre class="crayon-plain-tag">conn.close()</pre><p></p>
+<h3>小結</h3>
+<p>要如何爬取資料內容，<span style="text-decoration: underline;"><span style="color: #9f6ad4; text-decoration: underline;">其實跟該網頁的HTML架構(網頁原始碼)有關</span>，即使同一個網頁也可以有許許多多種的爬取策略</span>。<br />
+因為範例的目標網頁非常簡單，故這邊只是用非常簡單的方式取得各看板名稱及相對應的人氣值。<br />
+另外有些更複雜的網頁可能不是把資料呈現在原始碼中的，就得需要用其他更進階的方法才能爬取囉。</p>
+<p>後續可以用任何方式定期跑這個script (例如每10分鐘跑一次), 就可以不斷的紀錄PTT熱門看板人氣隨時間的變化.<br />
+輔以視覺化工具呈現後, 預期可以看到地震時八卦版會瞬間湧入人潮; NBA板隨著季賽開打而常駐熱門前三名&#8230;等等.</p>
+<p>&nbsp;</p>
+<hr />
+<p>下篇筆記是關於如何將每隔一段時間爬取資料儲存到SQLite，最後做個視覺化的展示：</p>
+<p><a href="/%e7%b5%b1%e8%a8%88-r%e8%aa%9e%e8%a8%80-sqlitedb-%e8%88%87-%e7%b0%a1%e6%98%93%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96-data-visualization/" target="_blank" rel="noopener noreferrer">使用R連接SQLite取得資料集</a></p>
+<p>更多Python網路爬蟲學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener noreferrer">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/" target="_blank" rel="noopener noreferrer">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/" target="_blank" rel="noopener noreferrer">Text Mining &amp; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a></p>
+<p>參考:</p>
+<h3><a title="Python網路爬蟲：大數據擷取、清洗、儲存與分析：王者歸來" href="https://tinyurl.com/yc6la3vd" target="_blank" rel="mid_name noopener noreferrer"><span style="font-size: 12pt;">Python網路爬蟲：大數據擷取、清洗、儲存與分析：王者歸來</span></a></h3>
+<p>這篇文章 <a rel="nofollow" href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

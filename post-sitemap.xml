@@ -1,0 +1,2294 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//localhost/wp-content/plugins/wordpress-seo/css/main-sitemap.xsl"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.google.com/schemas/sitemap-image/1.1 http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<url>
+		<loc>/</loc>
+		<lastmod>2020-10-12T09:30:37+08:00</lastmod>
+	</url>
+	<url>
+		<loc>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/</loc>
+		<lastmod>2018-11-22T09:55:58+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/chang-duong-372839-unsplash.jpg</image:loc>
+			<image:title><![CDATA[chang-duong-372839-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01-2.jpeg</image:loc>
+			<image:caption><![CDATA[資料處理]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02-1.jpeg</image:loc>
+			<image:caption><![CDATA[資料處理]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03-3.jpeg</image:loc>
+			<image:caption><![CDATA[Rplot03]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot04-2.jpeg</image:loc>
+			<image:caption><![CDATA[Rplot04]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05-2.jpeg</image:loc>
+			<image:caption><![CDATA[Rplot05]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/summarize-categorical-variables/</loc>
+		<lastmod>2018-11-22T09:57:18+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/glenn-carstens-peters-203007-unsplash.jpg</image:loc>
+			<image:title><![CDATA[glenn-carstens-peters-203007-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Pic01.jpeg</image:loc>
+			<image:caption><![CDATA[Summarize Categorical Variables]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Pic02.jpeg</image:loc>
+			<image:caption><![CDATA[Summarize Categorical Variables]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Pic05.jpeg</image:loc>
+			<image:caption><![CDATA[Summarize Categorical Variables]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic03-1.png</image:loc>
+			<image:caption><![CDATA[Summarize Categorical Variables]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic04-1.png</image:loc>
+			<image:caption><![CDATA[Summarize Categorical Variables]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/september-cafe-%e4%b9%9d%e6%9c%88%e5%92%96%e5%95%a1/</loc>
+		<lastmod>2018-11-22T10:05:31+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_3668.jpg</image:loc>
+			<image:title><![CDATA[IMG_3668]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_3635.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_3668.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_3669.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_3670.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_3641.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1561.jpg</image:loc>
+			<image:caption><![CDATA[september cafe]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/starbucks-coffee-tianmu-%e6%98%9f%e5%b7%b4%e5%85%8b-%e5%a4%a9%e7%8e%89%e9%96%80%e5%b8%82-%e5%a4%a9%e6%af%8d/</loc>
+		<lastmod>2018-11-22T10:12:57+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_11431.jpg</image:loc>
+			<image:title><![CDATA[IMG_1143]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-tokyo-hakone-day2-%e7%ae%b1%e6%a0%b9-%e4%ba%8c%e6%97%a5%e9%81%8a/</loc>
+		<lastmod>2018-11-22T10:13:55+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_3380.jpg</image:loc>
+			<image:title><![CDATA[IMG_3380]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-tokyo-hakone-day1-%e7%ae%b1%e6%a0%b9-%e4%ba%8c%e6%97%a5%e9%81%8a/</loc>
+		<lastmod>2018-11-22T10:15:10+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/e7aeb1e6a0b9day1e789b9e889b2e59c96e789871.jpg</image:loc>
+			<image:title><![CDATA[箱根day1特色圖片]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_3058.jpg</image:loc>
+			<image:caption><![CDATA[箱根 二日遊 hakone]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-tokyo-hakone-transportation-%e7%ae%b1%e6%a0%b9%e4%ba%a4%e9%80%9a/</loc>
+		<lastmod>2018-11-22T10:16:09+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/07/freepass_map.jpg</image:loc>
+			<image:title><![CDATA[freepass_map]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/hakone-yunohana-prince-hotel-%e7%ae%b1%e6%a0%b9%e6%b9%af%e4%b9%8b%e8%8a%b1%e7%8e%8b%e5%ad%90%e5%a4%a7%e9%a3%af%e5%ba%97/</loc>
+		<lastmod>2018-11-22T10:17:27+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/e6b9afe4b98be88ab1-e4bd8fe5aebfe688bfe59e8b2.jpg</image:loc>
+			<image:title><![CDATA[湯之花-住宿房型2]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-tokyo-roppongi-tokyo-midtown-%e6%aa%9c%e7%94%ba%e5%85%ac%e5%9c%92/</loc>
+		<lastmod>2018-11-22T10:18:29+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_6209.jpg</image:loc>
+			<image:title><![CDATA[IMG_6209]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/ishimurashoten-%e7%9f%b3%e6%9d%91%e5%95%86%e5%ba%97-%e9%89%84%e5%8c%a0/</loc>
+		<lastmod>2018-11-22T10:19:26+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1952.jpg</image:loc>
+			<image:title><![CDATA[IMG_1952]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1958.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1955.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1957.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1954.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1960.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1959.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1961.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1966.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1967.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_1968.jpg</image:loc>
+			<image:caption><![CDATA[石村商店 鉄匠 ishimurashoten]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/2019-%e6%97%a5%e5%bc%8f%e9%ab%98%e7%b4%9a%e7%b2%be%e7%b7%bb%e9%8d%8b%e7%89%a9-shabushabu-%e5%8f%b0%e5%8c%97%e9%ab%98%e7%b4%9a%e7%81%ab%e9%8d%8b-%e6%97%a5%e5%bc%8f%e7%81%ab%e9%8d%8b/</loc>
+		<lastmod>2019-01-02T12:40:38+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4018.jpg</image:loc>
+			<image:title><![CDATA[IMG_4018]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4018.jpg</image:loc>
+			<image:caption><![CDATA[台北高級火鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/20181231-IMG_6581.jpg</image:loc>
+			<image:caption><![CDATA[台北高級火鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4286_new_small.jpg</image:loc>
+			<image:caption><![CDATA[台北高級火鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4059.jpg</image:loc>
+			<image:caption><![CDATA[台北高級火鍋]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e4%bd%86%e9%a6%ac%e5%ae%b6%e6%b6%ae%e6%b6%ae%e9%8d%8b-tajimaya-shabushabu/</loc>
+		<lastmod>2019-01-02T12:42:45+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4286_new_small.jpg</image:loc>
+			<image:title><![CDATA[IMG_4286_new_small]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4876.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4286_new_small.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4860.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4861.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4292.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4293.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4296.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4297.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4298.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4328.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4332.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4339.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4352.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4358.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4343.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4346.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4361.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4831.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4820_new_small.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4834.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4842.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4869.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/IMG_4865.jpg</image:loc>
+			<image:caption><![CDATA[但馬家涮涮鍋]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/kurogeya-shabushabu-%e9%bb%91%e6%af%9b%e5%b1%8b/</loc>
+		<lastmod>2019-01-02T12:43:56+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4059.jpg</image:loc>
+			<image:title><![CDATA[IMG_4059]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4031.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4032.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4044.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4048.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4046.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4038.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4041.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4055.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4040.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4050.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4056.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4065.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4072.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4059.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4062.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4073.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4076.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4077.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4082.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4085.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4098.jpg</image:loc>
+			<image:caption><![CDATA[黑毛屋, kurogeya]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/hostshabu-%e5%90%88shabu-shabushabu/</loc>
+		<lastmod>2019-01-02T12:45:39+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/02/IMG_4021.jpg</image:loc>
+			<image:title><![CDATA[IMG_4021]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4018.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_7471.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0527.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_3952.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_3960.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0540.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0542.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_7466.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_3973.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_3976.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0560.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0565.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/IMG_0590.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4003.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4004.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4011.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4010.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/IMG_4021.jpg</image:loc>
+			<image:caption><![CDATA[合shabu]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/bounce-rate-exit-rate-%e8%b7%b3%e5%87%ba%e7%8e%87-%e9%9b%a2%e9%96%8b%e7%8e%87-ga/</loc>
+		<lastmod>2019-03-03T12:42:46+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/carlos-muza-84523-unsplash.jpg</image:loc>
+			<image:title><![CDATA[carlos-muza-84523-unsplash]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/new-taipei-city-fulong-%e6%96%b0%e5%8c%97%e7%a6%8f%e9%9a%86-%e8%8d%89%e5%b6%ba%e5%8f%a4%e9%81%93/</loc>
+		<lastmod>2019-03-03T15:54:58+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_3579_21.jpg</image:loc>
+			<image:title><![CDATA[IMG_3579_2]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_3541_21.jpg</image:loc>
+			<image:caption><![CDATA[新北 福隆 草嶺古道]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e5%a5%a7%e8%90%ac%e5%a4%a7/</loc>
+		<lastmod>2019-03-03T15:55:26+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/LRM_EXPORT_685932229512733_20190128_220814690.jpg</image:loc>
+			<image:title><![CDATA[LRM_EXPORT_685932229512733_20190128_220814690]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/1061201-%E5%A5%A7%E8%90%AC%E5%A4%A7%E6%96%B0%E5%B0%8E%E8%A6%BD%E5%9C%B0%E5%9C%96%E6%AD%A3%E9%9D%A2-%E7%A2%BA%E5%AE%9AOK4-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3828.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1214-1.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3827.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/20190128-IMG_1277.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3863.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1341.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/LRM_EXPORT_685932229512733_20190128_220814690.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3880.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3888.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3894.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3897.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3899.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3903.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3911.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3935.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3936.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1504.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3966.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1627.jpg</image:loc>
+			<image:caption><![CDATA[奧萬大]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e5%8d%97%e6%8a%95%e4%b8%89%e5%a4%a9%e5%85%a9%e5%a4%9c-%e8%87%aa%e7%94%b1%e8%a1%8c/</loc>
+		<lastmod>2019-03-03T15:55:58+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10760790320_IMG_2246.jpg</image:loc>
+			<image:title><![CDATA[10760790320_IMG_2246]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_0531.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_0622.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10781667856_IMG_3716.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_0647.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_0839.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1181.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10748941136_IMG_0899.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10748046112_IMG_0880.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10748107232_IMG_0883.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10748047120_IMG_0882.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10747972368_IMG_1070.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3828-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3827-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1655-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1640-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1641-1.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/0809%E7%92%B0%E6%BD%AD%E8%B7%AF%E7%B7%9Asmall.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10790438112_IMG_2125.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/10760790320_IMG_2246.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4048.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4093.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4086.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4084.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4059.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4056.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4060.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4065.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4061.jpg</image:loc>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4062.jpg</image:loc>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e6%a1%82%e6%9c%88%e6%9d%91-lauravilla/</loc>
+		<lastmod>2019-03-03T15:56:37+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1676.jpg</image:loc>
+			<image:title><![CDATA[IMG_1676]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1668.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1666.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1676.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1664.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1660.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1665.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1654.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1655.jpg</image:loc>
+			<image:caption><![CDATA[桂月村]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1640.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1641.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_1645.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3995.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3989.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3990.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4001.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3997.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3998.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_3999.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4000.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/02/IMG_4002.jpg</image:loc>
+			<image:caption><![CDATA[桂月村 Laurel Villa 日月潭]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e9%9b%9e%e7%b1%a0%e5%b1%b1-%e4%b9%9d%e4%bb%bd-%e5%9f%ba%e9%9a%86/</loc>
+		<lastmod>2019-03-03T15:57:52+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4150.jpg</image:loc>
+			<image:title><![CDATA[IMG_4150]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4099.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4101.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4102.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4107.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4106.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4110.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4116.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4122.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4128.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4124.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4133.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4134.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4135.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4137.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4142.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4176.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4155.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4150.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4165.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/IMG_4151.jpg</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/1071123-1062%E5%85%AC%E8%BB%8A%E8%B7%AF%E7%B7%9A.jpg</image:loc>
+			<image:caption><![CDATA[1071123-1062公車路線]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8B%E5%8D%883.40.17.png</image:loc>
+			<image:caption><![CDATA[1062公車時刻表]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8B%E5%8D%883.43.01.png</image:loc>
+			<image:caption><![CDATA[雞籠山-基隆-九份]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/</loc>
+		<lastmod>2019-03-21T21:51:04+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/denise-jans-1126562-unsplash.jpg</image:loc>
+			<image:title><![CDATA[denise-jans-1126562-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%8812.54.30.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%882.05.14.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%882.16.21.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%882.29.33.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%882.29.33.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8A%E5%8D%8810.32.13.png</image:loc>
+			<image:caption><![CDATA[螢幕快照 2019-03-03 上午10.32.13]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%883.10.54.png</image:loc>
+			<image:caption><![CDATA[網路爬蟲-web-crawler]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8A%E5%8D%8810.32.13.png</image:loc>
+			<image:caption><![CDATA[螢幕快照 2019-03-03 上午10.32.13]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e6%a9%98%e8%89%b2%e6%b6%ae%e6%b6%ae%e5%b1%8b-shabushabu-%e5%8f%b0%e5%8c%97%e4%bf%a1%e7%be%a9-%e6%96%b0%e5%85%89%e4%b8%89%e8%b6%8aa9/</loc>
+		<lastmod>2019-04-06T08:29:52+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/20181231-IMG_6581.jpg</image:loc>
+			<image:title><![CDATA[20181231-IMG_6581]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/20181231-IMG_6581.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0065.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6679.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6689.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6680.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0060.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0039.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0041.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6684.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6702.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0040.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0038.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0024.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0023.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0019.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0030.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0020.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/o4ddb23b6b896dc7473c5b16b3682ae8b_4620693218504754598_190101_0027.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/IMG_6713.jpg</image:loc>
+			<image:caption><![CDATA[橘色涮涮屋]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/gradient-boosting-machines-gbm/</loc>
+		<lastmod>2019-04-14T22:54:16+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/ben-neale-193521-unsplash.jpg</image:loc>
+			<image:title><![CDATA[ben-neale-193521-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-6-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-9-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-19-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/Rplot01.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/Rplot02.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-23-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/Rplot03.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/Rplot04.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-36-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-38-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-45-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-46-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-47-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-48-1-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-63-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-64-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-65-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-66-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/04/unnamed-chunk-67-1.png</image:loc>
+			<image:caption><![CDATA[gradient boosting machines, GBM]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/</loc>
+		<lastmod>2019-04-14T22:55:32+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash.jpg</image:loc>
+			<image:title><![CDATA[aldino-hartan-putra-540980-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/Rplot.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-4-1-3.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-8-1-3.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-10-1-4.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-10-2-4.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-19-1-3.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/unnamed-chunk-20-1-3.png</image:loc>
+			<image:caption><![CDATA[random forests-隨機森林]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/partitional-clustering-kmeans-kmedoid/</loc>
+		<lastmod>2019-04-14T22:58:27+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/rawpixel-604745-unsplash.jpg</image:loc>
+			<image:title><![CDATA[rawpixel-604745-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01_dissimilarity_matrix-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02_kmeans_clustering_result.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot04-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot12-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot13-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot06-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot07-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot08-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot09-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot10-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot11-1.jpeg</image:loc>
+			<image:caption><![CDATA[partitional clustering]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/decision-tree-surrogate-in-cart/</loc>
+		<lastmod>2019-04-14T23:00:57+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/markus-spiske-187777-unsplash.jpg</image:loc>
+			<image:title><![CDATA[markus-spiske-187777-unsplash]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/</loc>
+		<lastmod>2019-04-14T23:01:36+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash.jpg</image:loc>
+			<image:title><![CDATA[j-kelly-brito-247570-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot01-1.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot02-1.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot03_prune.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot04_rf_plot.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot05_tuneRF.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot06_varImpPlot.jpeg</image:loc>
+			<image:caption><![CDATA[Decision Tree ]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/linear-regression-%e7%b7%9a%e6%80%a7%e8%bf%b4%e6%ad%b8%e6%a8%a1%e5%9e%8b/</loc>
+		<lastmod>2019-04-14T23:03:09+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/aleks-dorohovich-26-unsplash.jpg</image:loc>
+			<image:title><![CDATA[aleks-dorohovich-26-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/%E7%B5%B1%E8%A8%88%E6%A6%82%E5%BF%B5%E5%9C%96_Linear-Regression.jpg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot01.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot02.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot15.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot01-2.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot02-3.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot20.jpeg</image:loc>
+			<image:caption><![CDATA[linear regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot03.jpeg</image:loc>
+			<image:title><![CDATA[Rplot03]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot04.jpeg</image:loc>
+			<image:title><![CDATA[Rplot04]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot05.jpeg</image:loc>
+			<image:title><![CDATA[Rplot05]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot06.jpeg</image:loc>
+			<image:title><![CDATA[Rplot06]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot07.jpeg</image:loc>
+			<image:title><![CDATA[Rplot07]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot08.jpeg</image:loc>
+			<image:title><![CDATA[Rplot08]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot09.jpeg</image:loc>
+			<image:title><![CDATA[Rplot09]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot12.jpeg</image:loc>
+			<image:title><![CDATA[Rplot12]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot13.jpeg</image:loc>
+			<image:title><![CDATA[Rplot13]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot14.jpeg</image:loc>
+			<image:title><![CDATA[Rplot14]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot04-1.jpeg</image:loc>
+			<image:title><![CDATA[Rplot04]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot05-1.jpeg</image:loc>
+			<image:title><![CDATA[Rplot05]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot03-1.jpeg</image:loc>
+			<image:title><![CDATA[Rplot03]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot16.jpeg</image:loc>
+			<image:title><![CDATA[Rplot16]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot17.jpeg</image:loc>
+			<image:title><![CDATA[Rplot17]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot18.jpeg</image:loc>
+			<image:title><![CDATA[Rplot18]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/Rplot19.jpeg</image:loc>
+			<image:title><![CDATA[Rplot19]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-hokkaido-otaru-day2-%e5%8c%97%e6%b5%b7%e9%81%93-%e5%b0%8f%e6%a8%bd/</loc>
+		<lastmod>2019-08-10T12:58:24+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_27341.jpg</image:loc>
+			<image:title><![CDATA[IMG_2734]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-hokkaido-hakodate-day5-%e5%8c%97%e6%b5%b7%e9%81%93-%e5%87%bd%e9%a4%a8/</loc>
+		<lastmod>2019-08-10T13:00:13+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_3020.jpg</image:loc>
+			<image:title><![CDATA[IMG_3020]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-hokkaido-furano-day3-%e5%8c%97%e6%b5%b7%e9%81%93-%e5%af%8c%e8%89%af%e9%87%8e-%e8%b2%8d%e5%b0%8f%e8%b7%af/</loc>
+		<lastmod>2019-08-10T13:01:36+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_2742.jpg</image:loc>
+			<image:title><![CDATA[IMG_2742]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-hokkaido-noboribetsu-day1-%e5%8c%97%e6%b5%b7%e9%81%93-%e7%99%bb%e5%88%a5/</loc>
+		<lastmod>2019-08-10T13:03:01+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/img_24631.jpg</image:loc>
+			<image:title><![CDATA[IMG_2463]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/japan-hokkaido-hakodate-day4-%e5%8c%97%e6%b5%b7%e9%81%93-%e5%87%bd%e9%a4%a8/</loc>
+		<lastmod>2019-08-10T13:07:38+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/e587bde9a4a8e5b1b1e799bee890ace5a49ce699af-e5b08ee9818ae58886e4baab.jpg</image:loc>
+			<image:title><![CDATA[函館山百萬夜景-導遊分享]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e5%b0%8f%e9%bc%8e%e8%86%be/</loc>
+		<lastmod>2019-08-17T13:25:45+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7108.jpg</image:loc>
+			<image:title><![CDATA[IMG_7108]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7092.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7094.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7096.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7091.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7097.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7098.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7099.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7100.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7101.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7109.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7108.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7104_s2.jpg</image:loc>
+			<image:caption><![CDATA[小鼎膾]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/</loc>
+		<lastmod>2019-08-17T15:58:35+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7120.jpg</image:loc>
+			<image:title><![CDATA[IMG_7120]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7120.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_5116.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7132.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7131.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7067.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7081.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7089.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_5081.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7111.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7210.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7211.jpg</image:loc>
+			<image:caption><![CDATA[信義誠品咖啡]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e9%82%80%e6%9c%88%e5%85%92/</loc>
+		<lastmod>2019-08-24T22:39:26+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7223.jpg</image:loc>
+			<image:title><![CDATA[IMG_7223]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7223.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7232.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7248.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7233.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7235.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7242.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7244.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE0.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE1.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE2.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE3.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE4.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE5.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7343.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7258_%E6%B4%AA%E6%96%87%E4%BF%AE.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7344.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7347.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7348.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7340.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7346.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7368.jpg</image:loc>
+			<image:caption><![CDATA[邀月兒]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/jbs-diner/</loc>
+		<lastmod>2019-08-25T13:40:18+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7422_%E6%A9%AB.jpg</image:loc>
+			<image:title><![CDATA[IMG_7422_橫]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7514_%E9%96%80%E5%8F%A31.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7394.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7393.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7398.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7390.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7387_%E6%9D%BF%E5%87%B3%E5%8D%803.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE2-1.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE3-1.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE4-1.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE5-1.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE6.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE7.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE8.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE9.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE0-1.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/%E8%8F%9C%E5%96%AE1-2.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7402.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7404.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7406.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7405.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7400.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7401.jpg</image:loc>
+			<image:caption><![CDATA[JB's Diner]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/08/IMG_7422_%E6%A9%AB.jpg</image:loc>
+			<image:caption><![CDATA[IMG_7422_橫]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/</loc>
+		<lastmod>2020-07-03T10:21:33+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/lora-ohanessian-440247-unsplash.jpg</image:loc>
+			<image:title><![CDATA[lora-ohanessian-440247-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8A%E5%8D%889.33.06-1.png</image:loc>
+			<image:caption><![CDATA[螢幕快照 2019-03-03 上午9.33.06]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8A%E5%8D%889.26.02.png</image:loc>
+			<image:caption><![CDATA[螢幕快照 2019-03-03 上午9.26.02]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%883.58.10.png</image:loc>
+			<image:caption><![CDATA[web-crawler-text-mining]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%884.02.11.png</image:loc>
+			<image:caption><![CDATA[web-crawler-text-mining]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-02-%E4%B8%8B%E5%8D%884.06.00.png</image:loc>
+			<image:caption><![CDATA[web-crawler-text-mining]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E6%96%87%E7%AB%A0%E6%96%87%E5%AD%97%E9%9B%B23.png</image:loc>
+			<image:caption><![CDATA[文章文字雲3]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E6%96%87%E7%AB%A0%E6%96%87%E5%AD%97%E9%9B%B24.png</image:loc>
+			<image:caption><![CDATA[文章文字雲4]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/03/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7-2019-03-03-%E4%B8%8B%E5%8D%8812.06.24.png</image:loc>
+			<image:caption><![CDATA[螢幕快照 2019-03-03 下午12.06.24]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/regularized-regression-ridge-lasso-elastic/</loc>
+		<lastmod>2020-07-03T10:25:08+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/j-kelly-brito-256889-unsplash.jpg</image:loc>
+			<image:title><![CDATA[j-kelly-brito-256889-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-170-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-177-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Ridge]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-181-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Ridge]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-185-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Ridge]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-192-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Ridge]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-193-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Ridge]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-194-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Lasso]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-195-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Lasso]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-196-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Lasso]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-201-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Lasso]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-204-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Elastic Net]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-207-1.png</image:loc>
+			<image:caption><![CDATA[Regularized Regression, Elastic Net]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/</loc>
+		<lastmod>2020-07-03T10:25:53+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/element5-digital-352043-unsplash.jpg</image:loc>
+			<image:title><![CDATA[element5-digital-352043-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-76-1.png</image:loc>
+			<image:caption><![CDATA[plot of chunk unnamed-chunk-76]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-77-1.png</image:loc>
+			<image:caption><![CDATA[plot of chunk unnamed-chunk-77]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-78-1.png</image:loc>
+			<image:caption><![CDATA[plot of chunk unnamed-chunk-78]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/Untitled-presentation.jpg</image:loc>
+			<image:caption><![CDATA[Regression Tree, Bagging]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-87-1.png</image:loc>
+			<image:caption><![CDATA[plot of chunk unnamed-chunk-87]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2019/01/unnamed-chunk-89-1.png</image:loc>
+			<image:caption><![CDATA[plot of chunk unnamed-chunk-89]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/tidyr-reshaping-data/</loc>
+		<lastmod>2020-07-03T10:27:17+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/johny-vino-745781-unsplash.jpg</image:loc>
+			<image:title><![CDATA[johny-vino-745781-unsplash]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/rfm-model-crm-customer-segmentation-r/</loc>
+		<lastmod>2020-07-03T10:27:36+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/campaign-creators-771730-unsplash.jpg</image:loc>
+			<image:title><![CDATA[campaign-creators-771730-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-5-1.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-5-2.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-7-1.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-7-2.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-10-1.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-10-2.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/12/unnamed-chunk-14-1.png</image:loc>
+			<image:caption><![CDATA[RFM Model CRM ]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/</loc>
+		<lastmod>2020-07-03T10:28:18+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/lauren-mancke-60627-unsplash.jpg</image:loc>
+			<image:title><![CDATA[lauren-mancke-60627-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01-3.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03-4.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot04-3.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05-3.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot06-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot07-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot08-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot09-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot10-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot11-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot12-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot13-2.jpeg</image:loc>
+			<image:caption><![CDATA[dual y-axis 雙Y軸]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/</loc>
+		<lastmod>2020-07-03T10:28:37+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash.jpg</image:loc>
+			<image:title><![CDATA[jeshoots-com-219386-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01-5.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02-4.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03_04.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05_06.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot07_08.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot09_10.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot11_12.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot13-3.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot14.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot15.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot16.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot17.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot18.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot19.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot20.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot21.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot22.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot23.jpeg</image:loc>
+			<image:caption><![CDATA[ggplot2 theme]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/</loc>
+		<lastmod>2020-07-03T10:28:53+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/nick-morrison-325805-unsplash.jpg</image:loc>
+			<image:title><![CDATA[nick-morrison-325805-unsplash]]></image:title>
+			<image:caption><![CDATA[資料標準化 data scaling]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/principal-components-analysis-pca-%e4%b8%bb%e6%88%90%e4%bb%bd%e5%88%86%e6%9e%90/</loc>
+		<lastmod>2020-07-03T10:29:49+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/rawpixel-602145-unsplash.jpg</image:loc>
+			<image:title><![CDATA[rawpixel-602145-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01-1.jpeg</image:loc>
+			<image:caption><![CDATA[principal components analysis, PCA, 主成份分析]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02.jpeg</image:loc>
+			<image:caption><![CDATA[principal components analysis, PCA, 主成份分析]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03-2.jpeg</image:loc>
+			<image:caption><![CDATA[principal components analysis, PCA, 主成份分析]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/</loc>
+		<lastmod>2020-07-03T10:31:05+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash.jpg</image:loc>
+			<image:title><![CDATA[kyle-glenn-686350-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot01.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot07.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot02_Eu_Ward.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot08.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot04.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot06.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot09.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot10.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot11.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot12.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot13.jpeg</image:loc>
+			<image:caption><![CDATA[hierarchical clustering]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/r-sqlite-data-visualization-ggplot2/</loc>
+		<lastmod>2020-07-03T10:32:05+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/trent-erwin-338084-unsplash.jpg</image:loc>
+			<image:title><![CDATA[trent-erwin-338084-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/ptt_pop_01.png</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot01.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot03.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot04.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot05.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot07-1.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/Rplot08.jpeg</image:loc>
+			<image:caption><![CDATA[r ggplot2]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/</loc>
+		<lastmod>2020-07-03T10:33:23+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/domenico-loia-364221-unsplash.jpg</image:loc>
+			<image:title><![CDATA[domenico-loia-364221-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic01.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic02.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic03.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic04.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic05.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic06.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic07.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic08.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic09.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic10.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic11.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic12.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic13.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic14.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic15.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic16.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic17.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic18-1.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic19.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic20.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic21.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic22.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic23.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic24.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic25.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/pic26.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/</loc>
+		<lastmod>2020-07-03T10:33:57+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/christopher-gower-291240-unsplash.jpg</image:loc>
+			<image:title><![CDATA[christopher-gower-291240-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic19.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic20.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/pic21.png</image:loc>
+			<image:caption><![CDATA[logistic regression]]></image:caption>
+		</image:image>
+	</url>
+	<url>
+		<loc>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/</loc>
+		<lastmod>2020-07-03T10:34:50+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/08/andrew-neel-308138-unsplash.jpg</image:loc>
+			<image:title><![CDATA[andrew-neel-308138-unsplash]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/</loc>
+		<lastmod>2020-07-03T11:35:42+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/05/anete-lusina-382329-unsplash.jpg</image:loc>
+			<image:title><![CDATA[anete-lusina-382329-unsplash]]></image:title>
+		</image:image>
+	</url>
+	<url>
+		<loc>/app-mobile-ad-revenue-admob-%e8%a1%8c%e5%8b%95%e5%bb%a3%e5%91%8a%e6%94%b6%e5%85%a5/</loc>
+		<lastmod>2020-10-12T09:30:37+08:00</lastmod>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/10/rawpixel-771280-unsplash.jpg</image:loc>
+			<image:title><![CDATA[rawpixel-771280-unsplash]]></image:title>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/10/S__6840342_jam.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot05.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/10/example_admob.png</image:loc>
+			<image:caption><![CDATA[example_admob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot03-1.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot08.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot06.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot07.jpg</image:loc>
+			<image:caption><![CDATA[AdMob]]></image:caption>
+		</image:image>
+		<image:image>
+			<image:loc>/wp-content/uploads/2018/09/Rplot09.jpg</image:loc>
+			<image:caption><![CDATA[Rplot09]]></image:caption>
+		</image:image>
+	</url>
+</urlset>
+<!-- XML Sitemap generated by Yoast SEO -->

@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="Bagging法綜合多個樹模型結果，可以降低單一樹模型的高變異性並提升預測正確率。但Bagging法中樹與樹之間的相關性會降低模型整體的表現。隨機森林 Random forests 是Bagging修改後的版本，它是由「去相關性」的樹模型所組成的集成演算法，有很不錯的預測正確率且是一個受歡迎、開箱即用的演算法。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="Random Forests 隨機森林 | randomForest, ranger, h2o | R語言"><meta property="og:description" content="Bagging法綜合多個樹模型結果，可以降低單一樹模型的高變異性並提升預測正確率。但Bagging法中樹與樹之間的相關性會降低模型整體的表現。隨機森林 Random forests 是Bagging修改後的版本，它是由「去相關性」的樹模型所組成的集成演算法，有很不錯的預測正確率且是一個受歡迎、開箱即用的演算法。"><meta property="og:url" content="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:tag" content="decision tree"><meta property="article:tag" content="h2o"><meta property="article:tag" content="random forests"><meta property="article:tag" content="randomForest"><meta property="article:tag" content="ranger"><meta property="article:tag" content="Regression Tree"><meta property="article:tag" content="隨機森林"><meta property="article:section" content=" 程式與統計"><meta property="article:published_time" content="2019-03-19T14:33:31+08:00"><meta property="article:modified_time" content="2019-04-14T14:55:32+08:00"><meta property="og:updated_time" content="2019-04-14T14:55:32+08:00"><meta property="og:image" content="/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-1024x768.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="768"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="Bagging法綜合多個樹模型結果，可以降低單一樹模型的高變異性並提升預測正確率。但Bagging法中樹與樹之間的相關性會降低模型整體的表現。隨機森林 Random forests 是Bagging修改後的版本，它是由「去相關性」的樹模型所組成的集成演算法，有很不錯的預測正確率且是一個受歡迎、開箱即用的演算法。"><meta name="twitter:title" content="Random Forests 隨機森林 | randomForest, ranger, h2o | R語言"><meta name="twitter:image" content="/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-2802" class="post-2802 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-statistics-model tag-decision-tree tag-h2o tag-random-forests tag-randomforest tag-ranger tag-regression-tree tag-249"><div class="entry-thumb">
+			<img width="2048" height="1536" src="/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="aldino-hartan-putra-540980-unsplash" loading="lazy" srcset="/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash.jpg 2048w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-300x225.jpg 300w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-768x576.jpg 768w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-1024x768.jpg 1024w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-830x623.jpg 830w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-230x173.jpg 230w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-350x263.jpg 350w,/wp-content/uploads/2019/03/aldino-hartan-putra-540980-unsplash-480x360.jpg 480w" sizes="(max-width: 2048px) 100vw, 2048px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/statistics-model/" title="統計模型" class="post-cat">統計模型</a>		</div>
+
+		<h1 class="title-post entry-title">Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" rel="bookmark"><time class="entry-date published" datetime="2019-03-19T22:33:31+08:00">2019-03-19</time><time class="updated" datetime="2019-04-14T22:55:32+08:00">2019-04-14</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p><a href="/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/" target="_blank" rel="noopener noreferrer">Bagging法</a>綜合多個樹模型結果，可以降低單一樹模型的高變異性並提升預測正確率。但Bagging法中樹與樹之間的相關性會降低模型整體的表現。隨機森林 Random forests 是Bagging修改後的版本，它是由「去相關性」的樹模型所組成的集成演算法，有很不錯的預測正確率且是一個受歡迎、開箱即用的演算法。</p>
+<h3>載入所需套件</h3>
+<p></p>
+
+		<div id="crayon-60f906a46343c214113354" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(rsample)      # data splitting 
+library(randomForest) # basic implementation
+library(ranger)       # a faster implementation of randomForest
+library(caret)        # an aggregator package for performing many machine learning models
+library(h2o)          # an extremely fast java-based platform
+library(dplyr)
+library(magrittr)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46343c214113354-1">1</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-2">2</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-3">3</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-4">4</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-5">5</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-6">6</div><div class="crayon-num" data-line="crayon-60f906a46343c214113354-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46343c214113354-1">library(rsample)      # data splitting </div><div class="crayon-line" id="crayon-60f906a46343c214113354-2">library(randomForest) # basic implementation</div><div class="crayon-line" id="crayon-60f906a46343c214113354-3">library(ranger)       # a faster implementation of randomForest</div><div class="crayon-line" id="crayon-60f906a46343c214113354-4">library(caret)        # an aggregator package for performing many machine learning models</div><div class="crayon-line" id="crayon-60f906a46343c214113354-5">library(h2o)          # an extremely fast java-based platform</div><div class="crayon-line" id="crayon-60f906a46343c214113354-6">library(dplyr)</div><div class="crayon-line" id="crayon-60f906a46343c214113354-7">library(magrittr)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>準備資料。</p>
+<ul><li>使用AmesHousing套件中的Ames Housing Data。</li>
+<li>使用resample package中的initial_split()將資料切分成7:3(將參數設定為prop = 0.7)。</li>
+<li>再分別用training()和testing()函數將切分好的資料萃取出。</li>
+<li>並使用set.seed()來確保資料切分結果是可再現的。</li>
+</ul><p></p>
+
+		<div id="crayon-60f906a463448608317789" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Create training (70%) and test (30%) sets for the AmesHousing::make_ames() data.
+# Use set.seed for reproducibility
+set.seed(123)
+ames_split <- initial_split(data = AmesHousing::make_ames(), prop = .7)
+ames_train <- training(ames_split)
+ames_test  <- testing(ames_split)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463448608317789-1">1</div><div class="crayon-num" data-line="crayon-60f906a463448608317789-2">2</div><div class="crayon-num" data-line="crayon-60f906a463448608317789-3">3</div><div class="crayon-num" data-line="crayon-60f906a463448608317789-4">4</div><div class="crayon-num" data-line="crayon-60f906a463448608317789-5">5</div><div class="crayon-num" data-line="crayon-60f906a463448608317789-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463448608317789-1"># Create training (70%) and test (30%) sets for the AmesHousing::make_ames() data.</div><div class="crayon-line" id="crayon-60f906a463448608317789-2"># Use set.seed for reproducibility</div><div class="crayon-line" id="crayon-60f906a463448608317789-3">set.seed(123)</div><div class="crayon-line" id="crayon-60f906a463448608317789-4">ames_split <div class="crayon-line" id="crayon-60f906a463448608317789-5">ames_train <div class="crayon-line" id="crayon-60f906a463448608317789-6">ames_test  </div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>Random Forests 概念介紹</h3>
+<p>隨機森林模型的基礎概念和Decision Trees和Bagging一樣的(可以參考<a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">決策樹,Decision Trees</a>和<a href="/regression-tree-%E8%BF%B4%E6%AD%B8%E6%A8%B9-bagging-bootstrap-aggrgation-r%E8%AA%9E%E8%A8%80/" target="_blank" rel="noopener noreferrer">Bagging</a>)。Bagging Trees模型在演算法中納入了隨機的元素，有效的降低了單一樹模型的高變異性與提升模型預測正確率。然而在bagging中的trees並非所有都是彼此相互獨立的，因為在每一棵樹切分節點時都是考慮所有原始的預測變數。也因爲上述關係，來自不同bootstrapped samples的樹彼此的結構都會有些類似（尤其是在樹的上半部，用來切割的前幾大變數都會非常類似）。</p>
+<p>樹的結構相遇的這個特性就稱作tree correlation，它阻礙了Bagging最適地降低預測目標值的變異(variance)。為了更近一步降低變異，我們需要最小化樹與樹之間的相關性。這可以透過注入更多的隨機性到長樹的過程。 Random Forests是透過以下兩步驟來達成的：</p>
+<ol><li>Bootstrap (拔靴法) : 跟Bagging很類似，每一顆樹都是建立自不同的bootstrapped sample，讓他們稍稍不一樣並稍稍去相關性。</li>
+<li>Split-variable randomization (變數切割的隨機性) : 每一次在執行變數切割時，搜尋切割變數的範圍被限縮為隨機的子集合，即隨機挑選m個隸屬於總p個變數的子集合作為切割搜尋變數的範圍。對回歸樹來說，預設使用\(m=\frac{p}{3}\)，是個可經調教的參數。當\(m = p\)的時候，則跟只進行步驟1的結果一樣。</li>
+</ol><p>因為每棵樹都是來自不同的隨機bootstrapped sample且每一次切割都是隨機挑選變數的子集合，因此樹與樹之間的關聯性會下降地較Bagging更低。</p>
+<h4>OOB error vs. test set error</h4>
+<p>和Bagging一樣，bootstrap resample法的一個天然好處，就是隨機森林模型可以透過out-of-bag(OOB)的樣本誤差來作為有效與合理近似實驗誤差(test error)。不需要額外產生或犧牲訓練資料集，OOB sample可供作為一個內建的驗證子集合。OOB sample 的存在讓尋找使模型錯誤率趨於穩定的最適樹模型數量(ntree)更有效率。但是OOB error和test error終究還是預期會不太相同。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-2804" src="/wp-content/uploads/2019/03/Rplot.png" alt="random forests-隨機森林" width="800" height="500" srcset="/wp-content/uploads/2019/03/Rplot.png 800w,/wp-content/uploads/2019/03/Rplot-300x188.png 300w,/wp-content/uploads/2019/03/Rplot-768x480.png 768w,/wp-content/uploads/2019/03/Rplot-230x144.png 230w,/wp-content/uploads/2019/03/Rplot-350x219.png 350w,/wp-content/uploads/2019/03/Rplot-480x300.png 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<p>[上圖：Random forest out-of-bag error versus validation error.]</p>
+<p> </p>
+<p>此外，有很多package都沒有可以追蹤在某一棵樹模型中，哪些是OOB sample哪些不是的功能。這樣在比須比較多個模型的成效時，想要使用相同的驗證資料集來幫每個模型打分數是不可行的。而且，技術上雖然可以對OOB sample計算特定指標(metrics)如root mean squared logarithmic error (RMSLE)，但並非所有package都有內建這樣的運算功能。所以如果你想要比較多個模型的成效或是使用較不傳統的損失函數指標，你可能還是會選擇cross validation。</p>
+<h4>Advantages & Disadvantages of Random Forests</h4>
+<h5>優點</h5>
+<ol><li>隨機森林模型通常具有非常好的成效。</li>
+<li>非常好的「開箱即用」的模型-不太需要調整什麼參數。</li>
+<li>有內建的驗證資料集validation set – 不須為了額外驗證而犧牲資料。</li>
+<li>不需前處理(pre-processing)。</li>
+<li>對於離群值的處理是強大的。</li>
+</ol><h5>缺點</h5>
+<ol><li>當運算大型資料時會變的非常慢。</li>
+<li>雖然模型預測正確率高，但通常無法跟更先進的boosting演算法相比。</li>
+<li>較不易解釋。</li>
+</ol><h3>基本實作</h3>
+<p>在R中有超過20種的Random Forests Packages。以下會使用歷史最悠久且最受歡迎randomForest套件來說明示範基本的Random Forests模型實作。但必須注意，當你的資料集變得很大的時候，randomForest回無法很好的擴展到大型資料（即使使用foreach進行平行運算）。此外，為了探索和比較不同模型參數的效果，我們也可找到更多有效的套件。因此，在模型tuning階段，我們會說明如何使用ranger和h2o package來進行更有效率的Random Forests modeling。</p>
+<p>randomForest::randomForest可以使用formula或x,y matrix表示的方式來指定模型資料。我們以下以formula的方式來指定模型設定並使用randomForest模型預設參數。</p>
+
+		<div id="crayon-60f906a46344e062450378" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# for reproduciblity
+set.seed(123)
+
+# default RF model
+m1 <- randomForest(
+  formula = Sale_Price ~ .,
+  data    = ames_train
+)
+
+m1</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46344e062450378-1">1</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-2">2</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-3">3</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-4">4</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-5">5</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-6">6</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-7">7</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-8">8</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-9">9</div><div class="crayon-num" data-line="crayon-60f906a46344e062450378-10">10</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46344e062450378-1"># for reproduciblity</div><div class="crayon-line" id="crayon-60f906a46344e062450378-2">set.seed(123)</div><div class="crayon-line" id="crayon-60f906a46344e062450378-3"> </div><div class="crayon-line" id="crayon-60f906a46344e062450378-4"># default RF model</div><div class="crayon-line" id="crayon-60f906a46344e062450378-5">m1 <div class="crayon-line" id="crayon-60f906a46344e062450378-6">  formula = Sale_Price ~ .,</div><div class="crayon-line" id="crayon-60f906a46344e062450378-7">  data    = ames_train</div><div class="crayon-line" id="crayon-60f906a46344e062450378-8">)</div><div class="crayon-line" id="crayon-60f906a46344e062450378-9"> </div><div class="crayon-line" id="crayon-60f906a46344e062450378-10">m1</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463453574849479" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## 
+## Call:
+##  randomForest(formula = Sale_Price ~ ., data = ames_train) 
+##                Type of random forest: regression
+##                      Number of trees: 500
+## No. of variables tried at each split: 26
+## 
+##           Mean of squared residuals: 661089658
+##                     % Var explained: 89.8
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463453574849479-1">1</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-2">2</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-3">3</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-4">4</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-5">5</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-6">6</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-7">7</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-8">8</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-9">9</div><div class="crayon-num" data-line="crayon-60f906a463453574849479-10">10</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463453574849479-1">## </div><div class="crayon-line" id="crayon-60f906a463453574849479-2">## Call:</div><div class="crayon-line" id="crayon-60f906a463453574849479-3">##  randomForest(formula = Sale_Price ~ ., data = ames_train) </div><div class="crayon-line" id="crayon-60f906a463453574849479-4">##                Type of random forest: regression</div><div class="crayon-line" id="crayon-60f906a463453574849479-5">##                      Number of trees: 500</div><div class="crayon-line" id="crayon-60f906a463453574849479-6">## No. of variables tried at each split: 26</div><div class="crayon-line" id="crayon-60f906a463453574849479-7">## </div><div class="crayon-line" id="crayon-60f906a463453574849479-8">##           Mean of squared residuals: 661089658</div><div class="crayon-line" id="crayon-60f906a463453574849479-9">##                     % Var explained: 89.8</div><div class="crayon-line" id="crayon-60f906a463453574849479-10"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>從m1結果來看：</p>
+<ul><li>randomForest預設會使用500棵樹。</li>
+<li>每一次切割(each split)會隨機篩選出\(\frac{Features}{3}=26\)個預測變數作為base。(原始data扣除目標變數Sale_Price的number of features = 80)</li>
+<li>m1$mse(regression only)代表的是由OOB sample所計算出的「平均誤差平方(mean squared erre)」向量，即殘差平方和(sum of squared residuals)除上樹的個數(n)。</li>
+<li>綜合500棵樹的mse(OOB error)為m1$mse[500] = 6.6108966 × 10<sup>8</sup>。</li>
+</ul><p>我們可以進一步將不同棵樹所組成的隨機森林模型(ntree)對應的平均誤差(MSE)給繪出：</p>
+
+		<div id="crayon-60f906a463458531649915" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(m1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463458531649915-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463458531649915-1">plot(m1)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-4-1-3.png" alt="random forests-隨機森林"></p>
+<p>從上圖可以發現，模型平均誤差大概在100棵樹時開始趨於穩定，且平均誤差值降低的速度開始於300棵樹左右時開始變緩。</p>
+<p>我們可以進一步找出使得MSE最小的樹的個數。</p>
+
+		<div id="crayon-60f906a46345c082476406" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+which.min(m1$mse)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46345c082476406-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46345c082476406-1">which.min(m1$mse)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46345f829304634" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 447
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46345f829304634-1">1</div><div class="crayon-num" data-line="crayon-60f906a46345f829304634-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46345f829304634-1">## [1] 447</div><div class="crayon-line" id="crayon-60f906a46345f829304634-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>最適隨機森林的RMSE則為(平均Sale_Price的誤差值)：</p>
+
+		<div id="crayon-60f906a463463137161462" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+sqrt(m1$mse[which.min(m1$mse)])</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463463137161462-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463463137161462-1">sqrt(m1$mse[which.min(m1$mse)])</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463467244564501" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 25648.78
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463467244564501-1">1</div><div class="crayon-num" data-line="crayon-60f906a463467244564501-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463467244564501-1">## [1] 25648.78</div><div class="crayon-line" id="crayon-60f906a463467244564501-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>如果我們不想要OOB error，randomForest函數亦提供驗證資料集(validation set)來幫助我們計算模型預測正確率。</p>
+<p>要計算驗證誤差，首先我們進一步將訓練資料集依據8:2的比例切成訓練和驗證資料集，並分別使用analysis()和assessment()函數萃取出訓練和驗證資料。</p>
+
+		<div id="crayon-60f906a46346b259096195" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# create training and validation data 
+set.seed(123)
+valid_split <- initial_split(ames_train, .8)
+
+# training data
+ames_train_v2 <- analysis(valid_split)
+
+# validation datas
+ames_valid <- assessment(valid_split)
+
+# 將驗證資料整理成x_test和y_test
+x_test <- ames_valid[setdiff(names(ames_valid),"Sale_Price")]
+y_test <- ames_valid$Sale_Price
+
+# 在randomForest函數中使用x-test和y-test當作驗證資料集的參數
+rf_oob_comp <- randomForest(
+  formula = Sale_Price ~ .,
+  data = ames_train_v2,
+  xtest = x_test,
+  ytest = y_test
+)
+
+rf_oob_comp</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46346b259096195-1">1</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-2">2</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-3">3</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-4">4</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-5">5</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-6">6</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-7">7</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-8">8</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-9">9</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-10">10</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-11">11</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-12">12</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-13">13</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-14">14</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-15">15</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-16">16</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-17">17</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-18">18</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-19">19</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-20">20</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-21">21</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-22">22</div><div class="crayon-num" data-line="crayon-60f906a46346b259096195-23">23</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46346b259096195-1"># create training and validation data </div><div class="crayon-line" id="crayon-60f906a46346b259096195-2">set.seed(123)</div><div class="crayon-line" id="crayon-60f906a46346b259096195-3">valid_split <div class="crayon-line" id="crayon-60f906a46346b259096195-4"> </div><div class="crayon-line" id="crayon-60f906a46346b259096195-5"># training data</div><div class="crayon-line" id="crayon-60f906a46346b259096195-6">ames_train_v2 <div class="crayon-line" id="crayon-60f906a46346b259096195-7"> </div><div class="crayon-line" id="crayon-60f906a46346b259096195-8"># validation datas</div><div class="crayon-line" id="crayon-60f906a46346b259096195-9">ames_valid <div class="crayon-line" id="crayon-60f906a46346b259096195-10"> </div><div class="crayon-line" id="crayon-60f906a46346b259096195-11"># 將驗證資料整理成x_test和y_test</div><div class="crayon-line" id="crayon-60f906a46346b259096195-12">x_test <div class="crayon-line" id="crayon-60f906a46346b259096195-13">y_test <div class="crayon-line" id="crayon-60f906a46346b259096195-14"> </div><div class="crayon-line" id="crayon-60f906a46346b259096195-15"># 在randomForest函數中使用x-test和y-test當作驗證資料集的參數</div><div class="crayon-line" id="crayon-60f906a46346b259096195-16">rf_oob_comp <div class="crayon-line" id="crayon-60f906a46346b259096195-17">  formula = Sale_Price ~ .,</div><div class="crayon-line" id="crayon-60f906a46346b259096195-18">  data = ames_train_v2,</div><div class="crayon-line" id="crayon-60f906a46346b259096195-19">  xtest = x_test,</div><div class="crayon-line" id="crayon-60f906a46346b259096195-20">  ytest = y_test</div><div class="crayon-line" id="crayon-60f906a46346b259096195-21">)</div><div class="crayon-line" id="crayon-60f906a46346b259096195-22"> </div><div class="crayon-line" id="crayon-60f906a46346b259096195-23">rf_oob_comp</div></div></div></div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46346e081583954" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## 
+## Call:
+##  randomForest(formula = Sale_Price ~ ., data = ames_train_v2,      xtest = x_test, ytest = y_test) 
+##                Type of random forest: regression
+##                      Number of trees: 500
+## No. of variables tried at each split: 26
+## 
+##           Mean of squared residuals: 667486651
+##                     % Var explained: 89.17
+##                        Test set MSE: 841004412
+##                     % Var explained: 89.16
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46346e081583954-1">1</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-2">2</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-3">3</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-4">4</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-5">5</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-6">6</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-7">7</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-8">8</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-9">9</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-10">10</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-11">11</div><div class="crayon-num" data-line="crayon-60f906a46346e081583954-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46346e081583954-1">## </div><div class="crayon-line" id="crayon-60f906a46346e081583954-2">## Call:</div><div class="crayon-line" id="crayon-60f906a46346e081583954-3">##  randomForest(formula = Sale_Price ~ ., data = ames_train_v2,      xtest = x_test, ytest = y_test) </div><div class="crayon-line" id="crayon-60f906a46346e081583954-4">##                Type of random forest: regression</div><div class="crayon-line" id="crayon-60f906a46346e081583954-5">##                      Number of trees: 500</div><div class="crayon-line" id="crayon-60f906a46346e081583954-6">## No. of variables tried at each split: 26</div><div class="crayon-line" id="crayon-60f906a46346e081583954-7">## </div><div class="crayon-line" id="crayon-60f906a46346e081583954-8">##           Mean of squared residuals: 667486651</div><div class="crayon-line" id="crayon-60f906a46346e081583954-9">##                     % Var explained: 89.17</div><div class="crayon-line" id="crayon-60f906a46346e081583954-10">##                        Test set MSE: 841004412</div><div class="crayon-line" id="crayon-60f906a46346e081583954-11">##                     % Var explained: 89.16</div><div class="crayon-line" id="crayon-60f906a46346e081583954-12"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以看到模型結果多了Test set MSE，和原始的OOB MES不太一樣。我們將不同顆樹組成的模型所對應的OOB error和test error萃取出來並畫出誤差隨著樹的數量的變化圖，並比較兩者的差距。</p>
+
+		<div id="crayon-60f906a463472682031305" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# extract OOB & validation errors
+oob <- sqrt(rf_oob_comp$mse)
+validation <- sqrt(rf_oob_comp$test$mse)
+
+data.frame(
+  ntrees = 1:rf_oob_comp$ntree,
+  OOB.error = oob,
+  Test.error = validation
+) %>% 
+  gather(key = metric, value = RMSE, 2:3) %>% 
+  ggplot(aes(x = ntrees, y = RMSE, color = metric)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::dollar) +
+  xlab("Number of trees")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463472682031305-1">1</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-2">2</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-3">3</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-4">4</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-5">5</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-6">6</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-7">7</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-8">8</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-9">9</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-10">10</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-11">11</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-12">12</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-13">13</div><div class="crayon-num" data-line="crayon-60f906a463472682031305-14">14</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463472682031305-1"># extract OOB & validation errors</div><div class="crayon-line" id="crayon-60f906a463472682031305-2">oob <div class="crayon-line" id="crayon-60f906a463472682031305-3">validation <div class="crayon-line" id="crayon-60f906a463472682031305-4"> </div><div class="crayon-line" id="crayon-60f906a463472682031305-5">data.frame(</div><div class="crayon-line" id="crayon-60f906a463472682031305-6">  ntrees = 1:rf_oob_comp$ntree,</div><div class="crayon-line" id="crayon-60f906a463472682031305-7">  OOB.error = oob,</div><div class="crayon-line" id="crayon-60f906a463472682031305-8">  Test.error = validation</div><div class="crayon-line" id="crayon-60f906a463472682031305-9">) %>% </div><div class="crayon-line" id="crayon-60f906a463472682031305-10">  gather(key = metric, value = RMSE, 2:3) %>% </div><div class="crayon-line" id="crayon-60f906a463472682031305-11">  ggplot(aes(x = ntrees, y = RMSE, color = metric)) +</div><div class="crayon-line" id="crayon-60f906a463472682031305-12">  geom_line() +</div><div class="crayon-line" id="crayon-60f906a463472682031305-13">  scale_y_continuous(labels = scales::dollar) +</div><div class="crayon-line" id="crayon-60f906a463472682031305-14">  xlab("Number of trees")</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-8-1-3.png" alt="random forests-隨機森林"></p>
+<p>Random Forests是其中一個很好的「開箱即用」的演算法之一。基本上不需要調整什麼參數(tuning)，模型的預測能力就可ㄧ有很好的成效。</p>
+<p>舉例來說，從上圖中，我們不需要調整參數就可以得到小於$30K的RMSE，比完整tuning後的<a href="/regression-tree-%E8%BF%B4%E6%AD%B8%E6%A8%B9-bagging-bootstrap-aggrgation-r%E8%AA%9E%E8%A8%80/" target="_blank" rel="noopener noreferrer">Bagging模</a>RMSE降低超過$6K；比完整tuning的<a href="/regularized-regression-ridge-lasso-elastic/" target="_blank" rel="noopener noreferrer">elastic net模型</a>RMSE降低超過$2K(沒有將目標變數取log的elastic net model版本請參考以下)。而我們還可以進一步透過參數調整tuning將Random Forests模型的預測正確性優化。</p>
+
+		<div id="crayon-60f906a463476679978461" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# elastic net
+library(caret)
+ames_train_x <- model.matrix(object = Sale_Price ~ ., data =  ames_train)[, -1]
+ames_train_y <- ames_train$Sale_Price
+
+# ames_test_x <- model.matrix(Sale_Price ~ ., ames_test)[, -1]
+# ames_test_y <- ames_test$Sale_Price
+
+train_control <- trainControl(method = "cv", number = 10)
+
+caret_mod <- train(
+  x = ames_train_x, 
+  y = ames_train_y,
+  method = "glmnet", 
+  prePro = c("center","scale","zv","nzv"),
+  trControl = train_control,
+  tuneLength = 10
+)
+
+min(caret_mod$results$RMSE)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463476679978461-1">1</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-2">2</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-3">3</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-4">4</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-5">5</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-6">6</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-7">7</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-8">8</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-9">9</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-10">10</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-11">11</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-12">12</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-13">13</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-14">14</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-15">15</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-16">16</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-17">17</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-18">18</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-19">19</div><div class="crayon-num" data-line="crayon-60f906a463476679978461-20">20</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463476679978461-1"># elastic net</div><div class="crayon-line" id="crayon-60f906a463476679978461-2">library(caret)</div><div class="crayon-line" id="crayon-60f906a463476679978461-3">ames_train_x <div class="crayon-line" id="crayon-60f906a463476679978461-4">ames_train_y <div class="crayon-line" id="crayon-60f906a463476679978461-5"> </div><div class="crayon-line" id="crayon-60f906a463476679978461-6"># ames_test_x <div class="crayon-line" id="crayon-60f906a463476679978461-7"># ames_test_y <div class="crayon-line" id="crayon-60f906a463476679978461-8"> </div><div class="crayon-line" id="crayon-60f906a463476679978461-9">train_control <div class="crayon-line" id="crayon-60f906a463476679978461-10"> </div><div class="crayon-line" id="crayon-60f906a463476679978461-11">caret_mod <div class="crayon-line" id="crayon-60f906a463476679978461-12">  x = ames_train_x, </div><div class="crayon-line" id="crayon-60f906a463476679978461-13">  y = ames_train_y,</div><div class="crayon-line" id="crayon-60f906a463476679978461-14">  method = "glmnet", </div><div class="crayon-line" id="crayon-60f906a463476679978461-15">  prePro = c("center","scale","zv","nzv"),</div><div class="crayon-line" id="crayon-60f906a463476679978461-16">  trControl = train_control,</div><div class="crayon-line" id="crayon-60f906a463476679978461-17">  tuneLength = 10</div><div class="crayon-line" id="crayon-60f906a463476679978461-18">)</div><div class="crayon-line" id="crayon-60f906a463476679978461-19"> </div><div class="crayon-line" id="crayon-60f906a463476679978461-20">min(caret_mod$results$RMSE)</div></div></div></div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46347a920486463" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 32268.14
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46347a920486463-1">1</div><div class="crayon-num" data-line="crayon-60f906a46347a920486463-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46347a920486463-1">## [1] 32268.14</div><div class="crayon-line" id="crayon-60f906a46347a920486463-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>tuning</h4>
+<p>Random Forests在tuning上非常簡單，因為只有幾個tuning parameters。通常tuning模型一開始最主要的考量點就是每一次分割所用來挑選的潛在變數名單，另外就是幾個需要注意的hyperparameters，包括如下：(這些hyperparameters在不同package的命名可能有所不同)</p>
+<ul><li>ntree : number of trees。我們希望有足夠的樹來穩定模型的誤差，但過多的樹會是沒效率且沒必要的，特別是遇到大型資料集的時候。</li>
+<li>mtry : 每次在決定切割變數時，所隨機抽樣的潛在變數清單數量。當mtry = p(即所有特徵變數數量)，Random Forests的結果就會和bagging一樣。而當mtry = 1，會造就每一次split所使用的變數completely random，每個變數都有機會但會造成非常偏差的結果。</li>
+<li>sampsize : 訓練每棵樹模型的樣本數大小。預設是使用63.25%訓練資料集的比例，因為這個是獨立觀察值出現在bootstrapped sample的期望機率值。較低的樣本數大小雖然會降低訓練時間，但可能會產生不必要的偏差。增加樣本數大小可以提升模型正確率，但有可能會產生overfitting(因為會增加模型變異性)。所以一般來說，我們校正此樣本大小參數時會使用60-80%的比例。</li>
+<li>nodesize : 末梢(葉)節點最小觀察資料個數。用來控制樹模型的複雜度。小的葉節點大小允許更深更複雜的樹模型，大的葉節點大小則會產生叫淺的樹模型。這又是一種「偏差v.s.變異度(bias -variance)」的權衡，當樹長得越深時，模型變異性愈高(有過度配適的風險)，而當樹長得越潛時則會有較多偏差(有沒辦法完整捕捉資料中的模式跟關係)。</li>
+<li>maxnode : 內部節點最大個數值。另一種控制模型複雜度的變數，內部節點樹越多則會長出更深的樹，內部節點越少則產生越淺的樹。</li>
+</ul><h4>Initial tuning with randomForest</h4>
+<p>如果一開始只針對mtry進行校正，可以使用randomForest::tuneRF來進行簡易快速的評估。tunRF會從指定的mtry值開始，並每次增加給定的間距，直到模型OOB error降低的幅度開始小於特定幅度為止。</p>
+<p>比如說，以下想知道mtry從5開始，每間隔相加1.5，所得到到的OOB error，直到OOB error改善的不度不超過1%為止。</p>
+<p>因為tuneRF需要使用x,y形式指定資料，因此首先我們先使用setdiff()函數將變數名稱依據目標變數與預測變數分開。</p>
+<p>模型跑完後會自動將每個mtry值所對應的OOB error值繪出。我們可以發現，當mtry > 22後，OOB開始不再下降，最適mtry水準值約與features/3 = 80/3 = 26差不多。</p>
+
+		<div id="crayon-60f906a46347d431669312" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 篩選出預測變數名稱
+features <- setdiff(x = names(ames_train), y = "Sale_Price")
+
+# 固定不同mtry參數值的模型所使用的隨機OOB sample一樣的
+set.seed(123)
+
+m2 <- tuneRF(x = ames_train[features], y = ames_train$Sale_Price, mtryStart = 5, ntreeTry = 500 ,stepFactor = 1.5, improve = 0.01, trace = FALSE)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46347d431669312-1">1</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-2">2</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-3">3</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-4">4</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-5">5</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-6">6</div><div class="crayon-num" data-line="crayon-60f906a46347d431669312-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46347d431669312-1"># 篩選出預測變數名稱</div><div class="crayon-line" id="crayon-60f906a46347d431669312-2">features <div class="crayon-line" id="crayon-60f906a46347d431669312-3"> </div><div class="crayon-line" id="crayon-60f906a46347d431669312-4"># 固定不同mtry參數值的模型所使用的隨機OOB sample一樣的</div><div class="crayon-line" id="crayon-60f906a46347d431669312-5">set.seed(123)</div><div class="crayon-line" id="crayon-60f906a46347d431669312-6"> </div><div class="crayon-line" id="crayon-60f906a46347d431669312-7">m2 </div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-10-1-4.png" alt="random forests-隨機森林"></p>
+
+		<div id="crayon-60f906a463481096428601" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(m2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463481096428601-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463481096428601-1">plot(m2)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-10-2-4.png" alt="random forests-隨機森林"></p>
+<h4>Full grid search with ranger</h4>
+<p>如果想要套用綜合mtry以及其他參數的hyperparameter組合，我們需要建立一個grid並使用loop迴圈的方式，去測試每一個hyperparameter的組合和模型的成效。但因為randomForest()函數無法有效的將運算擴展至大型數據運算，因此我們會使用以c++執行的ranger()函數來解決。</p>
+<p>我們可先使用Sys.time()稍稍比較tuneRF和ranger執行一種隨機森林模型所需的時間。</p>
+
+		<div id="crayon-60f906a463485419879492" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+system.time(
+  ames_randomForest <- randomForest(
+    formula = Sale_Price ~ ., 
+    data = ames_train, 
+    ntree = 500, 
+    mtry = floor(length(features)/3)
+  )
+)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463485419879492-1">1</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-2">2</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-3">3</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-4">4</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-5">5</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-6">6</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-7">7</div><div class="crayon-num" data-line="crayon-60f906a463485419879492-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463485419879492-1">system.time(</div><div class="crayon-line" id="crayon-60f906a463485419879492-2">  ames_randomForest <div class="crayon-line" id="crayon-60f906a463485419879492-3">    formula = Sale_Price ~ ., </div><div class="crayon-line" id="crayon-60f906a463485419879492-4">    data = ames_train, </div><div class="crayon-line" id="crayon-60f906a463485419879492-5">    ntree = 500, </div><div class="crayon-line" id="crayon-60f906a463485419879492-6">    mtry = floor(length(features)/3)</div><div class="crayon-line" id="crayon-60f906a463485419879492-7">  )</div><div class="crayon-line" id="crayon-60f906a463485419879492-8">)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463488984586998" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    user  system elapsed 
+## 111.957   0.735 169.989
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463488984586998-1">1</div><div class="crayon-num" data-line="crayon-60f906a463488984586998-2">2</div><div class="crayon-num" data-line="crayon-60f906a463488984586998-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463488984586998-1">##    user  system elapsed </div><div class="crayon-line" id="crayon-60f906a463488984586998-2">## 111.957   0.735 169.989</div><div class="crayon-line" id="crayon-60f906a463488984586998-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46348c759746038" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+system.time(
+  ames_ranger <- ranger(
+    formula   = Sale_Price ~ ., 
+    data      = ames_train, 
+    num.trees = 500,
+    mtry      = floor(length(features) / 3)
+  )
+)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46348c759746038-1">1</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-2">2</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-3">3</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-4">4</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-5">5</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-6">6</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-7">7</div><div class="crayon-num" data-line="crayon-60f906a46348c759746038-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46348c759746038-1">system.time(</div><div class="crayon-line" id="crayon-60f906a46348c759746038-2">  ames_ranger <div class="crayon-line" id="crayon-60f906a46348c759746038-3">    formula   = Sale_Price ~ ., </div><div class="crayon-line" id="crayon-60f906a46348c759746038-4">    data      = ames_train, </div><div class="crayon-line" id="crayon-60f906a46348c759746038-5">    num.trees = 500,</div><div class="crayon-line" id="crayon-60f906a46348c759746038-6">    mtry      = floor(length(features) / 3)</div><div class="crayon-line" id="crayon-60f906a46348c759746038-7">  )</div><div class="crayon-line" id="crayon-60f906a46348c759746038-8">)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463490524510715" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    user  system elapsed 
+##  10.367   0.174   5.665
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463490524510715-1">1</div><div class="crayon-num" data-line="crayon-60f906a463490524510715-2">2</div><div class="crayon-num" data-line="crayon-60f906a463490524510715-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463490524510715-1">##    user  system elapsed </div><div class="crayon-line" id="crayon-60f906a463490524510715-2">##  10.367   0.174   5.665</div><div class="crayon-line" id="crayon-60f906a463490524510715-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>由以上結果我們可以看到，同樣是執行一次隨機森林，ranger()所需的時間僅約6秒，而randomForests則需要169秒。</p>
+<p>為了進行grid search，我們首先先建立一個hyperparameters的grid，由許多不同的mtry, minimum node size,和 sample size所組成。總共會有96種組合。</p>
+
+		<div id="crayon-60f906a4634a2965925293" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# hyperparameter grid search
+hyper_grid <- expand.grid(
+  mtry = seq(20, 30, by = 2),
+  node_size = seq(3, 9, by = 2),
+  sample_size = c(0.55, 0.632, 0.7, 0.8),
+  OOB_RMSE = 0
+)
+
+# total number of combinations
+nrow(hyper_grid)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634a2965925293-10">10</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634a2965925293-1"># hyperparameter grid search</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-2">hyper_grid <div class="crayon-line" id="crayon-60f906a4634a2965925293-3">  mtry = seq(20, 30, by = 2),</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-4">  node_size = seq(3, 9, by = 2),</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-5">  sample_size = c(0.55, 0.632, 0.7, 0.8),</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-6">  OOB_RMSE = 0</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-7">)</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-8"> </div><div class="crayon-line" id="crayon-60f906a4634a2965925293-9"># total number of combinations</div><div class="crayon-line" id="crayon-60f906a4634a2965925293-10">nrow(hyper_grid)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634a6895949192" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 96
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634a6895949192-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634a6895949192-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634a6895949192-1">## [1] 96</div><div class="crayon-line" id="crayon-60f906a4634a6895949192-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們使用loop迴圈，一一帶入不同hyperparameters到ranger()函數中，並固定每一次randomForests的的森林樹木數量為500(因為從前面經驗我們知道500棵樹即足夠使OOB error趨於穩定並收斂)。另外每一次randomForests執行時，我們也固定隨機亂數種子，讓同樣sample_size參數值所對應的抽樣樣本可以相同，凸顯其他參數變化所帶來的效果。</p>
+
+		<div id="crayon-60f906a4634aa376723051" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+for (i in 1:nrow(hyper_grid)) {
+  # train model
+  model <- ranger(
+    formula = Sale_Price ~ .,
+    data = ames_train, 
+    num.trees = 500, 
+    mtry = hyper_grid$mtry[i],
+    min.node.size = hyper_grid$node_size[i], 
+    sample.fraction = hyper_grid$sample_size[i],
+    seed = 123
+  )
+
+  # 並將每一此訓練模型的OOB RMSE萃取儲存
+  hyper_grid$OOB_RMSE[i] <- sqrt(model$prediction.error)
+}
+
+# 我們將結果依序OOB_RMSE由小至大排列，取模型成效前十名印出
+hyper_grid %>% 
+  dplyr::arrange(OOB_RMSE) %>% 
+  head(10)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634aa376723051-20">20</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634aa376723051-1">for (i in 1:nrow(hyper_grid)) {</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-2">  # train model</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-3">  model <div class="crayon-line" id="crayon-60f906a4634aa376723051-4">    formula = Sale_Price ~ .,</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-5">    data = ames_train, </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-6">    num.trees = 500, </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-7">    mtry = hyper_grid$mtry[i],</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-8">    min.node.size = hyper_grid$node_size[i], </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-9">    sample.fraction = hyper_grid$sample_size[i],</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-10">    seed = 123</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-11">  )</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-12"> </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-13">  # 並將每一此訓練模型的OOB RMSE萃取儲存</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-14">  hyper_grid$OOB_RMSE[i] <div class="crayon-line" id="crayon-60f906a4634aa376723051-15">}</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-16"> </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-17"># 我們將結果依序OOB_RMSE由小至大排列，取模型成效前十名印出</div><div class="crayon-line" id="crayon-60f906a4634aa376723051-18">hyper_grid %>% </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-19">  dplyr::arrange(OOB_RMSE) %>% </div><div class="crayon-line" id="crayon-60f906a4634aa376723051-20">  head(10)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634ae876190754" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    mtry node_size sample_size OOB_RMSE
+## 1    20         5         0.8 25918.20
+## 2    20         3         0.8 25963.96
+## 3    28         3         0.8 25997.78
+## 4    22         5         0.8 26041.05
+## 5    22         3         0.8 26050.63
+## 6    20         7         0.8 26061.72
+## 7    26         3         0.8 26069.40
+## 8    28         5         0.8 26069.83
+## 9    26         7         0.8 26075.71
+## 10   20         9         0.8 26091.08
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634ae876190754-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634ae876190754-1">##    mtry node_size sample_size OOB_RMSE</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-2">## 1    20         5         0.8 25918.20</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-3">## 2    20         3         0.8 25963.96</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-4">## 3    28         3         0.8 25997.78</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-5">## 4    22         5         0.8 26041.05</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-6">## 5    22         3         0.8 26050.63</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-7">## 6    20         7         0.8 26061.72</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-8">## 7    26         3         0.8 26069.40</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-9">## 8    28         5         0.8 26069.83</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-10">## 9    26         7         0.8 26075.71</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-11">## 10   20         9         0.8 26091.08</div><div class="crayon-line" id="crayon-60f906a4634ae876190754-12"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>從前十名模型成效結果我們可以發現：</p>
+<ul><li>OOB_RMSE大致落在26K左右。</li>
+<li>最適mtry的值落在所有20~30範圍區間。表示mtry在此區間對於OOB_RMSE沒有太大影響。</li>
+<li>最適最小節點觀察值數量大約落在3~5。</li>
+<li>最適抽樣比例約為0.8。</li>
+<li>表示抽樣比例高(~80%)和深度較長(葉節點觀測個數大小3~5)的隨機森林成效較好(OOB RMSE)。</li>
+</ul><h5>調整變數型態</h5>
+<p>雖然我們已知random forests對於原始類別型變數處理效果是不錯的，我們還是進一步來試試將類別變數重新編碼為dummy variables是否能提升random forests的預測表現。</p>
+<p>以下，我們使用dummyVars()函數將類別變數重新編碼為虛擬變數。</p>
+
+		<div id="crayon-60f906a4634b1977383291" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+to_dum <- dummyVars(formula = ~., data = ames_train, fullRank = FALSE)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634b1977383291-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634b1977383291-1">to_dum </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>原始類別預測變數(80)被轉換完後變成353個欄位。</p>
+
+		<div id="crayon-60f906a4634b5785696376" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+ames_to_dum <- predict(to_dum, newdata = ames_train) %>% as.data.frame()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634b5785696376-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634b5785696376-1">ames_to_dum % as.data.frame()</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>將資料名稱變成ranger相容的名稱。</p>
+
+		<div id="crayon-60f906a4634ba960316373" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+names(ames_to_dum) <- make.names(names = names(ames_to_dum), allow_ = FALSE)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634ba960316373-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634ba960316373-1">names(ames_to_dum) </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>建立hyperparameter grid。並將mtry的區間調整為更大範圍。並執行grid search。</p>
+
+		<div id="crayon-60f906a4634be093065036" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+hyper_grid_2 <- expand.grid(
+  mtry = seq(50, 200, by = 25),
+  node_size  = seq(3, 9, by = 2),
+  sampe_size = c(.55, .632, .70, .80),
+  OOB_RMSE  = 0
+)
+
+for(i in 1:nrow(hyper_grid_2)){
+  model <- ranger(
+    formula = Sale.Price ~.,
+    data = ames_to_dum, 
+    num.trees = 500, 
+    mtry = hyper_grid_2$mtry[i],
+    min.node.size = hyper_grid_2$node_size[i], 
+    sample.fraction = hyper_grid_2$sampe_size[i],
+    seed = 123
+  )
+
+  hyper_grid_2$OOB_RMSE[i] <- sqrt(model$prediction.error)
+}</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634be093065036-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634be093065036-20">20</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634be093065036-1">hyper_grid_2 <div class="crayon-line" id="crayon-60f906a4634be093065036-2">  mtry = seq(50, 200, by = 25),</div><div class="crayon-line" id="crayon-60f906a4634be093065036-3">  node_size  = seq(3, 9, by = 2),</div><div class="crayon-line" id="crayon-60f906a4634be093065036-4">  sampe_size = c(.55, .632, .70, .80),</div><div class="crayon-line" id="crayon-60f906a4634be093065036-5">  OOB_RMSE  = 0</div><div class="crayon-line" id="crayon-60f906a4634be093065036-6">)</div><div class="crayon-line" id="crayon-60f906a4634be093065036-7"> </div><div class="crayon-line" id="crayon-60f906a4634be093065036-8">for(i in 1:nrow(hyper_grid_2)){</div><div class="crayon-line" id="crayon-60f906a4634be093065036-9">  model <div class="crayon-line" id="crayon-60f906a4634be093065036-10">    formula = Sale.Price ~.,</div><div class="crayon-line" id="crayon-60f906a4634be093065036-11">    data = ames_to_dum, </div><div class="crayon-line" id="crayon-60f906a4634be093065036-12">    num.trees = 500, </div><div class="crayon-line" id="crayon-60f906a4634be093065036-13">    mtry = hyper_grid_2$mtry[i],</div><div class="crayon-line" id="crayon-60f906a4634be093065036-14">    min.node.size = hyper_grid_2$node_size[i], </div><div class="crayon-line" id="crayon-60f906a4634be093065036-15">    sample.fraction = hyper_grid_2$sampe_size[i],</div><div class="crayon-line" id="crayon-60f906a4634be093065036-16">    seed = 123</div><div class="crayon-line" id="crayon-60f906a4634be093065036-17">  )</div><div class="crayon-line" id="crayon-60f906a4634be093065036-18"> </div><div class="crayon-line" id="crayon-60f906a4634be093065036-19">  hyper_grid_2$OOB_RMSE[i] <div class="crayon-line" id="crayon-60f906a4634be093065036-20">}</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634c3222833456" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+hyper_grid_2 %>% 
+  dplyr::arrange(OOB_RMSE) %>% 
+  head(10)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634c3222833456-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634c3222833456-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634c3222833456-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634c3222833456-1">hyper_grid_2 %>% </div><div class="crayon-line" id="crayon-60f906a4634c3222833456-2">  dplyr::arrange(OOB_RMSE) %>% </div><div class="crayon-line" id="crayon-60f906a4634c3222833456-3">  head(10)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634c6648789639" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    mtry node_size sampe_size OOB_RMSE
+## 1    50         3        0.8 26981.17
+## 2    75         3        0.8 27000.85
+## 3    75         5        0.8 27040.55
+## 4    75         7        0.8 27086.80
+## 5    50         5        0.8 27113.23
+## 6   125         3        0.8 27128.26
+## 7   100         3        0.8 27131.08
+## 8   125         5        0.8 27136.93
+## 9   125         3        0.7 27155.03
+## 10  200         3        0.8 27171.37
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634c6648789639-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634c6648789639-1">##    mtry node_size sampe_size OOB_RMSE</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-2">## 1    50         3        0.8 26981.17</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-3">## 2    75         3        0.8 27000.85</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-4">## 3    75         5        0.8 27040.55</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-5">## 4    75         7        0.8 27086.80</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-6">## 5    50         5        0.8 27113.23</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-7">## 6   125         3        0.8 27128.26</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-8">## 7   100         3        0.8 27131.08</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-9">## 8   125         5        0.8 27136.93</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-10">## 9   125         3        0.7 27155.03</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-11">## 10  200         3        0.8 27171.37</div><div class="crayon-line" id="crayon-60f906a4634c6648789639-12"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>由結果可分發線</p>
+<ul><li>OOB RMSE 落在27K左右，並沒有比類別變數重新編碼前的26K來得好。</li>
+<li>將類別變數重新編碼成dummy variables是無法提升模型成效的。</li>
+</ul><p>所以到目前為至，最適的random forests模型參數分別為mtry = 20, node_size = 5, sample_size = 0.8。我們重複執行100次這個參數設定的模型，來計算此模型的error rate的期望值大小。</p>
+
+		<div id="crayon-60f906a4634c9489396216" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+OOB_RMSE <- vector(mode = "numeric", length = 100)
+
+for(i in 1:length(OOB_RMSE)){
+  optimal_ranger <- ranger(
+    formula         = Sale_Price ~ ., 
+    data            = ames_train, 
+    num.trees       = 500,
+    mtry            = 20,
+    min.node.size   = 5,
+    sample.fraction = .8,
+    importance      = 'impurity'
+  )
+
+  OOB_RMSE[i] <- sqrt(optimal_ranger$prediction.error)
+}
+
+hist(OOB_RMSE, breaks = 20)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634c9489396216-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634c9489396216-1">OOB_RMSE <div class="crayon-line" id="crayon-60f906a4634c9489396216-2"> </div><div class="crayon-line" id="crayon-60f906a4634c9489396216-3">for(i in 1:length(OOB_RMSE)){</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-4">  optimal_ranger <div class="crayon-line" id="crayon-60f906a4634c9489396216-5">    formula         = Sale_Price ~ ., </div><div class="crayon-line" id="crayon-60f906a4634c9489396216-6">    data            = ames_train, </div><div class="crayon-line" id="crayon-60f906a4634c9489396216-7">    num.trees       = 500,</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-8">    mtry            = 20,</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-9">    min.node.size   = 5,</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-10">    sample.fraction = .8,</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-11">    importance      = 'impurity'</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-12">  )</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-13"> </div><div class="crayon-line" id="crayon-60f906a4634c9489396216-14">  OOB_RMSE[i] <div class="crayon-line" id="crayon-60f906a4634c9489396216-15">}</div><div class="crayon-line" id="crayon-60f906a4634c9489396216-16"> </div><div class="crayon-line" id="crayon-60f906a4634c9489396216-17">hist(OOB_RMSE, breaks = 20)</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-19-1-3.png" alt="random forests-隨機森林"></p>
+<p>執行100次random forests的結果後，我們可以觀察到OOB RMSE的期望值約落在26000~26200區間。</p>
+<p>另外，我們在在模型參數importance = ‘impurity’。這表示我們是依據節點不純度(node impurity)的改善幅度來衡量每個變數的重要性。變數的重要性是計算每一次使用不同變數切割結點後，總能使MSE下降的程度(跨多棵樹模型)，而那些無法透過該變數切割所降低的模型錯誤率，則被稱作node impurity。而能夠降低越多MSE的變數則被重要性越高。</p>
+<p>因此，在每一次節點分割時，我們都會計算每個變數所造成的MSE下降程度，而累積下降MSE幅度最高者，則被認為是較為重要的變數。</p>
+<p>我們將變數重要性結果繪出：</p>
+
+		<div id="crayon-60f906a4634cd100110039" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+options(scipen = -1)
+optimal_ranger$variable.importance %>% 
+  as.matrix() %>% 
+  as.data.frame() %>% 
+  add_rownames() %>% 
+  `colnames<-`(c("varname","imp")) %>%
+  arrange(desc(imp)) %>% 
+  top_n(25,wt = imp) %>% 
+  ggplot(mapping = aes(x = reorder(varname, imp), y = imp)) +
+  geom_col() +
+  coord_flip() +
+  ggtitle(label = "Top 25 important variables") +
+  theme(
+    axis.title = element_blank()
+  )</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634cd100110039-15">15</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634cd100110039-1">options(scipen = -1)</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-2">optimal_ranger$variable.importance %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-3">  as.matrix() %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-4">  as.data.frame() %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-5">  add_rownames() %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-6">  `colnames%</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-7">  arrange(desc(imp)) %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-8">  top_n(25,wt = imp) %>% </div><div class="crayon-line" id="crayon-60f906a4634cd100110039-9">  ggplot(mapping = aes(x = reorder(varname, imp), y = imp)) +</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-10">  geom_col() +</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-11">  coord_flip() +</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-12">  ggtitle(label = "Top 25 important variables") +</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-13">  theme(</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-14">    axis.title = element_blank()</div><div class="crayon-line" id="crayon-60f906a4634cd100110039-15">  )</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634d1962373950" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## Warning: Deprecated, use tibble::rownames_to_column() instead.
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634d1962373950-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634d1962373950-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634d1962373950-1">## Warning: Deprecated, use tibble::rownames_to_column() instead.</div><div class="crayon-line" id="crayon-60f906a4634d1962373950-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2019/03/unnamed-chunk-20-1-3.png" alt="random forests-隨機森林"></p>
+<p>由上圖我們可以看到前三名重要變數依序為：Overall_Qual, Gr_Liv_Area, Garage_Cars。</p>
+<h4>Full grid search with H2O</h4>
+<p>我們已經知道剛剛在執行ranger進行hyperparameter grid計算時，還花滿長一段時間的。雖然ranger在計算上是有效率的，<br>
+但是當遇到大型的grid時，我們手寫的loop迴圈會變得非常沒有效率。</p>
+<p>而這時候，h2o套件則是一個強大有效率的java-based介面，可以提供平行分布式運算方法。此外，h20還可以提供不同的”search path”。有別於一一執行每一種hyperparameter grid組合，h2o可允許不同的最適搜尋路徑來執行，直到模型成效改善達一定程度等search path。使得在tuning模型上更具效率。以下便來介紹如何使用h2o套件執行random forests。</p>
+
+		<div id="crayon-60f906a4634d7724922072" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# start up h2o
+h2o.no_progress() # turn off progress bars when creating reports/tutorials)
+h2o.init(max_mem_size = "4g")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634d7724922072-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634d7724922072-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634d7724922072-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634d7724922072-1"># start up h2o</div><div class="crayon-line" id="crayon-60f906a4634d7724922072-2">h2o.no_progress() # turn off progress bars when creating reports/tutorials)</div><div class="crayon-line" id="crayon-60f906a4634d7724922072-3">h2o.init(max_mem_size = "4g")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634db728563108" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##  Connection successful!
+## 
+## R is connected to the H2O cluster: 
+##     H2O cluster uptime:         1 days 3 hours 
+##     H2O cluster timezone:       Asia/Taipei 
+##     H2O data parsing timezone:  UTC 
+##     H2O cluster version:        3.22.1.1 
+##     H2O cluster version age:    2 months and 19 days  
+##     H2O cluster name:           H2O_started_from_R_peihsuan_qcx617 
+##     H2O cluster total nodes:    1 
+##     H2O cluster total memory:   0.04 GB 
+##     H2O cluster total cores:    4 
+##     H2O cluster allowed cores:  4 
+##     H2O cluster healthy:        FALSE 
+##     H2O Connection ip:          localhost 
+##     H2O Connection port:        54321 
+##     H2O Connection proxy:       NA 
+##     H2O Internal Security:      FALSE 
+##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 
+##     R Version:                  R version 3.5.2 (2018-12-20)
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634db728563108-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-20">20</div><div class="crayon-num" data-line="crayon-60f906a4634db728563108-21">21</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634db728563108-1">##  Connection successful!</div><div class="crayon-line" id="crayon-60f906a4634db728563108-2">## </div><div class="crayon-line" id="crayon-60f906a4634db728563108-3">## R is connected to the H2O cluster: </div><div class="crayon-line" id="crayon-60f906a4634db728563108-4">##     H2O cluster uptime:         1 days 3 hours </div><div class="crayon-line" id="crayon-60f906a4634db728563108-5">##     H2O cluster timezone:       Asia/Taipei </div><div class="crayon-line" id="crayon-60f906a4634db728563108-6">##     H2O data parsing timezone:  UTC </div><div class="crayon-line" id="crayon-60f906a4634db728563108-7">##     H2O cluster version:        3.22.1.1 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-8">##     H2O cluster version age:    2 months and 19 days  </div><div class="crayon-line" id="crayon-60f906a4634db728563108-9">##     H2O cluster name:           H2O_started_from_R_peihsuan_qcx617 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-10">##     H2O cluster total nodes:    1 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-11">##     H2O cluster total memory:   0.04 GB </div><div class="crayon-line" id="crayon-60f906a4634db728563108-12">##     H2O cluster total cores:    4 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-13">##     H2O cluster allowed cores:  4 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-14">##     H2O cluster healthy:        FALSE </div><div class="crayon-line" id="crayon-60f906a4634db728563108-15">##     H2O Connection ip:          localhost </div><div class="crayon-line" id="crayon-60f906a4634db728563108-16">##     H2O Connection port:        54321 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-17">##     H2O Connection proxy:       NA </div><div class="crayon-line" id="crayon-60f906a4634db728563108-18">##     H2O Internal Security:      FALSE </div><div class="crayon-line" id="crayon-60f906a4634db728563108-19">##     H2O API Extensions:         XGBoost, Algos, AutoML, Core V3, Core V4 </div><div class="crayon-line" id="crayon-60f906a4634db728563108-20">##     R Version:                  R version 3.5.2 (2018-12-20)</div><div class="crayon-line" id="crayon-60f906a4634db728563108-21"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>首先我們先來使用完整grid search path (又叫做full cartesian)，即表示會逐一檢視所有我們所指派的參數組合(hyper_grid.h2o)。<br>
+根據hyper_grid.h2o的參數組合，共會有4*3*2 = 24種組合。也因為這邊是採用cartisian法，所以也不會比上面的方法快多少。</p>
+
+		<div id="crayon-60f906a4634de466474284" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# create feature names
+y <- "Sale_Price"
+x <- setdiff(names(ames_train), y)
+
+# turn training set into h2o object
+train.h2o <- as.h2o(ames_train)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634de466474284-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634de466474284-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634de466474284-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634de466474284-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634de466474284-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634de466474284-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634de466474284-1"># create feature names</div><div class="crayon-line" id="crayon-60f906a4634de466474284-2">y <div class="crayon-line" id="crayon-60f906a4634de466474284-3">x <div class="crayon-line" id="crayon-60f906a4634de466474284-4"> </div><div class="crayon-line" id="crayon-60f906a4634de466474284-5"># turn training set into h2o object</div><div class="crayon-line" id="crayon-60f906a4634de466474284-6">train.h2o </div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634e2643321825" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 指派參數組合 hyperparameter grid
+hyper_grid.h2o <- list(
+  ntrees      = seq(200, 500, by = 100),
+  mtries      = seq(20, 25, by = 2),
+  sample_rate = c(.70, .80)
+)
+
+# build grid search 
+# 以「cartesian」法逐一執行每一個參數組合的隨機森林模型
+
+# 測試24種組合所需的時間
+system.time(
+grid <- h2o.grid(
+  algorithm = "randomForest",
+  grid_id = "rf_grid",
+  x = x, 
+  y = y, 
+  training_frame = train.h2o,
+  hyper_params = hyper_grid.h2o,
+  search_criteria = list(strategy = "Cartesian")
+  )
+)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-20">20</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-21">21</div><div class="crayon-num" data-line="crayon-60f906a4634e2643321825-22">22</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634e2643321825-1"># 指派參數組合 hyperparameter grid</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-2">hyper_grid.h2o <div class="crayon-line" id="crayon-60f906a4634e2643321825-3">  ntrees      = seq(200, 500, by = 100),</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-4">  mtries      = seq(20, 25, by = 2),</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-5">  sample_rate = c(.70, .80)</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-6">)</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-7"> </div><div class="crayon-line" id="crayon-60f906a4634e2643321825-8"># build grid search </div><div class="crayon-line" id="crayon-60f906a4634e2643321825-9"># 以「cartesian」法逐一執行每一個參數組合的隨機森林模型</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-10"> </div><div class="crayon-line" id="crayon-60f906a4634e2643321825-11"># 測試24種組合所需的時間</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-12">system.time(</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-13">grid <div class="crayon-line" id="crayon-60f906a4634e2643321825-14">  algorithm = "randomForest",</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-15">  grid_id = "rf_grid",</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-16">  x = x, </div><div class="crayon-line" id="crayon-60f906a4634e2643321825-17">  y = y, </div><div class="crayon-line" id="crayon-60f906a4634e2643321825-18">  training_frame = train.h2o,</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-19">  hyper_params = hyper_grid.h2o,</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-20">  search_criteria = list(strategy = "Cartesian")</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-21">  )</div><div class="crayon-line" id="crayon-60f906a4634e2643321825-22">)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634e5184448284" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   user  system elapsed 
+##  9.628   3.104 874.954</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634e5184448284-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634e5184448284-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634e5184448284-1">##   user  system elapsed </div><div class="crayon-line" id="crayon-60f906a4634e5184448284-2">##  9.628   3.104 874.954</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634e9489864404" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 蒐集結果並依照每一種參數組合模型的MSE誤差來排名
+# collect the results and sort by our model performance metric of choice
+grid_perf <- h2o.getGrid(
+  grid_id = "rf_grid", 
+  sort_by = "mse", 
+  decreasing = FALSE
+  )</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634e9489864404-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634e9489864404-1"># 蒐集結果並依照每一種參數組合模型的MSE誤差來排名</div><div class="crayon-line" id="crayon-60f906a4634e9489864404-2"># collect the results and sort by our model performance metric of choice</div><div class="crayon-line" id="crayon-60f906a4634e9489864404-3">grid_perf <div class="crayon-line" id="crayon-60f906a4634e9489864404-4">  grid_id = "rf_grid", </div><div class="crayon-line" id="crayon-60f906a4634e9489864404-5">  sort_by = "mse", </div><div class="crayon-line" id="crayon-60f906a4634e9489864404-6">  decreasing = FALSE</div><div class="crayon-line" id="crayon-60f906a4634e9489864404-7">  )</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634ec571204328" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+print(grid_perf)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634ec571204328-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634ec571204328-1">print(grid_perf)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634ef376279454" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## H2O Grid Details
+## ================
+## 
+## Grid ID: rf_grid 
+## Used hyper parameters: 
+##   -  mtries 
+##   -  ntrees 
+##   -  sample_rate 
+## Number of models: 91 
+## Number of failed models: 0 
+## 
+## Hyper-Parameter Search Summary: ordered by increasing mse
+##   mtries ntrees sample_rate        model_ids                 mse
+## 1     20    400         0.8 rf_grid_model_85 6.073124636667156E8
+## 2     26    300         0.8 rf_grid_model_82 6.119220802095695E8
+## 3     20    300         0.8 rf_grid_model_79 6.148210280053709E8
+## 4     26    500         0.7 rf_grid_model_70 6.154919117655025E8
+## 5     26    400         0.8 rf_grid_model_88 6.155747553830479E8
+## 
+## ---
+##    mtries ntrees sample_rate        model_ids                 mse
+## 86     24    200        0.55  rf_grid_model_3 6.629919566473577E8
+## 87     28    200         0.7 rf_grid_model_53 6.643770708728626E8
+## 88     28    300        0.55 rf_grid_model_11 6.644256979260525E8
+## 89     30    200        0.55  rf_grid_model_6 6.658494098992392E8
+## 90     22    500        0.55 rf_grid_model_20 6.755417850891622E8
+## 91     28    200        0.55  rf_grid_model_5 6.786043491214715E8
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-20">20</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-21">21</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-22">22</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-23">23</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-24">24</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-25">25</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-26">26</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-27">27</div><div class="crayon-num" data-line="crayon-60f906a4634ef376279454-28">28</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634ef376279454-1">## H2O Grid Details</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-2">## ================</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-3">## </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-4">## Grid ID: rf_grid </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-5">## Used hyper parameters: </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-6">##   -  mtries </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-7">##   -  ntrees </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-8">##   -  sample_rate </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-9">## Number of models: 91 </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-10">## Number of failed models: 0 </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-11">## </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-12">## Hyper-Parameter Search Summary: ordered by increasing mse</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-13">##   mtries ntrees sample_rate        model_ids                 mse</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-14">## 1     20    400         0.8 rf_grid_model_85 6.073124636667156E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-15">## 2     26    300         0.8 rf_grid_model_82 6.119220802095695E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-16">## 3     20    300         0.8 rf_grid_model_79 6.148210280053709E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-17">## 4     26    500         0.7 rf_grid_model_70 6.154919117655025E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-18">## 5     26    400         0.8 rf_grid_model_88 6.155747553830479E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-19">## </div><div class="crayon-line" id="crayon-60f906a4634ef376279454-20">## ---</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-21">##    mtries ntrees sample_rate        model_ids                 mse</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-22">## 86     24    200        0.55  rf_grid_model_3 6.629919566473577E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-23">## 87     28    200         0.7 rf_grid_model_53 6.643770708728626E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-24">## 88     28    300        0.55 rf_grid_model_11 6.644256979260525E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-25">## 89     30    200        0.55  rf_grid_model_6 6.658494098992392E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-26">## 90     22    500        0.55 rf_grid_model_20 6.755417850891622E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-27">## 91     28    200        0.55  rf_grid_model_5 6.786043491214715E8</div><div class="crayon-line" id="crayon-60f906a4634ef376279454-28"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>然而我們從上述結果可以注意到，最好的模型的OOB RMSE只有2.464371 × 10<sup>4</sup> (<25K)，比我們先前所校正的模型效果都還更好。<br>
+這是由於h2o套件在參數包括「最小節點大小(minimum node size)」、「樹的深度(tree depth)」等都更「慷慨」，比如說h2o預設最小節點大小為1，而ranger和randomForest該參數則都預設為5。</p>
+<h4>Random Discrete grid search with H2O</h4>
+<p>當遇到參數變很多的情況下，額外增加一個參數將會巨幅拉大grid search執行時間。為了因應這樣的不變，h2o提供了一種叫做「RandomDiscrete」的grid search搜尋路徑，有別於「Cartisian」逐一執行所有組合，「RandomDiscrete」會隨機挑選參數組合，直到達到一定程度的改善幅度、或是超過一定的時間、或是已執行一定數目的模型數（或是以上三種情況的交叉組合）。雖然使用「RandomDiscrete」搜尋可能會錯過最佳的參數組合效果，但基本上他已經能夠調教出不錯的模型了。</p>
+<p>比如說，以下範例的參數組同樣為24種，我們設計一個「RandomDiscrete」grid search，停止條件為達成以下任一條件：近10組模型的MSE相較於最佳模性的改善幅度未超過0.5%、執行時間超過600秒(30 min)。</p>
+
+		<div id="crayon-60f906a4634f3777061411" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# hyperparameter grid
+hyper_grid.h2o <- list(
+  ntrees      = seq(200, 500, by = 100),
+  mtries      = seq(20, 25, by = 2),
+  sample_rate = c(.70, .80)
+)
+
+# random grid search criteria
+search_criteria <- list(
+  strategy = "RandomDiscrete",
+  stopping_metric = "mse",
+  stopping_tolerance = 0.005,
+  stopping_rounds = 10,
+  max_runtime_secs = 30*60
+  )
+
+
+# build grid search 
+system.time(
+random_grid <- h2o.grid(
+  algorithm = "randomForest",
+  grid_id = "rf_grid2",
+  x = x,
+  y = y,
+  training_frame = train.h2o,
+  hyper_params = hyper_grid.h2o,
+  search_criteria = search_criteria
+  )
+)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-6">6</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-7">7</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-8">8</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-9">9</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-10">10</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-11">11</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-12">12</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-13">13</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-14">14</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-15">15</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-16">16</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-17">17</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-18">18</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-19">19</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-20">20</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-21">21</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-22">22</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-23">23</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-24">24</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-25">25</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-26">26</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-27">27</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-28">28</div><div class="crayon-num" data-line="crayon-60f906a4634f3777061411-29">29</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634f3777061411-1"># hyperparameter grid</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-2">hyper_grid.h2o <div class="crayon-line" id="crayon-60f906a4634f3777061411-3">  ntrees      = seq(200, 500, by = 100),</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-4">  mtries      = seq(20, 25, by = 2),</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-5">  sample_rate = c(.70, .80)</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-6">)</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-7"> </div><div class="crayon-line" id="crayon-60f906a4634f3777061411-8"># random grid search criteria</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-9">search_criteria <div class="crayon-line" id="crayon-60f906a4634f3777061411-10">  strategy = "RandomDiscrete",</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-11">  stopping_metric = "mse",</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-12">  stopping_tolerance = 0.005,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-13">  stopping_rounds = 10,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-14">  max_runtime_secs = 30*60</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-15">  )</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-16"> </div><div class="crayon-line" id="crayon-60f906a4634f3777061411-17"> </div><div class="crayon-line" id="crayon-60f906a4634f3777061411-18"># build grid search </div><div class="crayon-line" id="crayon-60f906a4634f3777061411-19">system.time(</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-20">random_grid <div class="crayon-line" id="crayon-60f906a4634f3777061411-21">  algorithm = "randomForest",</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-22">  grid_id = "rf_grid2",</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-23">  x = x,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-24">  y = y,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-25">  training_frame = train.h2o,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-26">  hyper_params = hyper_grid.h2o,</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-27">  search_criteria = search_criteria</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-28">  )</div><div class="crayon-line" id="crayon-60f906a4634f3777061411-29">)</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634f9820031993" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##  user  system elapsed 
+##  6.721   1.877 713.918 
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634f9820031993-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634f9820031993-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634f9820031993-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634f9820031993-1">##  user  system elapsed </div><div class="crayon-line" id="crayon-60f906a4634f9820031993-2">##  6.721   1.877 713.918 </div><div class="crayon-line" id="crayon-60f906a4634f9820031993-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a4634fd132010364" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# collect the results and sort by our model performance metric of choice
+grid_perf2 <- h2o.getGrid(
+  grid_id = "rf_grid2",
+  sort_by = "mse",
+  decreasing = FALSE
+  )</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-1">1</div><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-2">2</div><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-3">3</div><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-4">4</div><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-5">5</div><div class="crayon-num" data-line="crayon-60f906a4634fd132010364-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a4634fd132010364-1"># collect the results and sort by our model performance metric of choice</div><div class="crayon-line" id="crayon-60f906a4634fd132010364-2">grid_perf2 <div class="crayon-line" id="crayon-60f906a4634fd132010364-3">  grid_id = "rf_grid2",</div><div class="crayon-line" id="crayon-60f906a4634fd132010364-4">  sort_by = "mse",</div><div class="crayon-line" id="crayon-60f906a4634fd132010364-5">  decreasing = FALSE</div><div class="crayon-line" id="crayon-60f906a4634fd132010364-6">  )</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463500864003180" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+print(grid_perf2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463500864003180-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463500864003180-1">print(grid_perf2)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463503445648549" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+
+H2O Grid Details
+================
+
+Grid ID: rf_grid2 
+Used hyper parameters: 
+  -  mtries 
+  -  ntrees 
+  -  sample_rate 
+Number of models: 24 
+Number of failed models: 0 
+
+Hyper-Parameter Search Summary: ordered by increasing mse
+  mtries ntrees sample_rate         model_ids                 mse
+1     20    500         0.8 rf_grid2_model_19 5.996100879211967E8
+2     22    500         0.8 rf_grid2_model_24  6.09073686599265E8
+3     22    500         0.7  rf_grid2_model_4 6.096855932933546E8
+4     24    400         0.8  rf_grid2_model_8 6.132880206896532E8
+5     22    400         0.8 rf_grid2_model_13 6.151492899918578E8
+
+---
+   mtries ntrees sample_rate         model_ids                 mse
+19     20    500         0.7 rf_grid2_model_12 6.347692770119294E8
+20     22    300         0.7 rf_grid2_model_21 6.361713674445038E8
+21     24    400         0.7  rf_grid2_model_6 6.431105576136292E8
+22     20    400         0.7  rf_grid2_model_9   6.4353236575248E8
+23     22    200         0.7  rf_grid2_model_5 6.477837564818393E8
+24     24    200         0.8  rf_grid2_model_1  6.50234231493715E8
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463503445648549-1">1</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-2">2</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-3">3</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-4">4</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-5">5</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-6">6</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-7">7</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-8">8</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-9">9</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-10">10</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-11">11</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-12">12</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-13">13</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-14">14</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-15">15</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-16">16</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-17">17</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-18">18</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-19">19</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-20">20</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-21">21</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-22">22</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-23">23</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-24">24</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-25">25</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-26">26</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-27">27</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-28">28</div><div class="crayon-num" data-line="crayon-60f906a463503445648549-29">29</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463503445648549-1"> </div><div class="crayon-line" id="crayon-60f906a463503445648549-2">H2O Grid Details</div><div class="crayon-line" id="crayon-60f906a463503445648549-3">================</div><div class="crayon-line" id="crayon-60f906a463503445648549-4"> </div><div class="crayon-line" id="crayon-60f906a463503445648549-5">Grid ID: rf_grid2 </div><div class="crayon-line" id="crayon-60f906a463503445648549-6">Used hyper parameters: </div><div class="crayon-line" id="crayon-60f906a463503445648549-7">  -  mtries </div><div class="crayon-line" id="crayon-60f906a463503445648549-8">  -  ntrees </div><div class="crayon-line" id="crayon-60f906a463503445648549-9">  -  sample_rate </div><div class="crayon-line" id="crayon-60f906a463503445648549-10">Number of models: 24 </div><div class="crayon-line" id="crayon-60f906a463503445648549-11">Number of failed models: 0 </div><div class="crayon-line" id="crayon-60f906a463503445648549-12"> </div><div class="crayon-line" id="crayon-60f906a463503445648549-13">Hyper-Parameter Search Summary: ordered by increasing mse</div><div class="crayon-line" id="crayon-60f906a463503445648549-14">  mtries ntrees sample_rate         model_ids                 mse</div><div class="crayon-line" id="crayon-60f906a463503445648549-15">1     20    500         0.8 rf_grid2_model_19 5.996100879211967E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-16">2     22    500         0.8 rf_grid2_model_24  6.09073686599265E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-17">3     22    500         0.7  rf_grid2_model_4 6.096855932933546E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-18">4     24    400         0.8  rf_grid2_model_8 6.132880206896532E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-19">5     22    400         0.8 rf_grid2_model_13 6.151492899918578E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-20"> </div><div class="crayon-line" id="crayon-60f906a463503445648549-21">---</div><div class="crayon-line" id="crayon-60f906a463503445648549-22">   mtries ntrees sample_rate         model_ids                 mse</div><div class="crayon-line" id="crayon-60f906a463503445648549-23">19     20    500         0.7 rf_grid2_model_12 6.347692770119294E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-24">20     22    300         0.7 rf_grid2_model_21 6.361713674445038E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-25">21     24    400         0.7  rf_grid2_model_6 6.431105576136292E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-26">22     20    400         0.7  rf_grid2_model_9   6.4353236575248E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-27">23     22    200         0.7  rf_grid2_model_5 6.477837564818393E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-28">24     24    200         0.8  rf_grid2_model_1  6.50234231493715E8</div><div class="crayon-line" id="crayon-60f906a463503445648549-29"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>檢視「RandomDiscrete」grid search結果我們發現，經「隨機」檢視24組參數組合後，最佳的模型MSE只有2.448694 × 10<sup>4</sup>  (v.s. Cartisian grid search找到的2.464371 × 10<sup>4</sup>已非常接近)。且random discrete法只花了約11分鐘(=713/60)的時間(v.s. complete search的15分鐘(=874 sec / 60)。</p>
+<p>一旦找到了最佳模型，我們就可以將模型套用在hold-out test set測試資料上來計算最後的「驗證誤差 test error」。結果顯示驗證RMSE誤差為23K，比elastic nets(32K)和bagging(36K)法低了$10K左右。</p>
+
+		<div id="crayon-60f906a463507799328602" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 根據Cartesian法中，選出MSE最低的model，
+# Grab the model_id for the top model, chosen by validation error
+best_model_id <- grid_perf2@model_ids[[1]]
+best_model <- h2o.getModel(best_model_id)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463507799328602-1">1</div><div class="crayon-num" data-line="crayon-60f906a463507799328602-2">2</div><div class="crayon-num" data-line="crayon-60f906a463507799328602-3">3</div><div class="crayon-num" data-line="crayon-60f906a463507799328602-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463507799328602-1"># 根據Cartesian法中，選出MSE最低的model，</div><div class="crayon-line" id="crayon-60f906a463507799328602-2"># Grab the model_id for the top model, chosen by validation error</div><div class="crayon-line" id="crayon-60f906a463507799328602-3">best_model_id <div class="crayon-line" id="crayon-60f906a463507799328602-4">best_model </div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46350d038854021" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Now let’s evaluate the model performance on a test set
+ames_test.h2o <- as.h2o(ames_test)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46350d038854021-1">1</div><div class="crayon-num" data-line="crayon-60f906a46350d038854021-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46350d038854021-1"># Now let’s evaluate the model performance on a test set</div><div class="crayon-line" id="crayon-60f906a46350d038854021-2">ames_test.h2o </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463511313422352" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+best_model_perf <- h2o.performance(model = best_model, newdata = ames_test.h2o)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463511313422352-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463511313422352-1">best_model_perf </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463514624521461" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# RMSE of best model
+h2o.mse(best_model_perf) %>% sqrt()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463514624521461-1">1</div><div class="crayon-num" data-line="crayon-60f906a463514624521461-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463514624521461-1"># RMSE of best model</div><div class="crayon-line" id="crayon-60f906a463514624521461-2">h2o.mse(best_model_perf) %>% sqrt()</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463518202122757" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 23303.05
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463518202122757-1">1</div><div class="crayon-num" data-line="crayon-60f906a463518202122757-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463518202122757-1">## [1] 23303.05</div><div class="crayon-line" id="crayon-60f906a463518202122757-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>預測</h3>
+<p>一但我們挑出了我們偏好的模型，就像之前一樣，可以使用predict()函數將模型套用在新的資料集上做預測。我們可以來比較所有模型類別的預測效果(randomForest, ranger, h2o)(隨然呈現的結果有稍稍的不一樣)。另外要注意的就是h2o模型使用資料的格式不太依樣。</p>
+<p>randomForest</p>
+
+		<div id="crayon-60f906a46351c821642575" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# randomForest
+pred_randomForest <- predict(ames_randomForest, ames_test)
+head(pred_randomForest)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46351c821642575-1">1</div><div class="crayon-num" data-line="crayon-60f906a46351c821642575-2">2</div><div class="crayon-num" data-line="crayon-60f906a46351c821642575-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46351c821642575-1"># randomForest</div><div class="crayon-line" id="crayon-60f906a46351c821642575-2">pred_randomForest <div class="crayon-line" id="crayon-60f906a46351c821642575-3">head(pred_randomForest)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46351f102954538" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##        1        2        3        4        5        6 
+## 128454.9 155459.6 264329.4 382519.7 211966.4 214173.0
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46351f102954538-1">1</div><div class="crayon-num" data-line="crayon-60f906a46351f102954538-2">2</div><div class="crayon-num" data-line="crayon-60f906a46351f102954538-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46351f102954538-1">##        1        2        3        4        5        6 </div><div class="crayon-line" id="crayon-60f906a46351f102954538-2">## 128454.9 155459.6 264329.4 382519.7 211966.4 214173.0</div><div class="crayon-line" id="crayon-60f906a46351f102954538-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>ranger</p>
+
+		<div id="crayon-60f906a463523578390416" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# ranger
+pred_ranger <- predict(ames_ranger, ames_test)
+head(pred_ranger$predictions)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463523578390416-1">1</div><div class="crayon-num" data-line="crayon-60f906a463523578390416-2">2</div><div class="crayon-num" data-line="crayon-60f906a463523578390416-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463523578390416-1"># ranger</div><div class="crayon-line" id="crayon-60f906a463523578390416-2">pred_ranger <div class="crayon-line" id="crayon-60f906a463523578390416-3">head(pred_ranger$predictions)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463526099156460" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 128893.3 154095.1 270183.4 389106.2 222629.6 210352.8
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463526099156460-1">1</div><div class="crayon-num" data-line="crayon-60f906a463526099156460-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463526099156460-1">## [1] 128893.3 154095.1 270183.4 389106.2 222629.6 210352.8</div><div class="crayon-line" id="crayon-60f906a463526099156460-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>h2o</p>
+
+		<div id="crayon-60f906a46352a031070826" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# h2o
+pred_h2o <- predict(best_model, ames_test.h2o)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46352a031070826-1">1</div><div class="crayon-num" data-line="crayon-60f906a46352a031070826-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46352a031070826-1"># h2o</div><div class="crayon-line" id="crayon-60f906a46352a031070826-2">pred_h2o </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a46352e722260015" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+head(pred_h2o)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a46352e722260015-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a46352e722260015-1">head(pred_h2o)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a463531387203186" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    predict
+## 1 119430.6
+## 2 152900.0
+## 3 278208.3
+## 4 283966.7
+## 5 225166.7
+## 6 200583.3
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a463531387203186-1">1</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-2">2</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-3">3</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-4">4</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-5">5</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-6">6</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-7">7</div><div class="crayon-num" data-line="crayon-60f906a463531387203186-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a463531387203186-1">##    predict</div><div class="crayon-line" id="crayon-60f906a463531387203186-2">## 1 119430.6</div><div class="crayon-line" id="crayon-60f906a463531387203186-3">## 2 152900.0</div><div class="crayon-line" id="crayon-60f906a463531387203186-4">## 3 278208.3</div><div class="crayon-line" id="crayon-60f906a463531387203186-5">## 4 283966.7</div><div class="crayon-line" id="crayon-60f906a463531387203186-6">## 5 225166.7</div><div class="crayon-line" id="crayon-60f906a463531387203186-7">## 6 200583.3</div><div class="crayon-line" id="crayon-60f906a463531387203186-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>小結</h3>
+<ol><li>random forest是一個非常強大的「開箱即用」的演算法。不用太多的參數調教就會有相當不錯的預測能力。</li>
+<li>此外，random forest也是模型中對資料前處理要求最少的模型，不太需要做資料轉換，是許多解決預測問題時最快能應用的方法。</li>
+<li>以bagging為基礎，並透過(1)每棵樹進行bootstrapped sample 與 (2)節點分割時隨機挑選變數清單來「去除樹模型間的相關性」，能有效提升模型的高變異性與提升預測精準度。</li>
+</ol><hr><p>參考文章連結：</p>
+<p><a href="http://uc-r.github.io/random_forests" target="_blank" rel="noopener noreferrer">隨機森林 random forest</a></p>
+<p>更多Decision Tree相關的統計學習筆記：</p>
+<p><a href="/gradient-boosting-machines-gbm/" target="_blank" rel="noopener noreferrer">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a></p>
+<p><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest</a></p>
+<p><a href="/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/" target="_blank" rel="noopener noreferrer">Regression Tree | 迴歸樹, Bagging, Bootstrap Aggregation | R語言</a></p>
+<p><a href="/decision-tree-surrogate-in-cart/" target="_blank" rel="noopener noreferrer">Tree Surrogate | Tree Surrogate Variables in CART | R 統計</a></p>
+<p>更多Regression相關統計學習筆記：</p>
+<p><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e8%bf%b4%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">Linear Regression | 線性迴歸模型 | using AirQuality Dataset</a></p>
+<p><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part1 – 資料探勘與處理 | 統計 R語言</a></p>
+<p><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part2 – 模型建置、診斷與比較 | R語言</a></p>
+<p><a href="/regularized-regression-ridge-lasso-elastic/" target="_blank" rel="noopener noreferrer">Regularized Regression | 正規化迴歸 – Ridge, Lasso, Elastic Net | R語言</a></p>
+<p>更多Clustering集群分析統計學習筆記：</p>
+<p><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering 切割式分群 | Kmeans, Kmedoid | Clustering 資料分群</a></p>
+<p><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</a></p>
+<p>其他統計學習筆記：</p>
+<p><a href="/principal-components-analysis-pca-%e4%b8%bb%e6%88%90%e4%bb%bd%e5%88%86%e6%9e%90/" target="_blank" rel="noopener noreferrer">Principal Components Analysis (PCA) | 主成份分析 | R 統計</a></p>
+			</div>
+
+	<footer class="entry-footer"><span class="tags-links"> <a href="/tag/decision-tree/" rel="tag">decision tree</a>0<a href="/tag/h2o/" rel="tag">h2o</a>0<a href="/tag/random-forests/" rel="tag">random forests</a>0<a href="/tag/randomforest/" rel="tag">randomForest</a>0<a href="/tag/ranger/" rel="tag">ranger</a>0<a href="/tag/regression-tree/" rel="tag">Regression Tree</a>0<a href="/tag/%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" rel="tag">隨機森林</a></span>	</footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/%e9%9b%9e%e7%b1%a0%e5%b1%b1-%e4%b9%9d%e4%bb%bd-%e5%9f%ba%e9%9a%86/" rel="prev">雞籠山 | 登高眺望九份山景與海景的登山步道 | 基隆 九份</a></div><div class="nav-next"><a href="/gradient-boosting-machines-gbm/" rel="next">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+			<h4 class="comment-title">
+			在《<span>Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</span>》中有 2 則留言		</h4>
+
+		
+		<ol class="comments-list"><li id="comment-3262" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-3262" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://0.gravatar.com/avatar/6b13424cacb7d49b8b0b539653a6c8c4?s=60&d=mm&r=g" srcset="http://0.gravatar.com/avatar/6b13424cacb7d49b8b0b539653a6c8c4?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">andy</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/#comment-3262"><time datetime="2019-06-03T01:18:23+08:00">2019-06-0301:18:23</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>想請教您是在學校學這些知識的嗎？</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3262" data-commentid="3262" data-postid="2802" data-belowelement="div-comment-3262" data-respondelement="respond" data-replyto="回覆給「andy」" aria-label="回覆給「andy」">回覆</a></div>			</article><ol class="children"><li id="comment-3263" class="comment byuser comment-author-jamleecute bypostauthor odd alt depth-2">
+			<article id="div-comment-3263" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://2.gravatar.com/avatar/bd4f120d4d46828d1bb2380433b94a1e?s=60&d=mm&r=g" srcset="http://2.gravatar.com/avatar/bd4f120d4d46828d1bb2380433b94a1e?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">jamleecute</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/#comment-3263"><time datetime="2019-06-15T08:50:28+08:00">2019-06-1508:50:28</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>不是喔。都是工作後學的。</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3263" data-commentid="3263" data-postid="2802" data-belowelement="div-comment-3263" data-respondelement="respond" data-replyto="回覆給「jamleecute」" aria-label="回覆給「jamleecute」">回覆</a></div>			</article></li>
+</ol></li>
+		</ol><div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="2802" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626932900"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

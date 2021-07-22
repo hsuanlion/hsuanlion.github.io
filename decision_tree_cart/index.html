@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="Decision Tree 決策樹模型是一個不受資料分配限制的模型，模型結果以樹狀呈現，簡單易懂，解釋性極高，且模型同時兼具變數挑選與遺失值填補的機制，並能處理分類與回歸問題，是一個廣泛被使用的模型。另外，以決策樹為基礎集成學習而成的隨機森林，更能有效降低模型的錯誤率與並解決過度配適等問題的著名機器學習法之一。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest"><meta property="og:description" content="Decision Tree 決策樹模型是一個不受資料分配限制的模型，模型結果以樹狀呈現，簡單易懂，解釋性極高，且模型同時兼具變數挑選與遺失值填補的機制，並能處理分類與回歸問題，是一個廣泛被使用的模型。另外，以決策樹為基礎集成學習而成的隨機森林，更能有效降低模型的錯誤率與並解決過度配適等問題的著名機器學習法之一。"><meta property="og:url" content="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:tag" content="cart"><meta property="article:tag" content="decision tree"><meta property="article:tag" content="prune"><meta property="article:tag" content="random forest"><meta property="article:tag" content="rpart"><meta property="article:tag" content="tree surrogate"><meta property="article:tag" content="決策樹"><meta property="article:tag" content="隨機森林"><meta property="article:section" content=" 程式與統計"><meta property="article:published_time" content="2018-08-31T06:08:33+08:00"><meta property="article:modified_time" content="2019-04-14T15:01:36+08:00"><meta property="og:updated_time" content="2019-04-14T15:01:36+08:00"><meta property="og:image" content="/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-1024x683.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="683"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="Decision Tree 決策樹模型是一個不受資料分配限制的模型，模型結果以樹狀呈現，簡單易懂，解釋性極高，且模型同時兼具變數挑選與遺失值填補的機制，並能處理分類與回歸問題，是一個廣泛被使用的模型。另外，以決策樹為基礎集成學習而成的隨機森林，更能有效降低模型的錯誤率與並解決過度配適等問題的著名機器學習法之一。"><meta name="twitter:title" content="Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest"><meta name="twitter:image" content="/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-1026" class="post-1026 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-statistics-model tag-cart tag-decision-tree tag-prune tag-random-forest tag-rpart tag-tree-surrogate tag-248 tag-249"><div class="entry-thumb">
+			<img width="5472" height="3648" src="/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="j-kelly-brito-247570-unsplash" loading="lazy" srcset="/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash.jpg 5472w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-300x200.jpg 300w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-768x512.jpg 768w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-1024x683.jpg 1024w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-830x553.jpg 830w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-230x153.jpg 230w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-350x233.jpg 350w,/wp-content/uploads/2018/08/j-kelly-brito-247570-unsplash-480x320.jpg 480w" sizes="(max-width: 5472px) 100vw, 5472px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/statistics-model/" title="統計模型" class="post-cat">統計模型</a>		</div>
+
+		<h1 class="title-post entry-title">Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" rel="bookmark"><time class="entry-date published" datetime="2018-08-31T14:08:33+08:00">2018-08-31</time><time class="updated" datetime="2019-04-14T23:01:36+08:00">2019-04-14</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p>Decision Tree 決策樹模型是一個不受資料分配限制的模型，模型結果以樹狀呈現，簡單易懂，解釋性極高，且模型同時兼具變數挑選與遺失值填補的機制，並能處理分類與回歸問題，是一個廣泛被使用的模型。另外，以決策樹為基礎集成學習而成的隨機森林，更能有效降低模型的錯誤率與並解決過度配適等問題的著名機器學習法之一。</p>
+<h3>Decision Tree 決策樹簡介</h3>
+<ul><li><span style="color: #9f6ad4;">決策樹</span>是一個多功能的機器學習演算法，不僅可以進行<span style="color: #9f6ad4;">分類</span>亦可進行<span style="color: #9f6ad4;">回歸</span>任務。</li>
+<li>可以配適複雜的資料集，是個強大的演算法。</li>
+<li>屬於<span style="color: #9f6ad4;">無母數回歸</span>方法(<span style="color: #9f6ad4;">non-parametric</span>)：對資料長相的要求不像回歸模型（有母數法，parametric）嚴格，不需要假設資料的線性關係與常態分佈。<br>
+(無母數介紹請參考)</li>
+<li>決策樹演算法也是隨機森林演算法的基礎(隨機森林也是至今具潛力的演算法之一)。</li>
+<li>有諸多演算法，常見的包括CART, CHAID。</li>
+<li>決策樹可以用來建立非線性模型，通常被用在迴歸，也可以用在對於遞迴預測變數最二元分類。</li>
+</ul><h4>補充-無母數統計：</h4>
+<ol><li>適用於母體分佈情況未知、小樣本、母體分佈不為常態或不易轉換為常態，對資料長相的要求小。</li>
+<li>無母數統計推論時所使用的<span style="color: #9f6ad4;">樣本統計量</span>分配通常與母體分配無關，不需要使用樣本統計量去推論母體中位數、適合度、獨立性、隨機性。</li>
+<li>無母數統計又稱作「不受分配限制統計法」(distribution-free)。</li>
+</ol><h4>常見的決策樹演算法比較</h4>
+<table style="height: 116px; width: 100%; border-collapse: collapse; background-color: #ffffff;" border="1"><tbody><tr style="height: 23px;" bgcolor="#ddd"><td style="width: 25%; height: 23px;"><span style="color: #000000;">演算法</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">資料屬性</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">分割規則</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">修剪樹規則</span></td>
+</tr><tr style="height: 23px;"><td style="width: 25%; height: 23px;"><span style="color: #000000;">ID3</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">離散型</span></td>
+<td style="width: 25%; height: 23px;">
+<div><span style="color: #000000;">Entropy,</span></div>
+<div><span style="color: #000000;">Gain Ratio</span></div>
+</td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">Predicted Error Rate</span></td>
+</tr><tr style="height: 23px;"><td style="width: 25%; height: 23px;"><span style="color: #000000;">C4.5</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">離散型</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">Gain Ratio</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">Predicted Error Rate</span></td>
+</tr><tr style="height: 23px;"><td style="width: 25%; height: 23px;"><span style="color: #000000;">CHAID</span></td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">離散型</span></td>
+<td style="width: 25%; height: 23px;">
+<div><span style="color: #000000;">Chi-Square Test</span></div>
+</td>
+<td style="width: 25%; height: 23px;"><span style="color: #000000;">No Pruning</span></td>
+</tr><tr style="height: 24px;"><td style="width: 25%; height: 24px;"><span style="color: #000000;">CART</span></td>
+<td style="width: 25%; height: 24px;"><span style="color: #000000;">離散與連續型</span></td>
+<td style="width: 25%; height: 24px;"><span style="color: #000000;">Gini Index</span></td>
+<td class="" style="width: 25%; height: 24px;">
+<div><span style="color: #000000;">Entire Error Rate</span></div>
+<div><span style="color: #000000;">(Training and Predicted)</span></div>
+</td>
+</tr></tbody></table><h4>決策樹挑選變數常用的測量值</h4>
+<p>常見的資訊量（衡量資料<span style="color: #9f6ad4;">純度</span>）：</p>
+<ul><li><strong>Entropy (熵)</strong>:<br>
+$$I_{H}(t)=-\sum_{i=1}^c p(i|t) \log_{2} p(i|t)$$<br>
+其中，H代表Homogeneity(同質性)。<br><span style="color: #9f6ad4;">當Entropy=0表示completely homogeneous(pure)，而當Entropy=1則表示資料為50%-50%之組成，是不純的</span><span style="color: #9f6ad4;">(impurity)</span>。</li>
+<li><strong>Gini Impurity (Gini不純度)</strong>:<br>
+$$I_{G}(t) =\sum_{i=1}^c p(i|t)(1-p(i|t)) = 1-\sum_{i=1}^c p(i|t)^2$$<br>
+其中，G則代表Gini Impurity。</li>
+</ul><p>決定切割點的測量值：</p>
+<ul><li><strong>Information Gain (資訊增益)</strong>: 則衡量節點切割前後資料純度的變化。<span style="color: #9f6ad4;">節點的選擇，當選IG值越大的變數為佳</span>。<br>
+$$IG = Info(D) – Info_{A}(D)$$<br>
+其中，\(Info(D)\)為原始資料純度，而\(Info_{\space A}(D)\)則表示使用A規則切割後的資料純度。<br>
+$$Info_{\space A}(D)=\sum_{j=1}^m \frac{N_{j}}{N_{p}} Info(D_{j})$$<br>
+當m=2，即為二元分類時，<br>
+$$IG = Info(D) – \frac{N_{left}}{N_{p}} Info(D_{left}) – \frac{N_{right}}{N_{p}} Info(D_{right})$$</li>
+</ul><h4>資料與分析問題</h4>
+<ul><li>Data: 鐵達尼資料集包含13個變數與1309筆觀測值。</li>
+<li>Problem: 我們想分析與預測具有什麼樣特徵的乘客，比較有機會在冰山撞船後可以存活下來。</li>
+<li>Method: 使用CART(Classification and Regression Tree)決策樹模型來找出重要解釋變數。</li>
+</ul><h4>訓練與視覺化決策樹，我們將進行以下步驟：</h4>
+<ol><li>載入資料</li>
+<li>資料探勘</li>
+<li>資料前處理</li>
+<li>產生訓練與測試資料集</li>
+<li>建置模型</li>
+<li>進行預測</li>
+<li>衡量模型表現</li>
+<li>修剪樹(Post-pruning)</li>
+<li>K-Fold Cross Validation</li>
+<li>模型比較(1)：條件推論樹(Conditional Inference Tree)</li>
+<li>模型比較(2)：隨機森林(Random Forest)</li>
+</ol><h3>Step1: 載入資料</h3>
+<p></p>
+
+		<div id="crayon-60f9188288ef1855535142" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 從google drive shareable link 讀入csv檔案
+# https://drive.google.com/file/d/1S7S-siBGkMR3YUVAbaTkfS1CxOji_Ngd/view?usp=sharing
+id <- "1S7S-siBGkMR3YUVAbaTkfS1CxOji_Ngd" # google file ID
+inputData <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id))
+head(inputData)
+
+#   pclass survived                                            name    sex     age sibsp parch ticket     fare
+# 1      1        1                   Allen, Miss. Elisabeth Walton female 29.0000     0     0  24160 211.3375
+# 2      1        1                  Allison, Master. Hudson Trevor   male  0.9167     1     2 113781 151.5500
+# 3      1        0                    Allison, Miss. Helen Loraine female  2.0000     1     2 113781 151.5500
+# 4      1        0            Allison, Mr. Hudson Joshua Creighton   male 30.0000     1     2 113781 151.5500
+# 5      1        0 Allison, Mrs. Hudson J C (Bessie Waldo Daniels) female 25.0000     1     2 113781 151.5500
+# 6      1        1                             Anderson, Mr. Harry   male 48.0000     0     0  19952  26.5500
+#     cabin embarked                       home.dest
+# 1      B5        S                    St Louis, MO
+# 2 C22 C26        S Montreal, PQ / Chesterville, ON
+# 3 C22 C26        S Montreal, PQ / Chesterville, ON
+# 4 C22 C26        S Montreal, PQ / Chesterville, ON
+# 5 C22 C26        S Montreal, PQ / Chesterville, ON
+# 6     E12        S                    New York, NY
+
+tail(inputData)
+#      pclass survived                      name    sex  age sibsp parch ticket    fare cabin embarked home.dest
+# 1304      3        0     Yousseff, Mr. Gerious   male   NA     0     0   2627 14.4583              C          
+# 1305      3        0      Zabour, Miss. Hileni female 14.5     1     0   2665 14.4542              C          
+# 1306      3        0     Zabour, Miss. Thamine female   NA     1     0   2665 14.4542              C          
+# 1307      3        0 Zakarian, Mr. Mapriededer   male 26.5     0     0   2656  7.2250              C          
+# 1308      3        0       Zakarian, Mr. Ortin   male 27.0     0     0   2670  7.2250              C          
+# 1309      3        0        Zimmerman, Mr. Leo   male 29.0     0     0 315082  7.8750              S</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-1">1</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-2">2</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-3">3</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-4">4</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-5">5</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-6">6</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-7">7</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-8">8</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-9">9</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-10">10</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-11">11</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-12">12</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-13">13</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-14">14</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-15">15</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-16">16</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-17">17</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-18">18</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-19">19</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-20">20</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-21">21</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-22">22</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-23">23</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-24">24</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-25">25</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-26">26</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-27">27</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-28">28</div><div class="crayon-num" data-line="crayon-60f9188288ef1855535142-29">29</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288ef1855535142-1"># 從google drive shareable link 讀入csv檔案</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-2"># https://drive.google.com/file/d/1S7S-siBGkMR3YUVAbaTkfS1CxOji_Ngd/view?usp=sharing</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-3">id <div class="crayon-line" id="crayon-60f9188288ef1855535142-4">inputData <div class="crayon-line" id="crayon-60f9188288ef1855535142-5">head(inputData)</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-6"> </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-7">#   pclass survived                                            name    sex     age sibsp parch ticket     fare</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-8"># 1      1        1                   Allen, Miss. Elisabeth Walton female 29.0000     0     0  24160 211.3375</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-9"># 2      1        1                  Allison, Master. Hudson Trevor   male  0.9167     1     2 113781 151.5500</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-10"># 3      1        0                    Allison, Miss. Helen Loraine female  2.0000     1     2 113781 151.5500</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-11"># 4      1        0            Allison, Mr. Hudson Joshua Creighton   male 30.0000     1     2 113781 151.5500</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-12"># 5      1        0 Allison, Mrs. Hudson J C (Bessie Waldo Daniels) female 25.0000     1     2 113781 151.5500</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-13"># 6      1        1                             Anderson, Mr. Harry   male 48.0000     0     0  19952  26.5500</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-14">#     cabin embarked                       home.dest</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-15"># 1      B5        S                    St Louis, MO</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-16"># 2 C22 C26        S Montreal, PQ / Chesterville, ON</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-17"># 3 C22 C26        S Montreal, PQ / Chesterville, ON</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-18"># 4 C22 C26        S Montreal, PQ / Chesterville, ON</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-19"># 5 C22 C26        S Montreal, PQ / Chesterville, ON</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-20"># 6     E12        S                    New York, NY</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-21"> </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-22">tail(inputData)</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-23">#      pclass survived                      name    sex  age sibsp parch ticket    fare cabin embarked home.dest</div><div class="crayon-line" id="crayon-60f9188288ef1855535142-24"># 1304      3        0     Yousseff, Mr. Gerious   male   NA     0     0   2627 14.4583              C          </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-25"># 1305      3        0      Zabour, Miss. Hileni female 14.5     1     0   2665 14.4542              C          </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-26"># 1306      3        0     Zabour, Miss. Thamine female   NA     1     0   2665 14.4542              C          </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-27"># 1307      3        0 Zakarian, Mr. Mapriededer   male 26.5     0     0   2656  7.2250              C          </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-28"># 1308      3        0       Zakarian, Mr. Ortin   male 27.0     0     0   2670  7.2250              C          </div><div class="crayon-line" id="crayon-60f9188288ef1855535142-29"># 1309      3        0        Zimmerman, Mr. Leo   male 29.0     0     0 315082  7.8750              S</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們可以發現數據是經過排列過的，因為這樣會嚴重影響到我們後續隨機產生訓練與測試資料集，所以我們必須將資料重新隨機排列。</p>
+<p>使用sample()隨機產生一組數列index。</p>
+
+		<div id="crayon-60f9188288f08402976674" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+shuffle_index <- sample(x = 1:nrow(inputData))
+head(shuffle_index)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f08402976674-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f08402976674-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f08402976674-1">shuffle_index <div class="crayon-line" id="crayon-60f9188288f08402976674-2">head(shuffle_index)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>並將隨機數列index指派給titanic資料集。即可觀察到資料已無排序。</p>
+
+		<div id="crayon-60f9188288f12268978952" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+inputData <- inputData[shuffle_index,]
+head(inputData)
+
+#      pclass survived                                   name    sex age sibsp parch     ticket   fare cabin
+# 632       3        0            Andersson, Mr. Johan Samuel   male  26     0     0     347075  7.775      
+# 526       2        0                       Pain, Dr. Alfred   male  23     0     0     244278 10.500      
+# 822       3        0              Goldsmith, Mr. Frank John   male  33     1     1     363291 20.525      
+# 485       2        1           Lemore, Mrs. (Amelia Milley) female  34     0     0 C.A. 34260 10.500   F33
+# 627       3        0 Andersson, Miss. Ida Augusta Margareta female  38     4     2     347091  7.775      
+# 1183      3        1       Salkjelsvik, Miss. Anna Kristine female  21     0     0     343120  7.650      
+#      embarked                         home.dest
+# 632         S                      Hartford, CT
+# 526         S                      Hamilton, ON
+# 822         S Strood, Kent, England Detroit, MI
+# 485         S                       Chicago, IL
+# 627         S      Vadsbro, Sweden Ministee, MI
+# 1183        S</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f12268978952-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f12268978952-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f12268978952-1">inputData <div class="crayon-line" id="crayon-60f9188288f12268978952-2">head(inputData)</div><div class="crayon-line" id="crayon-60f9188288f12268978952-3"> </div><div class="crayon-line" id="crayon-60f9188288f12268978952-4">#      pclass survived                                   name    sex age sibsp parch     ticket   fare cabin</div><div class="crayon-line" id="crayon-60f9188288f12268978952-5"># 632       3        0            Andersson, Mr. Johan Samuel   male  26     0     0     347075  7.775      </div><div class="crayon-line" id="crayon-60f9188288f12268978952-6"># 526       2        0                       Pain, Dr. Alfred   male  23     0     0     244278 10.500      </div><div class="crayon-line" id="crayon-60f9188288f12268978952-7"># 822       3        0              Goldsmith, Mr. Frank John   male  33     1     1     363291 20.525      </div><div class="crayon-line" id="crayon-60f9188288f12268978952-8"># 485       2        1           Lemore, Mrs. (Amelia Milley) female  34     0     0 C.A. 34260 10.500   F33</div><div class="crayon-line" id="crayon-60f9188288f12268978952-9"># 627       3        0 Andersson, Miss. Ida Augusta Margareta female  38     4     2     347091  7.775      </div><div class="crayon-line" id="crayon-60f9188288f12268978952-10"># 1183      3        1       Salkjelsvik, Miss. Anna Kristine female  21     0     0     343120  7.650      </div><div class="crayon-line" id="crayon-60f9188288f12268978952-11">#      embarked                         home.dest</div><div class="crayon-line" id="crayon-60f9188288f12268978952-12"># 632         S                      Hartford, CT</div><div class="crayon-line" id="crayon-60f9188288f12268978952-13"># 526         S                      Hamilton, ON</div><div class="crayon-line" id="crayon-60f9188288f12268978952-14"># 822         S Strood, Kent, England Detroit, MI</div><div class="crayon-line" id="crayon-60f9188288f12268978952-15"># 485         S                       Chicago, IL</div><div class="crayon-line" id="crayon-60f9188288f12268978952-16"># 627         S      Vadsbro, Sweden Ministee, MI</div><div class="crayon-line" id="crayon-60f9188288f12268978952-17"># 1183        S</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>Step2: 資料探勘</h3>
+<p>使用summary()摘要基礎統計。</p>
+
+		<div id="crayon-60f9188288f1a440234756" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+summary(inputData)
+
+#        pclass         survived                                   name          sex           age         
+# Min.   :1.000   Min.   :0.000   Connolly, Miss. Kate            :   2   female:466   Min.   : 0.1667  
+# 1st Qu.:2.000   1st Qu.:0.000   Kelly, Mr. James                :   2   male  :843   1st Qu.:21.0000  
+# Median :3.000   Median :0.000   Abbing, Mr. Anthony             :   1                Median :28.0000  
+# Mean   :2.295   Mean   :0.382   Abbott, Master. Eugene Joseph   :   1                Mean   :29.8811  
+# 3rd Qu.:3.000   3rd Qu.:1.000   Abbott, Mr. Rossmore Edward     :   1                3rd Qu.:39.0000  
+# Max.   :3.000   Max.   :1.000   Abbott, Mrs. Stanton (Rosa Hunt):   1                Max.   :80.0000  
+#                                 (Other)                         :1301                NA's   :263      
+#          sibsp            parch            ticket          fare                     cabin      embarked
+# Min.   :0.0000   Min.   :0.000   CA. 2343:  11   Min.   :  0.000                  :1014    :  2   
+# 1st Qu.:0.0000   1st Qu.:0.000   1601    :   8   1st Qu.:  7.896   C23 C25 C27    :   6   C:270   
+# Median :0.0000   Median :0.000   CA 2144 :   8   Median : 14.454   B57 B59 B63 B66:   5   Q:123   
+# Mean   :0.4989   Mean   :0.385   3101295 :   7   Mean   : 33.295   G6             :   5   S:914   
+# 3rd Qu.:1.0000   3rd Qu.:0.000   347077  :   7   3rd Qu.: 31.275   B96 B98        :   4           
+# Max.   :8.0000   Max.   :9.000   347082  :   7   Max.   :512.329   C22 C26        :   4           
+#                                  (Other) :1261   NA's   :1         (Other)        : 271           
+#                home.dest  
+# :564  
+# New York, NY        : 64  
+# London              : 14  
+# Montreal, PQ        : 10  
+# Cornwall / Akron, OH:  9  
+# Paris, France       :  9  
+# (Other)             :639</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-17">17</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-18">18</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-19">19</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-20">20</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-21">21</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-22">22</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-23">23</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-24">24</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-25">25</div><div class="crayon-num" data-line="crayon-60f9188288f1a440234756-26">26</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f1a440234756-1">summary(inputData)</div><div class="crayon-line" id="crayon-60f9188288f1a440234756-2"> </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-3">#        pclass         survived                                   name          sex           age         </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-4"># Min.   :1.000   Min.   :0.000   Connolly, Miss. Kate            :   2   female:466   Min.   : 0.1667  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-5"># 1st Qu.:2.000   1st Qu.:0.000   Kelly, Mr. James                :   2   male  :843   1st Qu.:21.0000  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-6"># Median :3.000   Median :0.000   Abbing, Mr. Anthony             :   1                Median :28.0000  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-7"># Mean   :2.295   Mean   :0.382   Abbott, Master. Eugene Joseph   :   1                Mean   :29.8811  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-8"># 3rd Qu.:3.000   3rd Qu.:1.000   Abbott, Mr. Rossmore Edward     :   1                3rd Qu.:39.0000  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-9"># Max.   :3.000   Max.   :1.000   Abbott, Mrs. Stanton (Rosa Hunt):   1                Max.   :80.0000  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-10">#                                 (Other)                         :1301                NA's   :263      </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-11">#          sibsp            parch            ticket          fare                     cabin      embarked</div><div class="crayon-line" id="crayon-60f9188288f1a440234756-12"># Min.   :0.0000   Min.   :0.000   CA. 2343:  11   Min.   :  0.000                  :1014    :  2   </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-13"># 1st Qu.:0.0000   1st Qu.:0.000   1601    :   8   1st Qu.:  7.896   C23 C25 C27    :   6   C:270   </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-14"># Median :0.0000   Median :0.000   CA 2144 :   8   Median : 14.454   B57 B59 B63 B66:   5   Q:123   </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-15"># Mean   :0.4989   Mean   :0.385   3101295 :   7   Mean   : 33.295   G6             :   5   S:914   </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-16"># 3rd Qu.:1.0000   3rd Qu.:0.000   347077  :   7   3rd Qu.: 31.275   B96 B98        :   4           </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-17"># Max.   :8.0000   Max.   :9.000   347082  :   7   Max.   :512.329   C22 C26        :   4           </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-18">#                                  (Other) :1261   NA's   :1         (Other)        : 271           </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-19">#                home.dest  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-20"># :564  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-21"># New York, NY        : 64  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-22"># London              : 14  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-23"># Montreal, PQ        : 10  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-24"># Cornwall / Akron, OH:  9  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-25"># Paris, France       :  9  </div><div class="crayon-line" id="crayon-60f9188288f1a440234756-26"># (Other)             :639</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>使用str()查看資料結構。</p>
+
+		<div id="crayon-60f9188288f21953252199" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+str(inputData)
+# 'data.frame':	1309 obs. of  12 variables:
+# $ pclass   : int  3 2 3 2 3 3 1 3 3 2 ...
+# $ survived : int  0 0 0 1 0 1 1 0 1 1 ...
+# $ name     : Factor w/ 1307 levels "Abbing, Mr. Anthony",..: 41 920 459 703 36 1068 864 949 1092 516 ...
+# $ sex      : Factor w/ 2 levels "female","male": 2 2 2 1 1 1 1 2 1 1 ...
+# $ age      : num  26 23 33 34 38 21 23 NA NA 7 ...
+# $ sibsp    : int  0 0 1 0 4 0 1 0 0 0 ...
+# $ parch    : int  0 0 1 0 2 0 0 0 0 2 ...
+# $ ticket   : Factor w/ 929 levels "110152","110413",..: 453 194 584 767 468 410 574 415 388 783 ...
+# $ fare     : num  7.78 10.5 20.52 10.5 7.78 ...
+# $ cabin    : Factor w/ 187 levels "","A10","A11",..: 1 1 1 183 1 1 134 1 1 1 ...
+# $ embarked : Factor w/ 4 levels "","C","Q","S": 4 4 4 4 4 4 2 4 3 4 ...
+# $ home.dest: Factor w/ 370 levels "","?Havana, Cuba",..: 154 150 317 64 345 1 191 1 1 165 ...</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f21953252199-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f21953252199-14">14</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f21953252199-1">str(inputData)</div><div class="crayon-line" id="crayon-60f9188288f21953252199-2"># 'data.frame':	1309 obs. of  12 variables:</div><div class="crayon-line" id="crayon-60f9188288f21953252199-3"># $ pclass   : int  3 2 3 2 3 3 1 3 3 2 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-4"># $ survived : int  0 0 0 1 0 1 1 0 1 1 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-5"># $ name     : Factor w/ 1307 levels "Abbing, Mr. Anthony",..: 41 920 459 703 36 1068 864 949 1092 516 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-6"># $ sex      : Factor w/ 2 levels "female","male": 2 2 2 1 1 1 1 2 1 1 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-7"># $ age      : num  26 23 33 34 38 21 23 NA NA 7 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-8"># $ sibsp    : int  0 0 1 0 4 0 1 0 0 0 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-9"># $ parch    : int  0 0 1 0 2 0 0 0 0 2 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-10"># $ ticket   : Factor w/ 929 levels "110152","110413",..: 453 194 584 767 468 410 574 415 388 783 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-11"># $ fare     : num  7.78 10.5 20.52 10.5 7.78 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-12"># $ cabin    : Factor w/ 187 levels "","A10","A11",..: 1 1 1 183 1 1 134 1 1 1 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-13"># $ embarked : Factor w/ 4 levels "","C","Q","S": 4 4 4 4 4 4 2 4 3 4 ...</div><div class="crayon-line" id="crayon-60f9188288f21953252199-14"># $ home.dest: Factor w/ 370 levels "","?Havana, Cuba",..: 154 150 317 64 345 1 191 1 1 165 ...</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們可初步發現：</p>
+<ol><li>pclass(座艙等級)和survuved(生存與否)應由int轉換成factor變數</li>
+<li><span style="color: #9f6ad4;">類別水準數過多</span>的變數：<span style="color: #9f6ad4;">name</span>(1307 levels),<span style="color: #9f6ad4;">ticket</span>(929 levels), <span style="color: #9f6ad4;">cabin</span>(187 levels), <span style="color: #9f6ad4;">home.dest</span>(370 levels)<span style="color: #9f6ad4;">應予以排除</span>。</li>
+<li>排除以上變數後，存在許多遺失值(NA value)的變數有：age(263), fare(1)。<span style="color: #9f6ad4;">但由於CART決策樹rpart()演算法中，預設會刪除y遺失的資料列，並保留至少有一個預測變數未遺失的觀察資料列，並使用Surrogate Variables來預測遺失特徵值。因此我們不會特別處理遺失值的部分</span>。(*更多決策樹遺失值預測請參考<a href="/decision-tree-surrogate-in-cart/" target="_blank" rel="noopener noreferrer">tree surrogate in CART</a>)</li>
+</ol><h3>Step3: 資料前處理</h3>
+<p>根據資料探勘結果，要處理的項目如下：</p>
+<ol><li>移除變數<span style="color: #9f6ad4;">name</span>(1307 levels),<span style="color: #9f6ad4;">ticket</span>(929 levels), <span style="color: #9f6ad4;">cabin</span>(187 levels), <span style="color: #9f6ad4;">home.dest</span></li>
+<li>將變數pclass(座艙等級)和survuved(生存與否)轉換為factor變數。</li>
+</ol><p></p>
+
+		<div id="crayon-60f9188288f29438721297" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(dplyr)
+
+clean_inputData <- 
+  inputData %>% 
+  # Drop variables
+  select(-c(home.dest, cabin, name, ticket)) %>% 
+  #Convert to factor level
+  mutate(pclass = factor(pclass, levels = c(1, 2, 3), labels = c('Upper', 'Middle', 'Lower')),
+         survived = factor(survived, levels = c(0, 1), labels = c('No', 'Yes')))
+
+glimpse(clean_inputData)
+
+# Observations: 1,309
+# Variables: 8
+# $ pclass   <fct> Lower, Middle, Lower, Middle, Lower, Lower, Upper, Lower, Lower, Middle, Lower, Upper, Upper, Middle, Lower, Lower, Lower, Upper, Lower, Lower,...
+# $ survived <fct> No, No, No, Yes, No, Yes, Yes, No, Yes, Yes, No, Yes, No, Yes, No, No, No, Yes, No, Yes, No, Yes, Yes, Yes, No, Yes, No, No, No, Yes, No, Yes, ...
+# $ sex      <fct> male, male, male, female, female, female, female, male, female, female, male, female, male, female, male, male, female, female, male, female, m...
+# $ age      <dbl> 26.0, 23.0, 33.0, 34.0, 38.0, 21.0, 23.0, NA, NA, 7.0, 1.0, 16.0, 58.0, 24.0, 33.0, NA, NA, 36.0, 36.0, 19.0, 19.0, 25.0, 51.0, 4.0, 40.0, 18.0...
+# $ sibsp    <int> 0, 0, 1, 0, 4, 0, 1, 0, 0, 0, 5, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2, 0, 1, 0, 0, 1, 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,...
+# $ parch    <int> 0, 0, 1, 0, 2, 0, 0, 0, 0, 2, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 3, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,...
+# $ fare     <dbl> 7.7750, 10.5000, 20.5250, 10.5000, 7.7750, 7.6500, 113.2750, 7.7750, 7.7792, 26.2500, 46.9000, 57.9792, 113.2750, 27.0000, 7.7750, 8.0500, 7.75...
+# $ embarked <fct> S, S, S, S, S, S, C, S, Q, S, S, C, C, S, S, S, Q, C, S, S, S, C, S, S, S, C, S, S, S, S, S, C, C, S, S, S, S, S, Q, S, S, S, S, Q, Q, S, C, S,...</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f29438721297-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-17">17</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-18">18</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-19">19</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-20">20</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-21">21</div><div class="crayon-num" data-line="crayon-60f9188288f29438721297-22">22</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f29438721297-1">library(dplyr)</div><div class="crayon-line" id="crayon-60f9188288f29438721297-2"> </div><div class="crayon-line" id="crayon-60f9188288f29438721297-3">clean_inputData <div class="crayon-line" id="crayon-60f9188288f29438721297-4">  inputData %>% </div><div class="crayon-line" id="crayon-60f9188288f29438721297-5">  # Drop variables</div><div class="crayon-line" id="crayon-60f9188288f29438721297-6">  select(-c(home.dest, cabin, name, ticket)) %>% </div><div class="crayon-line" id="crayon-60f9188288f29438721297-7">  #Convert to factor level</div><div class="crayon-line" id="crayon-60f9188288f29438721297-8">  mutate(pclass = factor(pclass, levels = c(1, 2, 3), labels = c('Upper', 'Middle', 'Lower')),</div><div class="crayon-line" id="crayon-60f9188288f29438721297-9">         survived = factor(survived, levels = c(0, 1), labels = c('No', 'Yes')))</div><div class="crayon-line" id="crayon-60f9188288f29438721297-10"> </div><div class="crayon-line" id="crayon-60f9188288f29438721297-11">glimpse(clean_inputData)</div><div class="crayon-line" id="crayon-60f9188288f29438721297-12"> </div><div class="crayon-line" id="crayon-60f9188288f29438721297-13"># Observations: 1,309</div><div class="crayon-line" id="crayon-60f9188288f29438721297-14"># Variables: 8</div><div class="crayon-line" id="crayon-60f9188288f29438721297-15"># $ pclass   <fct> Lower, Middle, Lower, Middle, Lower, Lower, Upper, Lower, Lower, Middle, Lower, Upper, Upper, Middle, Lower, Lower, Lower, Upper, Lower, Lower,...</fct></div><div class="crayon-line" id="crayon-60f9188288f29438721297-16"># $ survived <fct> No, No, No, Yes, No, Yes, Yes, No, Yes, Yes, No, Yes, No, Yes, No, No, No, Yes, No, Yes, No, Yes, Yes, Yes, No, Yes, No, No, No, Yes, No, Yes, ...</fct></div><div class="crayon-line" id="crayon-60f9188288f29438721297-17"># $ sex      <fct> male, male, male, female, female, female, female, male, female, female, male, female, male, female, male, male, female, female, male, female, m...</fct></div><div class="crayon-line" id="crayon-60f9188288f29438721297-18"># $ age      <dbl> 26.0, 23.0, 33.0, 34.0, 38.0, 21.0, 23.0, NA, NA, 7.0, 1.0, 16.0, 58.0, 24.0, 33.0, NA, NA, 36.0, 36.0, 19.0, 19.0, 25.0, 51.0, 4.0, 40.0, 18.0...</dbl></div><div class="crayon-line" id="crayon-60f9188288f29438721297-19"># $ sibsp    <int> 0, 0, 1, 0, 4, 0, 1, 0, 0, 0, 5, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2, 0, 1, 0, 0, 1, 1, 8, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,...</int></div><div class="crayon-line" id="crayon-60f9188288f29438721297-20"># $ parch    <int> 0, 0, 1, 0, 2, 0, 0, 0, 0, 2, 2, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 3, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,...</int></div><div class="crayon-line" id="crayon-60f9188288f29438721297-21"># $ fare     <dbl> 7.7750, 10.5000, 20.5250, 10.5000, 7.7750, 7.6500, 113.2750, 7.7750, 7.7792, 26.2500, 46.9000, 57.9792, 113.2750, 27.0000, 7.7750, 8.0500, 7.75...</dbl></div><div class="crayon-line" id="crayon-60f9188288f29438721297-22"># $ embarked <fct> S, S, S, S, S, S, C, S, Q, S, S, C, C, S, S, S, Q, C, S, S, S, C, S, S, S, C, S, S, S, S, S, C, C, S, S, S, S, S, Q, S, S, S, S, Q, Q, S, C, S,...</fct></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>Step4: 產生訓練與測試資料集</h3>
+<p>為了確保兩組資料集中生還比例不要差異太大，我們會先將資料依據目標變數(survived)分成兩組(No, Yes)，再進行隨機切割成80%訓練組跟20%測試組。</p>
+
+		<div id="crayon-60f9188288f32425971535" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+input_ones <- clean_inputData[which(clean_inputData$survived == 'Yes'),]
+input_zeros <- clean_inputData[which(clean_inputData$survived == 'No'), ]
+set.seed(100)
+input_ones_training_row <- sample(1:nrow(input_ones),0.8*nrow(input_ones))
+input_zeros_training_row <- sample(1:nrow(input_zeros),0.8*nrow(input_zeros))
+
+training_ones <- input_ones[input_ones_training_row,]
+training_zeros <- input_zeros[input_zeros_training_row,]
+trainingData <- rbind(training_ones, training_zeros)
+
+# 產生測試資料集
+test_ones <- input_ones[-input_ones_training_row,]
+test_zeros <- input_zeros[-input_zeros_training_row,]
+testData <- rbind(test_ones, test_zeros)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f32425971535-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f32425971535-14">14</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f32425971535-1">input_ones <div class="crayon-line" id="crayon-60f9188288f32425971535-2">input_zeros <div class="crayon-line" id="crayon-60f9188288f32425971535-3">set.seed(100)</div><div class="crayon-line" id="crayon-60f9188288f32425971535-4">input_ones_training_row <div class="crayon-line" id="crayon-60f9188288f32425971535-5">input_zeros_training_row <div class="crayon-line" id="crayon-60f9188288f32425971535-6"> </div><div class="crayon-line" id="crayon-60f9188288f32425971535-7">training_ones <div class="crayon-line" id="crayon-60f9188288f32425971535-8">training_zeros <div class="crayon-line" id="crayon-60f9188288f32425971535-9">trainingData <div class="crayon-line" id="crayon-60f9188288f32425971535-10"> </div><div class="crayon-line" id="crayon-60f9188288f32425971535-11"># 產生測試資料集</div><div class="crayon-line" id="crayon-60f9188288f32425971535-12">test_ones <div class="crayon-line" id="crayon-60f9188288f32425971535-13">test_zeros <div class="crayon-line" id="crayon-60f9188288f32425971535-14">testData </div></div></div></div></div></div></div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>檢查切割完的資料集大小與目標變數的分佈比例：</p>
+<ul><li>原始資料列1309被隨機切割為80%訓練資料集(1047筆)與20%測試資料集(262筆)。</li>
+<li>發現訓練及測試資料集的目標變數survived比例都是38%。差異在1%以內。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288f3b219477095" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+dim(trainingData)
+# [1] 1047    8
+dim(testData)
+# [1] 262   8
+
+# 確認兩資料是隨機的
+prop.table(table(trainingData$survived))
+#        No       Yes 
+# 0.6179561 0.3820439 
+
+prop.table(table(testData$survived))
+#        No       Yes 
+# 0.6183206 0.3816794</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f3b219477095-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f3b219477095-1">dim(trainingData)</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-2"># [1] 1047    8</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-3">dim(testData)</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-4"># [1] 262   8</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-5"> </div><div class="crayon-line" id="crayon-60f9188288f3b219477095-6"># 確認兩資料是隨機的</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-7">prop.table(table(trainingData$survived))</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-8">#        No       Yes </div><div class="crayon-line" id="crayon-60f9188288f3b219477095-9"># 0.6179561 0.3820439 </div><div class="crayon-line" id="crayon-60f9188288f3b219477095-10"> </div><div class="crayon-line" id="crayon-60f9188288f3b219477095-11">prop.table(table(testData$survived))</div><div class="crayon-line" id="crayon-60f9188288f3b219477095-12">#        No       Yes </div><div class="crayon-line" id="crayon-60f9188288f3b219477095-13"># 0.6183206 0.3816794</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>Step5: 建置模型</h3>
+<p>我們使用CART(Classification and Regression Tree)決策樹演算法-rpart()。</p>
+<ul><li>rpart為遞迴分割法(<span style="color: #9f6ad4;">R</span>ecursive <span style="color: #9f6ad4;">Part</span>itioning Tree)的縮寫。</li>
+<li>對所有參數和分割點進行評估。</li>
+<li>最佳選擇是使分割後的組內資料更為「一致(pure)」。
+<ul><li>「一致(pure)」是指組內資料的應變數取直變異較小。</li>
+</ul></li>
+<li><span style="color: #9f6ad4;">使用Gini值測量資料的「一致(pure)」性(Homogeneity)</span>。</li>
+<li>建模過程分為兩階段(2 stages)：
+<ul><li>先長出最複雜的樹(grow the complex/full tree)。(直到Leaf size樹葉內的觀測個數少於5個或是模型沒有優化的空間為止）</li>
+<li>再使用交叉驗證(Cross Validation)來修剪樹(Prune)。並尋找<span style="color: #9f6ad4;">使估計風險值(estimate of risk)參數(complexity parameter)</span>最小值的決策樹。</li>
+</ul></li>
+</ul><p>rpart()參數設定：</p>
+<ul><li>method分成 “anova”、”poisson”、”class”和”exp”。當目標變數為factor時，我們將其設定為”class”。</li>
+<li>control: 通常會使用rpart.control()另外作設定(事前修樹，pre-prune)。</li>
+<li>na.action: <a href="https://www.rdocumentation.org/packages/rpart/versions/4.1-13/topics/rpart">預設為<span style="color: #9f6ad4;">na.rpart</span></a>，即使用CART演算法中的<a href="/decision-tree-surrogate-in-cart/" target="_blank" rel="noopener noreferrer">surrogate variables</a>做預測。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288f44594188904" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(rpart)
+library(rpart.plot)
+
+fit <- rpart(formula = survived ~ ., data = trainingData, method = 'class')
+# arguments:
+# method: 
+# - "class" for a classification tree (y is a factor) 			
+# - "anova" for a regression tree</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f44594188904-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f44594188904-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f44594188904-1">library(rpart)</div><div class="crayon-line" id="crayon-60f9188288f44594188904-2">library(rpart.plot)</div><div class="crayon-line" id="crayon-60f9188288f44594188904-3"> </div><div class="crayon-line" id="crayon-60f9188288f44594188904-4">fit <div class="crayon-line" id="crayon-60f9188288f44594188904-5"># arguments:</div><div class="crayon-line" id="crayon-60f9188288f44594188904-6"># method: </div><div class="crayon-line" id="crayon-60f9188288f44594188904-7"># - "class" for a classification tree (y is a factor) 			</div><div class="crayon-line" id="crayon-60f9188288f44594188904-8"># - "anova" for a regression tree</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>使用rpart.plot()檢視決策樹規則。</p>
+
+		<div id="crayon-60f9188288f4b533281250" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+rpart.plot(fit, extra= 106)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f4b533281250-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f4b533281250-1">rpart.plot(fit, extra= 106)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><span style="color: #9f6ad4;">節點顏色越綠越深，代表該節點(條件下)的survived機率越高（目標事件發生機率越高）</span>。</p>
+<p>每個Node節點上的數值分別代表:</p>
+<ul><li>預測類別(0,1)</li>
+<li>預測目標類別的機率(1的機率)</li>
+<li>節點中觀測資料個數佔比</li>
+</ul><p><img loading="lazy" class="alignnone wp-image-1032" src="/wp-content/uploads/2018/08/Rplot01-1.jpeg" alt="Decision Tree " width="648" height="609"></p>
+<p>將決策樹規則使用rpart.rules()印出。</p>
+
+		<div id="crayon-60f9188288f52725316270" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+rpart.rules(x = fit,cover = TRUE)
+# survived                                                                                         cover
+#     0.06 when sex is   male                             & age <  9.5              & sibsp >= 3      2%
+#     0.07 when sex is female & pclass is           Lower              & fare >= 23                   3%
+#     0.17 when sex is   male                             & age >= 9.5                               61%
+#     0.58 when sex is female & pclass is           Lower              & fare <  23                  14%
+#     0.90 when sex is   male                             & age <  9.5              & sibsp <  3      2%
+#     0.93 when sex is female & pclass is Upper or Middle                                            19%</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f52725316270-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f52725316270-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f52725316270-1">rpart.rules(x = fit,cover = TRUE)</div><div class="crayon-line" id="crayon-60f9188288f52725316270-2"># survived                                                                                         cover</div><div class="crayon-line" id="crayon-60f9188288f52725316270-3">#     0.06 when sex is   male                             & age = 3      2%</div><div class="crayon-line" id="crayon-60f9188288f52725316270-4">#     0.07 when sex is female & pclass is           Lower              & fare >= 23                   3%</div><div class="crayon-line" id="crayon-60f9188288f52725316270-5">#     0.17 when sex is   male                             & age >= 9.5                               61%</div><div class="crayon-line" id="crayon-60f9188288f52725316270-6">#     0.58 when sex is female & pclass is           Lower              & fare <div class="crayon-line" id="crayon-60f9188288f52725316270-7">#     0.90 when sex is   male                             & age <div class="crayon-line" id="crayon-60f9188288f52725316270-8">#     0.93 when sex is female & pclass is Upper or Middle                                            19%</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可發現規則依照survived比例（目標事件發生機率）由低到高排序。cover則代表該節點觀測資料個數占比。</p>
+<p>檢視交叉驗證(cross-validation)的不同cp值(complexity parameter)下的錯誤率。</p>
+<p><span style="color: #9f6ad4;">cp值代表的是每一個規則（切割）所能改善模型適合度的程度(cross validation relative error, or X-val relative error)。可以發現每一個新的規則的cp呈遞減趨勢。且rpart()預設cp=0.01，即代表如果該規則（切割）沒有達到至少0.01的模型適合度改善，則停止。</span>(*<a href="https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf" target="_blank" rel="noopener noreferrer">rpart函數對complexity parameter的說明</a>)</p>
+
+		<div id="crayon-60f9188288f58117773118" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+printcp(x = fit) 
+
+# Classification tree:
+#   rpart(formula = survived ~ ., data = trainingData, method = "class")
+# 
+# Variables actually used in tree construction:
+#   [1] age    fare   pclass sex    sibsp 
+# 
+# Root node error: 400/1047 = 0.38204
+# 
+# n= 1047 
+# 
+#      CP nsplit rel error xerror     xstd
+# 1 0.425      0     1.000  1.000 0.039305
+# 2 0.030      1     0.575  0.575 0.033492
+# 3 0.020      3     0.515  0.530 0.032507
+# 4 0.010      5     0.475  0.510 0.032040</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f58117773118-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f58117773118-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f58117773118-1">printcp(x = fit) </div><div class="crayon-line" id="crayon-60f9188288f58117773118-2"> </div><div class="crayon-line" id="crayon-60f9188288f58117773118-3"># Classification tree:</div><div class="crayon-line" id="crayon-60f9188288f58117773118-4">#   rpart(formula = survived ~ ., data = trainingData, method = "class")</div><div class="crayon-line" id="crayon-60f9188288f58117773118-5"># </div><div class="crayon-line" id="crayon-60f9188288f58117773118-6"># Variables actually used in tree construction:</div><div class="crayon-line" id="crayon-60f9188288f58117773118-7">#   [1] age    fare   pclass sex    sibsp </div><div class="crayon-line" id="crayon-60f9188288f58117773118-8"># </div><div class="crayon-line" id="crayon-60f9188288f58117773118-9"># Root node error: 400/1047 = 0.38204</div><div class="crayon-line" id="crayon-60f9188288f58117773118-10"># </div><div class="crayon-line" id="crayon-60f9188288f58117773118-11"># n= 1047 </div><div class="crayon-line" id="crayon-60f9188288f58117773118-12"># </div><div class="crayon-line" id="crayon-60f9188288f58117773118-13">#      CP nsplit rel error xerror     xstd</div><div class="crayon-line" id="crayon-60f9188288f58117773118-14"># 1 0.425      0     1.000  1.000 0.039305</div><div class="crayon-line" id="crayon-60f9188288f58117773118-15"># 2 0.030      1     0.575  0.575 0.033492</div><div class="crayon-line" id="crayon-60f9188288f58117773118-16"># 3 0.020      3     0.515  0.530 0.032507</div><div class="crayon-line" id="crayon-60f9188288f58117773118-17"># 4 0.010      5     0.475  0.510 0.032040</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>將模型的cp table畫出。<span style="color: #9f6ad4;">可以觀察到，隨著模型的複雜度（成本）增加，所能改善的模型適合度的空間降低(X-val relative error)</span>。</p>
+
+		<div id="crayon-60f9188288f60992358404" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plotcp(x = fit)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f60992358404-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f60992358404-1">plotcp(x = fit)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1034" src="/wp-content/uploads/2018/08/Rplot02-1.jpeg" alt="Decision Tree " width="816" height="771" srcset="/wp-content/uploads/2018/08/Rplot02-1.jpeg 816w,/wp-content/uploads/2018/08/Rplot02-1-300x283.jpeg 300w,/wp-content/uploads/2018/08/Rplot02-1-768x726.jpeg 768w,/wp-content/uploads/2018/08/Rplot02-1-230x217.jpeg 230w,/wp-content/uploads/2018/08/Rplot02-1-350x331.jpeg 350w,/wp-content/uploads/2018/08/Rplot02-1-480x454.jpeg 480w" sizes="(max-width: 816px) 100vw, 816px"></p>
+<h3>Step6: 進行預測</h3>
+<p>使用predict()將訓練好的模型套用在測試資料集上。</p>
+
+		<div id="crayon-60f9188288f67699739055" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+predicted <- predict(object = fit,newdata = testData,type = 'class')
+# 參數說明：
+# type: Type of prediction			
+# - 'class': for classification			
+# - 'prob': to compute the probability of each class			
+# - 'vector': Predict the mean response at the node level</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f67699739055-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f67699739055-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f67699739055-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f67699739055-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f67699739055-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f67699739055-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f67699739055-1">predicted <div class="crayon-line" id="crayon-60f9188288f67699739055-2"># 參數說明：</div><div class="crayon-line" id="crayon-60f9188288f67699739055-3"># type: Type of prediction			</div><div class="crayon-line" id="crayon-60f9188288f67699739055-4"># - 'class': for classification			</div><div class="crayon-line" id="crayon-60f9188288f67699739055-5"># - 'prob': to compute the probability of each class			</div><div class="crayon-line" id="crayon-60f9188288f67699739055-6"># - 'vector': Predict the mean response at the node level</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>Step7: 衡量模型表現</h3>
+<p>由於預測結果為類別型(0,1)，故我們以Confusion Matrix為基礎，來計算以下幾個常用指標：</p>
+<ul><li>Accuracy/Misclassification Rate</li>
+<li>Precision</li>
+<li>Sensitivity(or Recall)</li>
+<li>Specificity</li>
+</ul><p>計算Confusion Matrix（數據左欄位預測值，上方列為真實值）</p>
+
+		<div id="crayon-60f9188288f6d073963149" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+tbl <- table(predicted,testData$survived)
+tbl
+# predicted  No Yes
+#       No  140  28
+#       Yes  22  72</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f6d073963149-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f6d073963149-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f6d073963149-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f6d073963149-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f6d073963149-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f6d073963149-1">tbl <div class="crayon-line" id="crayon-60f9188288f6d073963149-2">tbl</div><div class="crayon-line" id="crayon-60f9188288f6d073963149-3"># predicted  No Yes</div><div class="crayon-line" id="crayon-60f9188288f6d073963149-4">#       No  140  28</div><div class="crayon-line" id="crayon-60f9188288f6d073963149-5">#       Yes  22  72</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>計算模型的正確率Accuracy</p>
+
+		<div id="crayon-60f9188288f74234988409" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Accuracy
+accuracy <- sum(diag(tbl)) / sum(tbl)
+accuracy
+# [1] 0.8091603</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f74234988409-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f74234988409-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f74234988409-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f74234988409-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f74234988409-1"># Accuracy</div><div class="crayon-line" id="crayon-60f9188288f74234988409-2">accuracy <div class="crayon-line" id="crayon-60f9188288f74234988409-3">accuracy</div><div class="crayon-line" id="crayon-60f9188288f74234988409-4"># [1] 0.8091603</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現<span style="color: #9f6ad4;">未修剪的模型</span>對測試資料的<span style="color: #9f6ad4;">預測正確率高達近81％</span>。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>Step8: 修剪樹(Post-Pruning)</h3>
+<p>一般來說，修剪樹可以分為事前與事後。</p>
+<ul><li><strong>事前</strong>：透過<span style="color: #9f6ad4;">rpart.control()</span>來調整重要參數，包括：
+<ul><li><strong>minsplit</strong>：每一個node最少要幾個觀測值，預設為20。</li>
+<li><strong>minbucket</strong>：在末端的node上(Leaf,樹葉)最少要幾個觀測值，預設為round(minsplit/3)。</li>
+<li><strong>cp</strong>：complexity parameter。決定當新規則加入，改善模型相對誤差(x-val relative value)的程度如沒有大於cp值，則不加入該規則。<span style="color: #9f6ad4;">預設為0.01</span>。</li>
+<li><strong>maxdepth</strong>：決策樹的深度，建議不超過6層。</li>
+</ul></li>
+<li><strong>事後</strong>：則是透過prune(x = , cp = )來設定。</li>
+</ul><p>我們這邊採用post-pruning法。並選擇讓交叉驗證中相對誤差改變量最小的cp值。</p>
+
+		<div id="crayon-60f9188288f7b142175929" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# prune tree ：
+fit.prune <- prune(fit, cp = fit$cptable[which.min(fit$cptable[,"xerror"]),"CP"])</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f7b142175929-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f7b142175929-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f7b142175929-1"># prune tree ：</div><div class="crayon-line" id="crayon-60f9188288f7b142175929-2">fit.prune </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>將依據cp門檻值修剪後的樹規則繪出。</p>
+
+		<div id="crayon-60f9188288f83625596097" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# plot the pruned tree 
+rpart.plot(fit.prune, extra= 106, tweak = 1.1, shadow.col = "gray", branch.lty = 3, roundint = TRUE)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f83625596097-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f83625596097-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f83625596097-1"># plot the pruned tree </div><div class="crayon-line" id="crayon-60f9188288f83625596097-2">rpart.plot(fit.prune, extra= 106, tweak = 1.1, shadow.col = "gray", branch.lty = 3, roundint = TRUE)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1035" src="/wp-content/uploads/2018/08/Rplot03_prune.jpeg" alt="Decision Tree " width="816" height="771" srcset="/wp-content/uploads/2018/08/Rplot03_prune.jpeg 816w,/wp-content/uploads/2018/08/Rplot03_prune-300x283.jpeg 300w,/wp-content/uploads/2018/08/Rplot03_prune-768x726.jpeg 768w,/wp-content/uploads/2018/08/Rplot03_prune-230x217.jpeg 230w,/wp-content/uploads/2018/08/Rplot03_prune-350x331.jpeg 350w,/wp-content/uploads/2018/08/Rplot03_prune-480x454.jpeg 480w" sizes="(max-width: 816px) 100vw, 816px"></p>
+<p>查看prune tree預測正確率。</p>
+
+		<div id="crayon-60f9188288f8a969058785" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+tbl_prune <- table(predicted = predicted.prune, actuals = testData$survived)
+
+tbl_prune   
+#          actuals
+# predicted  No Yes
+#       No  140  28
+#       Yes  22  72
+
+# Accuracy
+accuracy <- sum(diag(tbl_prune)) / sum(tbl_prune)
+accuracy
+
+# [1] 0.8091603</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f8a969058785-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f8a969058785-1">tbl_prune <div class="crayon-line" id="crayon-60f9188288f8a969058785-2"> </div><div class="crayon-line" id="crayon-60f9188288f8a969058785-3">tbl_prune   </div><div class="crayon-line" id="crayon-60f9188288f8a969058785-4">#          actuals</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-5"># predicted  No Yes</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-6">#       No  140  28</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-7">#       Yes  22  72</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-8"> </div><div class="crayon-line" id="crayon-60f9188288f8a969058785-9"># Accuracy</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-10">accuracy <div class="crayon-line" id="crayon-60f9188288f8a969058785-11">accuracy</div><div class="crayon-line" id="crayon-60f9188288f8a969058785-12"> </div><div class="crayon-line" id="crayon-60f9188288f8a969058785-13"># [1] 0.8091603</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現pruned tree 和full tree兩者長得一樣，Accuracy也相同。<span style="color: #9f6ad4;">原因在於，因為在建立full tree時，預設cp=0.01，跟prune()使用的cp值是相同的</span>。</p>
+<h3>Step 9: K-Fold Cross Validation</h3>
+<p>為了確保模型無過度配適(overfitting)和預測準度的穩定性，我們使用k-fold cross validation(k=10)重新抽樣樣本進行模型驗證。理想中，交叉驗證後的平均正確率應與prune tree相近。</p>
+<p>其中必須注意的是，因為資料中有遺失值觀測值，且train()函數中<span style="color: #9f6ad4;">參數na.action預設值為na.fail(即遇到有遺失值程序會失敗）</span>，故必須<span style="color: #0000ff;"><span style="color: #9f6ad4;">將設定調整為na.pass(不採取任何動作)或na.omit(忽略有遺失值的觀測值)</span><span style="color: #333333;">，方能正常執行函數指令。</span></span></p>
+
+		<div id="crayon-60f9188288f91358771560" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(caret)
+library(e1071)
+# 選則resampling的方法
+train_control <- trainControl(method = "cv",number = 10) # k = 10
+# specify the model 
+train_control.model <- train(survived ~ ., data = trainingData, method = 'rpart',na.action = na.pass, trControl = train_control)
+train_control.model
+
+# CART 
+# 
+# 1047 samples
+#    7 predictor
+#    2 classes: 'No', 'Yes' 
+# 
+# No pre-processing
+# Resampling: Cross-Validated (10 fold) 
+# Summary of sample sizes: 943, 942, 942, 943, 942, 943, ... 
+# Resampling results across tuning parameters:
+#   
+#   cp     Accuracy   Kappa    
+#   0.020  0.8041850  0.5738715
+#   0.030  0.7851282  0.5357307
+#   0.425  0.6676099  0.1752418
+# 
+# Accuracy was used to select the optimal model using the largest value.
+# The final value used for the model was cp = 0.02.</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f91358771560-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-17">17</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-18">18</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-19">19</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-20">20</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-21">21</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-22">22</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-23">23</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-24">24</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-25">25</div><div class="crayon-num" data-line="crayon-60f9188288f91358771560-26">26</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f91358771560-1">library(caret)</div><div class="crayon-line" id="crayon-60f9188288f91358771560-2">library(e1071)</div><div class="crayon-line" id="crayon-60f9188288f91358771560-3"># 選則resampling的方法</div><div class="crayon-line" id="crayon-60f9188288f91358771560-4">train_control <div class="crayon-line" id="crayon-60f9188288f91358771560-5"># specify the model </div><div class="crayon-line" id="crayon-60f9188288f91358771560-6">train_control.model <div class="crayon-line" id="crayon-60f9188288f91358771560-7">train_control.model</div><div class="crayon-line" id="crayon-60f9188288f91358771560-8"> </div><div class="crayon-line" id="crayon-60f9188288f91358771560-9"># CART </div><div class="crayon-line" id="crayon-60f9188288f91358771560-10"># </div><div class="crayon-line" id="crayon-60f9188288f91358771560-11"># 1047 samples</div><div class="crayon-line" id="crayon-60f9188288f91358771560-12">#    7 predictor</div><div class="crayon-line" id="crayon-60f9188288f91358771560-13">#    2 classes: 'No', 'Yes' </div><div class="crayon-line" id="crayon-60f9188288f91358771560-14"># </div><div class="crayon-line" id="crayon-60f9188288f91358771560-15"># No pre-processing</div><div class="crayon-line" id="crayon-60f9188288f91358771560-16"># Resampling: Cross-Validated (10 fold) </div><div class="crayon-line" id="crayon-60f9188288f91358771560-17"># Summary of sample sizes: 943, 942, 942, 943, 942, 943, ... </div><div class="crayon-line" id="crayon-60f9188288f91358771560-18"># Resampling results across tuning parameters:</div><div class="crayon-line" id="crayon-60f9188288f91358771560-19">#   </div><div class="crayon-line" id="crayon-60f9188288f91358771560-20">#   cp     Accuracy   Kappa    </div><div class="crayon-line" id="crayon-60f9188288f91358771560-21">#   0.020  0.8041850  0.5738715</div><div class="crayon-line" id="crayon-60f9188288f91358771560-22">#   0.030  0.7851282  0.5357307</div><div class="crayon-line" id="crayon-60f9188288f91358771560-23">#   0.425  0.6676099  0.1752418</div><div class="crayon-line" id="crayon-60f9188288f91358771560-24"># </div><div class="crayon-line" id="crayon-60f9188288f91358771560-25"># Accuracy was used to select the optimal model using the largest value.</div><div class="crayon-line" id="crayon-60f9188288f91358771560-26"># The final value used for the model was cp = 0.02.</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>進行10次交叉驗證的平均正確率為80.4%，與修剪後的樹模型正確率80.91%沒有太大差異（差異百分比在1%以內）。表示模型沒有overfitting的問題。</p>
+<p>如果將參數na.action調整為na.rpart（使用CART中的代理變數surrogate variables來預測)。</p>
+
+		<div id="crayon-60f9188288f98060013618" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+train_control.model.2 <- train(survived ~ ., data = trainingData, method = 'rpart',na.action = na.rpart, trControl = train_control)
+train_control.model.2
+# CART 
+# 
+# 1047 samples
+# 7 predictor
+# 2 classes: 'No', 'Yes' 
+# 
+# No pre-processing
+# Resampling: Cross-Validated (10 fold) 
+# Summary of sample sizes: 942, 943, 942, 943, 942, 942, ... 
+# Resampling results across tuning parameters:
+#   
+#   cp     Accuracy   Kappa    
+# 0.020  0.8042308  0.5735154
+# 0.030  0.7880037  0.5452657
+# 0.425  0.6685714  0.1862793
+# 
+# Accuracy was used to select the optimal model using the largest value.
+# The final value used for the model was cp = 0.02.</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288f98060013618-1">1</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-2">2</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-3">3</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-4">4</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-5">5</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-6">6</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-7">7</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-8">8</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-9">9</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-10">10</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-11">11</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-12">12</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-13">13</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-14">14</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-15">15</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-16">16</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-17">17</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-18">18</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-19">19</div><div class="crayon-num" data-line="crayon-60f9188288f98060013618-20">20</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288f98060013618-1">train_control.model.2 <div class="crayon-line" id="crayon-60f9188288f98060013618-2">train_control.model.2</div><div class="crayon-line" id="crayon-60f9188288f98060013618-3"># CART </div><div class="crayon-line" id="crayon-60f9188288f98060013618-4"># </div><div class="crayon-line" id="crayon-60f9188288f98060013618-5"># 1047 samples</div><div class="crayon-line" id="crayon-60f9188288f98060013618-6"># 7 predictor</div><div class="crayon-line" id="crayon-60f9188288f98060013618-7"># 2 classes: 'No', 'Yes' </div><div class="crayon-line" id="crayon-60f9188288f98060013618-8"># </div><div class="crayon-line" id="crayon-60f9188288f98060013618-9"># No pre-processing</div><div class="crayon-line" id="crayon-60f9188288f98060013618-10"># Resampling: Cross-Validated (10 fold) </div><div class="crayon-line" id="crayon-60f9188288f98060013618-11"># Summary of sample sizes: 942, 943, 942, 943, 942, 942, ... </div><div class="crayon-line" id="crayon-60f9188288f98060013618-12"># Resampling results across tuning parameters:</div><div class="crayon-line" id="crayon-60f9188288f98060013618-13">#   </div><div class="crayon-line" id="crayon-60f9188288f98060013618-14">#   cp     Accuracy   Kappa    </div><div class="crayon-line" id="crayon-60f9188288f98060013618-15"># 0.020  0.8042308  0.5735154</div><div class="crayon-line" id="crayon-60f9188288f98060013618-16"># 0.030  0.7880037  0.5452657</div><div class="crayon-line" id="crayon-60f9188288f98060013618-17"># 0.425  0.6685714  0.1862793</div><div class="crayon-line" id="crayon-60f9188288f98060013618-18"># </div><div class="crayon-line" id="crayon-60f9188288f98060013618-19"># Accuracy was used to select the optimal model using the largest value.</div><div class="crayon-line" id="crayon-60f9188288f98060013618-20"># The final value used for the model was cp = 0.02.</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>進行10次交叉驗證的平均正確率亦約為80.4%。</p>
+<h3>Step 10: 模型比較(1)-條件推論樹(Conditional Inference Tree)</h3>
+<ul><li>R的party套件提供<span style="color: #9f6ad4;">無母數回歸(non-parametric regression)樹模型</span>，可處理名目(nominal)、尺度(ordinal)、數值(numeric)、設限(censored)、多變量(multivariate)資料型態。</li>
+<li>你可以使用ctree(formula, data = )函數來產生分類或回歸樹模型，樹模型類型會根據目標變數型態而有所不同。</li>
+<li>ctree()透過統計檢驗來決定預測變數與分割點之選擇。
+<ul><li>先假設所有預測變數與目標變數獨立(Null Hypothesis)。</li>
+<li>進行<span style="color: #9f6ad4;">卡方獨立檢定(Chi-Square Test)</span>。</li>
+<li>檢驗<span style="color: #9f6ad4;">p-value</span>小於threshold(ex: 0.05)則拒絕虛無假設，表示預測變數與目標變數具有顯著相關性，加入模型。</li>
+<li>將相關性最強的變數選做第一次分割的變數。</li>
+<li>繼續在各自子資料集進行分割變數計算與選擇。</li>
+</ul></li>
+<li>因為樹是<span style="color: #9f6ad4;">根據統計量顯著與否</span>來判斷規則之必要性，<span style="color: #9f6ad4;">因此與rpart()不同，ctree()是不需要剪枝的(prune)</span>。</li>
+<li>另參數na.action預設為na.pass (即不採取任何動作)。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288fa0768561826" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(party)
+fit_ctree <- ctree(survived ~ ., data = trainingData)
+plot(fit_ctree)
+predicted.ctree <- predict(object = fit_ctree, newdata = testData)
+
+tbl_ctree <-table(predicted = predicted.ctree, actuals = testData$survived)
+tbl_ctree
+
+#          actuals
+# predicted  No Yes
+#       No  140  29
+#       Yes  22  71
+
+# Accuracy
+accuracy <- sum(diag(tbl_ctree)) / sum(tbl_ctree)
+accuracy
+# [1] 0.8053435</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-3">3</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-4">4</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-5">5</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-6">6</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-7">7</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-8">8</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-9">9</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-10">10</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-11">11</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-12">12</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-13">13</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-14">14</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-15">15</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-16">16</div><div class="crayon-num" data-line="crayon-60f9188288fa0768561826-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fa0768561826-1">library(party)</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-2">fit_ctree <div class="crayon-line" id="crayon-60f9188288fa0768561826-3">plot(fit_ctree)</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-4">predicted.ctree <div class="crayon-line" id="crayon-60f9188288fa0768561826-5"> </div><div class="crayon-line" id="crayon-60f9188288fa0768561826-6">tbl_ctree <div class="crayon-line" id="crayon-60f9188288fa0768561826-7">tbl_ctree</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-8"> </div><div class="crayon-line" id="crayon-60f9188288fa0768561826-9">#          actuals</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-10"># predicted  No Yes</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-11">#       No  140  29</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-12">#       Yes  22  71</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-13"> </div><div class="crayon-line" id="crayon-60f9188288fa0768561826-14"># Accuracy</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-15">accuracy <div class="crayon-line" id="crayon-60f9188288fa0768561826-16">accuracy</div><div class="crayon-line" id="crayon-60f9188288fa0768561826-17"># [1] 0.8053435</div></div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現模型準確率為80.5%，跟rpart演算法的k-fold交叉驗證的平均正確率80.4%沒有差太多。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>Step 11: 模型比較(2)-隨機森林(Random Forest)</h3>
+<ul><li>隨機森林是一個<span style="color: #9f6ad4;">集成學習法(ensemble learning)</span>，意思是將幾個建立好的模型結果整合在一起，以提升預測準確率。</li>
+<li>由集成學習法建立的模型<span style="color: #9f6ad4;">較能不容易發生過度配適的問題</span>，雖然提供較好的預測，但在推論和解釋度方面就會有所限制。</li>
+<li>隨機森林由好幾個決策樹所組成，而不同決策樹是由不同隨機抽取的預測變數形成的。</li>
+<li>而且特別的是，<span style="text-decoration: underline;">隨機森林不止對列(Row)進行抽樣，亦對行(Column)進行抽樣</span>，因此所產生的子集資料，其實是行與列同時抽樣後的結果。</li>
+<li>對<span style="color: #9f6ad4;">列抽樣</span>，可以部分解決因<span style="color: #9f6ad4;">類別不平衡(Class Imbalance)</span>對預測帶來的問題；而對<span style="color: #9f6ad4;">行抽樣</span>，則可解決部分因<span style="color: #9f6ad4;">共線性(collinearity)</span>對預測造成的問題。<br>
+(若是探討對「變數解釋性」的影響，則需要用 Lasso和Stepwise來解決)。</li>
+<li>我們可用R裡面randomForest套件中的<span style="color: #9f6ad4;">randomForest()函數</span>來建立隨機森林。</li>
+<li>參數na.action預設為na.fail (即遇到遺失值則停止執行)。因為資料集中有遺失觀測值，故必須將之調整為na.omit。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288fa8083442646" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(randomForest)
+set.seed(101)
+fit.rf <- randomForest(survived ~ ., data = trainingData, na.action = na.omit)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fa8083442646-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fa8083442646-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fa8083442646-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fa8083442646-1">library(randomForest)</div><div class="crayon-line" id="crayon-60f9188288fa8083442646-2">set.seed(101)</div><div class="crayon-line" id="crayon-60f9188288fa8083442646-3">fit.rf </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>檢視模型訓練結果。</p>
+<ul><li>Number of trees: 隨機森林由500棵隨機生成的決策樹所組成。</li>
+<li><span class="bash">利用<span style="color: #9f6ad4;">OOB(Out Of Bag)</span>運算出來的</span><span style="color: #9f6ad4;">錯誤率</span>為<span style="color: #0000ff;"><span style="color: #9f6ad4;">18.82%</span><span style="color: #333333;">。</span></span></li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288faf936489920" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Call:
+#   randomForest(formula = survived ~ ., data = trainingData, na.action = na.omit) 
+# Type of random forest: classification
+# Number of trees: 500
+# No. of variables tried at each split: 2
+# 
+# OOB estimate of  error rate: 18.82%
+# Confusion matrix:
+#      No Yes class.error
+# No  463  44  0.08678501
+# Yes 116 227  0.33819242</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288faf936489920-1">1</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-2">2</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-3">3</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-4">4</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-5">5</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-6">6</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-7">7</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-8">8</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-9">9</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-10">10</div><div class="crayon-num" data-line="crayon-60f9188288faf936489920-11">11</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288faf936489920-1"># Call:</div><div class="crayon-line" id="crayon-60f9188288faf936489920-2">#   randomForest(formula = survived ~ ., data = trainingData, na.action = na.omit) </div><div class="crayon-line" id="crayon-60f9188288faf936489920-3"># Type of random forest: classification</div><div class="crayon-line" id="crayon-60f9188288faf936489920-4"># Number of trees: 500</div><div class="crayon-line" id="crayon-60f9188288faf936489920-5"># No. of variables tried at each split: 2</div><div class="crayon-line" id="crayon-60f9188288faf936489920-6"># </div><div class="crayon-line" id="crayon-60f9188288faf936489920-7"># OOB estimate of  error rate: 18.82%</div><div class="crayon-line" id="crayon-60f9188288faf936489920-8"># Confusion matrix:</div><div class="crayon-line" id="crayon-60f9188288faf936489920-9">#      No Yes class.error</div><div class="crayon-line" id="crayon-60f9188288faf936489920-10"># No  463  44  0.08678501</div><div class="crayon-line" id="crayon-60f9188288faf936489920-11"># Yes 116 227  0.33819242</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>自己驗證與計算較精確的OOB estimate正確率Accuracy為81.17%。</p>
+
+		<div id="crayon-60f9188288fb5356103183" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+tbl.rf <- fit.rf$confusion[,c(1,2)]
+accuracy <- sum(diag(tbl.rf)) / sum(tbl.rf)
+accuracy
+# [1] 0.8117647</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fb5356103183-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fb5356103183-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fb5356103183-3">3</div><div class="crayon-num" data-line="crayon-60f9188288fb5356103183-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fb5356103183-1">tbl.rf <div class="crayon-line" id="crayon-60f9188288fb5356103183-2">accuracy <div class="crayon-line" id="crayon-60f9188288fb5356103183-3">accuracy</div><div class="crayon-line" id="crayon-60f9188288fb5356103183-4"># [1] 0.8117647</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>另外，我們將「<span style="color: #9f6ad4;">增加每一顆決策樹，整體誤差的改變量</span>」繪出，以輔助決策「需要多少顆決策樹，整體誤差才會趨於穩定」。</p>
+<ul><li>當為分類樹時(classification tree)
+<ul><li>誤差為OOB(out-of-bag) Erro Rates。</li>
+<li><span style="color: #9f6ad4;">黑色實線表示整體的OOB error rate，而其他顏色虛線表示各類別的OOB Error Rate</span>。</li>
+</ul></li>
+<li>當為回歸樹時(regression tree)
+<ul><li>誤差為OOB(out-of-bag) MSE。</li>
+<li><span style="color: #9f6ad4;">只會有一條黑色實線代表整體的OOB MSE</span>。</li>
+</ul></li>
+</ul><p></p>
+
+		<div id="crayon-60f9188288fbd990656572" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(fit.rf)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fbd990656572-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fbd990656572-1">plot(fit.rf)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>從圖中幾條線可以觀察到：</p>
+<ul><li>整體錯誤率（黑色實線）隨著決策樹數量上升，下降到約18%並趨於穩定。</li>
+<li>實際類別為Yes的錯誤率（綠色虛線）隨著決策樹數量的上升，下降到約33.8%並趨於穩定。</li>
+<li>實際類別為No的錯誤率（紅色虛線）隨著決策樹數量的上升，下降到約8.6%並趨於穩定。</li>
+<li>而「<span style="color: #9f6ad4;">最佳決策樹數目(ntree)</span><span style="color: #0000ff;">」</span>，約100多棵樹即足夠使誤差趨於穩定（不需要到500棵樹）。</li>
+</ul><p><img loading="lazy" class="alignnone size-full wp-image-1103" src="/wp-content/uploads/2018/08/Rplot04_rf_plot.jpeg" alt="Decision Tree " width="816" height="900" srcset="/wp-content/uploads/2018/08/Rplot04_rf_plot.jpeg 816w,/wp-content/uploads/2018/08/Rplot04_rf_plot-272x300.jpeg 272w,/wp-content/uploads/2018/08/Rplot04_rf_plot-768x847.jpeg 768w,/wp-content/uploads/2018/08/Rplot04_rf_plot-230x254.jpeg 230w,/wp-content/uploads/2018/08/Rplot04_rf_plot-350x386.jpeg 350w,/wp-content/uploads/2018/08/Rplot04_rf_plot-480x529.jpeg 480w" sizes="(max-width: 816px) 100vw, 816px"></p>
+<p>另外一個隨機森林中一個重要參數：mtry，表示每一個樹節點(node)在進行切割時(split)隨機抽樣的變數數量。可使用tuneRF()來調整mtry的值。</p>
+
+		<div id="crayon-60f9188288fc4480731422" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+trainingData_naomit <- na.omit(trainingData)
+tuneRF(x = trainingData_naomit[,-2], y = trainingData_naomit[,2])
+
+
+# mtry = 2  OOB error = 19.53% 
+# Searching left ...
+# mtry = 1 	OOB error = 20.71% 
+# -0.06024096 0.05 
+# Searching right ...
+# mtry = 4 	OOB error = 21.53% 
+# -0.1024096 0.05 
+#       mtry  OOBError
+# 1.OOB    1 0.2070588
+# 2.OOB    2 0.1952941
+# 4.OOB    4 0.2152941</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-3">3</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-4">4</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-5">5</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-6">6</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-7">7</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-8">8</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-9">9</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-10">10</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-11">11</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-12">12</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-13">13</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-14">14</div><div class="crayon-num" data-line="crayon-60f9188288fc4480731422-15">15</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fc4480731422-1">trainingData_naomit <div class="crayon-line" id="crayon-60f9188288fc4480731422-2">tuneRF(x = trainingData_naomit[,-2], y = trainingData_naomit[,2])</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-3"> </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-4"> </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-5"># mtry = 2  OOB error = 19.53% </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-6"># Searching left ...</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-7"># mtry = 1 	OOB error = 20.71% </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-8"># -0.06024096 0.05 </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-9"># Searching right ...</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-10"># mtry = 4 	OOB error = 21.53% </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-11"># -0.1024096 0.05 </div><div class="crayon-line" id="crayon-60f9188288fc4480731422-12">#       mtry  OOBError</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-13"># 1.OOB    1 0.2070588</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-14"># 2.OOB    2 0.1952941</div><div class="crayon-line" id="crayon-60f9188288fc4480731422-15"># 4.OOB    4 0.2152941</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現在mtry=2時，誤差最小。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1111" src="/wp-content/uploads/2018/08/Rplot05_tuneRF.jpeg" alt="Decision Tree " width="816" height="900" srcset="/wp-content/uploads/2018/08/Rplot05_tuneRF.jpeg 816w,/wp-content/uploads/2018/08/Rplot05_tuneRF-272x300.jpeg 272w,/wp-content/uploads/2018/08/Rplot05_tuneRF-768x847.jpeg 768w,/wp-content/uploads/2018/08/Rplot05_tuneRF-230x254.jpeg 230w,/wp-content/uploads/2018/08/Rplot05_tuneRF-350x386.jpeg 350w,/wp-content/uploads/2018/08/Rplot05_tuneRF-480x529.jpeg 480w" sizes="(max-width: 816px) 100vw, 816px"></p>
+<p>randomForest中類別樹預設的mtry=sqrt(p)，其中p代表x變數的數目。因為原始隨機森林模型預設值跟tuneRF建議的值相同，故我們另外不調整。</p>
+
+		<div id="crayon-60f9188288fcb453880539" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+fit.rf$mtry
+# [1] 2</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fcb453880539-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fcb453880539-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fcb453880539-1">fit.rf$mtry</div><div class="crayon-line" id="crayon-60f9188288fcb453880539-2"># [1] 2</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>看每個x變數的重要性(<span style="color: #9f6ad4;">the mean decrease in Gini index</span>)，即看哪個變數對<span style="color: #9f6ad4;">損失函數Loss Function</span>最有貢獻。(*randomForest參數importance預設值為False，僅會產生the mean decrease in Gini index，如果要產生其他指標如mean decrease in accuracy，要將其改為TRUE。)</p>
+
+		<div id="crayon-60f9188288fd3362971094" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+round(importance(fit.rf),2) # importance of each predictor
+# or
+# round(fit.rf$importance, 2)
+
+#          MeanDecreaseGini
+# pclass              27.55
+# sex                100.67
+# age                 55.09
+# sibsp               13.89
+# parch               13.40
+# fare                59.79
+# embarked            11.55</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-3">3</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-4">4</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-5">5</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-6">6</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-7">7</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-8">8</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-9">9</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-10">10</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-11">11</div><div class="crayon-num" data-line="crayon-60f9188288fd3362971094-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fd3362971094-1">round(importance(fit.rf),2) # importance of each predictor</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-2"># or</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-3"># round(fit.rf$importance, 2)</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-4"> </div><div class="crayon-line" id="crayon-60f9188288fd3362971094-5">#          MeanDecreaseGini</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-6"># pclass              27.55</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-7"># sex                100.67</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-8"># age                 55.09</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-9"># sibsp               13.89</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-10"># parch               13.40</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-11"># fare                59.79</div><div class="crayon-line" id="crayon-60f9188288fd3362971094-12"># embarked            11.55</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>將變數重要性（貢獻度）繪出。</p>
+
+		<div id="crayon-60f9188288fda394733461" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+varImpPlot(fit.rf)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fda394733461-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fda394733461-1">varImpPlot(fit.rf)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1115" src="/wp-content/uploads/2018/08/Rplot06_varImpPlot.jpeg" alt="Decision Tree " width="816" height="900" srcset="/wp-content/uploads/2018/08/Rplot06_varImpPlot.jpeg 816w,/wp-content/uploads/2018/08/Rplot06_varImpPlot-272x300.jpeg 272w,/wp-content/uploads/2018/08/Rplot06_varImpPlot-768x847.jpeg 768w,/wp-content/uploads/2018/08/Rplot06_varImpPlot-230x254.jpeg 230w,/wp-content/uploads/2018/08/Rplot06_varImpPlot-350x386.jpeg 350w,/wp-content/uploads/2018/08/Rplot06_varImpPlot-480x529.jpeg 480w" sizes="(max-width: 816px) 100vw, 816px"></p>
+<p>最後將調整好的模型應用在testData並評估正確性。</p>
+
+		<div id="crayon-60f9188288fe1898396939" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+predicted.rf <- predict(object = fit.rf, newdata = testData)
+tbl.rf <- table(predicted = predicted.rf, actuals = testData$survived)
+accuracy <- sum(diag(tbl.rf)) / sum(tbl.rf)
+accuracy
+# [1] 0.8307692</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9188288fe1898396939-1">1</div><div class="crayon-num" data-line="crayon-60f9188288fe1898396939-2">2</div><div class="crayon-num" data-line="crayon-60f9188288fe1898396939-3">3</div><div class="crayon-num" data-line="crayon-60f9188288fe1898396939-4">4</div><div class="crayon-num" data-line="crayon-60f9188288fe1898396939-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9188288fe1898396939-1">predicted.rf <div class="crayon-line" id="crayon-60f9188288fe1898396939-2">tbl.rf <div class="crayon-line" id="crayon-60f9188288fe1898396939-3">accuracy <div class="crayon-line" id="crayon-60f9188288fe1898396939-4">accuracy</div><div class="crayon-line" id="crayon-60f9188288fe1898396939-5"># [1] 0.8307692</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>隨機森林的預測準確率為83%，較原先的決策樹(accuracy = 80%)改善約4%。</p>
+<h3>總結</h3>
+<ul><li>Decision Tree 決策樹模型具有簡單易懂的樹狀邏輯圖，可解釋度高。</li>
+<li>Decision Tree 決策樹對於資料的要求低，沒有常態分配與線性關係的假設，不受資料分配限制。</li>
+<li>Decision Tree 決策樹的<span style="color: #9f6ad4;">有變數篩選機制</span>。
+<ul><li>rpart演算法進行Gini Index檢定，並計算complexity parameter來進行變數篩選。</li>
+<li>ctree演算法進行chi-square檢定，檢驗各投入變數是否與目標變數相關並計算p-value來看相關性的顯著效果。</li>
+</ul></li>
+<li>Decision Tree 決策樹亦<span style="color: #9f6ad4;">有空值填補機制</span> – <a href="/decision-tree-surrogate-in-cart/" target="_blank" rel="noopener noreferrer">tree surrogate</a>。
+<ul><li>rpart演算法na.action預設為na.rpart。(更多有關決策樹遺失值預測請參考 <a href="/decision-tree-surrogate-in-cart/" target="_blank" rel="noopener noreferrer">tree surrogate in CART</a>)</li>
+<li><a href="https://www.rdocumentation.org/packages/partykit/versions/1.2-2/topics/ctree">ctree演算法na.action預設為na.pass</a>，可以將其改為na.rpart。</li>
+</ul></li>
+<li>Decision Tree 演算法<span style="color: #9f6ad4;">rpart和ctree皆能處理連續型(continuous)與類別型(categorical)變數之切割</span>。</li>
+<li>由Decision Tree 決策樹衍伸出的集成學習法「<span style="color: #9f6ad4;">隨機森林 random forest</span>」可以有效降低模型的錯誤率、解決過度配適、透過反覆抽樣解決類別不平衡與共線性問題。</li>
+</ul><hr><p>更多<span style="color: #9f6ad4;">統計模型</span>筆記連結：</p>
+<ol><li><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e8%bf%b4%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">Linear Regression | 線性迴歸模型 | using AirQuality Dataset</a></li>
+<li><a href="/regularized-regression-ridge-lasso-elastic/" target="_blank" rel="noopener noreferrer">Regularized Regression | 正規化迴歸 – Ridge, Lasso, Elastic Net | R語言</a></li>
+<li><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part1 – 資料探勘與處理 | 統計 R語言</a></li>
+<li><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part2 – 模型建置、診斷與比較 | R語言</a></li>
+<li><a href="/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/" target="_blank" rel="noopener noreferrer">Regression Tree | 迴歸樹, Bagging, Bootstrap Aggregation | R語言</a></li>
+<li><a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" target="_blank" rel="noopener noreferrer">Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</a></li>
+<li><a href="/gradient-boosting-machines-gbm/" target="_blank" rel="noopener noreferrer">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a></li>
+<li><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R統計</a></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering | 切割式分群 | Kmeans, Kmedoid | Clustering 資料分群</a></li>
+<li><a href="/principal-components-analysis-pca-%e4%b8%bb%e6%88%90%e4%bb%bd%e5%88%86%e6%9e%90/" target="_blank" rel="noopener noreferrer">Principal Components Analysis (PCA) | 主成份分析 | R 統計</a></li>
+</ol><hr><p>學習筆記參考連結：</p>
+<ol><li><a href="https://www.guru99.com/r-decision-trees.html" target="_blank" rel="noopener noreferrer">Decision Tree in R with Example </a></li>
+<li><a href="https://www.statmethods.net/advstats/cart.html">Tree-Based Models</a></li>
+<li><a href="https://rstudio-pubs-static.s3.amazonaws.com/275285_90aaf9a2a64d43a5846a86dbcde8eba9.html">R_programming – (8)決策樹(Decision Tree)</a></li>
+<li><a href="https://dzone.com/articles/decision-trees-and-pruning-in-r">Decision Trees and Pruning in R</a></li>
+<li><a href="https://statinfer.com/203-3-10-pruning-a-decision-tree-in-r/">Pruning a Decision Tree in R</a></li>
+<li><a href="https://www.edureka.co/blog/decision-trees/">How To Create A Perfect Decision Tree</a></li>
+<li><a href="https://medium.com/@yehjames/%E8%B3%87%E6%96%99%E5%88%86%E6%9E%90-%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-%E7%AC%AC3-5%E8%AC%9B-%E6%B1%BA%E7%AD%96%E6%A8%B9-decision-tree-%E4%BB%A5%E5%8F%8A%E9%9A%A8%E6%A9%9F%E6%A3%AE%E6%9E%97-random-forest-%E4%BB%8B%E7%B4%B9-7079b0ddfbda">[資料分析&機器學習] 第3.5講 : 決策樹(Decision Tree)以及隨機森林(Random Forest)介紹</a></li>
+</ol></div>
+
+	<footer class="entry-footer"><span class="tags-links"> <a href="/tag/cart/" rel="tag">cart</a>0<a href="/tag/decision-tree/" rel="tag">decision tree</a>0<a href="/tag/prune/" rel="tag">prune</a>0<a href="/tag/random-forest/" rel="tag">random forest</a>0<a href="/tag/rpart/" rel="tag">rpart</a>0<a href="/tag/tree-surrogate/" rel="tag">tree surrogate</a>0<a href="/tag/%e6%b1%ba%e7%ad%96%e6%a8%b9/" rel="tag">決策樹</a>0<a href="/tag/%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" rel="tag">隨機森林</a></span>	</footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/summarize-categorical-variables/" rel="prev">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a></div><div class="nav-next"><a href="/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/" rel="next">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+			<h4 class="comment-title">
+			在《<span>Decision Tree 決策樹 | CART, Conditional Inference Tree, RandomForest</span>》中有 1 則留言		</h4>
+
+		
+		<ol class="comments-list"><li id="comment-3293" class="comment even thread-even depth-1">
+			<article id="div-comment-3293" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://1.gravatar.com/avatar/af6a4a43b94b7e107550f45e0da1366c?s=60&d=mm&r=g" srcset="http://1.gravatar.com/avatar/af6a4a43b94b7e107550f45e0da1366c?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">kate</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/#comment-3293"><time datetime="2020-01-23T11:56:47+08:00">2020-01-2311:56:47</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>你寫的內容簡明易懂，謝謝你的分享!</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3293" data-commentid="3293" data-postid="1026" data-belowelement="div-comment-3293" data-respondelement="respond" data-replyto="回覆給「kate」" aria-label="回覆給「kate」">回覆</a></div>			</article></li>
+		</ol><div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="1026" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626937474"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

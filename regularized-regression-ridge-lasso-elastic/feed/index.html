@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	>
+<channel>
+	<title>
+	〈Regularized Regression &#124; 正規化迴歸 &#8211; Ridge, Lasso, Elastic Net &#124; R語言〉的留言	</title>
+	<atom:link href="/regularized-regression-ridge-lasso-elastic/feed/" rel="self" type="application/rss+xml" />
+	<link>/regularized-regression-ridge-lasso-elastic/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:25:08 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>
+		留言者: Reggie		</title>
+		<link>/regularized-regression-ridge-lasso-elastic/#comment-3283</link>
+
+		<dc:creator><![CDATA[Reggie]]></dc:creator>
+		<pubDate>Sat, 31 Aug 2019 07:34:46 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2359#comment-3283</guid>
+
+					<description><![CDATA[謝謝您的文章，非常實用！想請問您，使用lasso或elastic net正規化迴歸後得到的係數還需要調整嗎？還是可以直接用來建立模型呢？另外，如果用來建模的樣本數不大，又缺少validation group的情況下，有沒有什麼替代方法可以驗證所建立的模型？謝謝！]]></description>
+			<content:encoded><![CDATA[<p>謝謝您的文章，非常實用！想請問您，使用lasso或elastic net正規化迴歸後得到的係數還需要調整嗎？還是可以直接用來建立模型呢？另外，如果用來建模的樣本數不大，又缺少validation group的情況下，有沒有什麼替代方法可以驗證所建立的模型？謝謝！</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: 對數學沒有畫面的腦		</title>
+		<link>/regularized-regression-ridge-lasso-elastic/#comment-3267</link>
+
+		<dc:creator><![CDATA[對數學沒有畫面的腦]]></dc:creator>
+		<pubDate>Fri, 28 Jun 2019 00:45:43 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2359#comment-3267</guid>
+
+					<description><![CDATA[阿對了，忘記請教，方程式前面有一個minimize是什麼意思啊？
+謝謝。]]></description>
+			<content:encoded><![CDATA[<p>阿對了，忘記請教，方程式前面有一個minimize是什麼意思啊？<br />
+謝謝。</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: 對數學沒有畫面的腦袋		</title>
+		<link>/regularized-regression-ridge-lasso-elastic/#comment-3266</link>
+
+		<dc:creator><![CDATA[對數學沒有畫面的腦袋]]></dc:creator>
+		<pubDate>Fri, 28 Jun 2019 00:44:40 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2359#comment-3266</guid>
+
+					<description><![CDATA[您好:
+想請教幾個問題。
+
+1.Regularization為何說是尋找一個平面？紅線不是一條線嗎？為何不說是尋找一條線呢？
+在二維平面上（X,Y）尋找一條線是不是比較符合？在三維空間(X,Y,Z)才會說尋找一個平面？
+
+2.請教minimize{SSE+λ∑j=1pβ2j}這個方程式中，β的平方指的是什麼呢？
+感覺是把所有β平方後累加起來乘上λ？
+
+謝謝。]]></description>
+			<content:encoded><![CDATA[<p>您好:<br />
+想請教幾個問題。</p>
+<p>1.Regularization為何說是尋找一個平面？紅線不是一條線嗎？為何不說是尋找一條線呢？<br />
+在二維平面上（X,Y）尋找一條線是不是比較符合？在三維空間(X,Y,Z)才會說尋找一個平面？</p>
+<p>2.請教minimize{SSE+λ∑j=1pβ2j}這個方程式中，β的平方指的是什麼呢？<br />
+感覺是把所有β平方後累加起來乘上λ？</p>
+<p>謝謝。</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: jamleecute		</title>
+		<link>/regularized-regression-ridge-lasso-elastic/#comment-147</link>
+
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Sun, 20 Jan 2019 03:44:19 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2359#comment-147</guid>
+
+					<description><![CDATA[回覆的對象為「&lt;a href=&quot;/regularized-regression-ridge-lasso-elastic/#comment-142&quot;&gt;Jenny&lt;/a&gt;」。
+
+您好，
+由於glmnet()函數不能處理factor變數，所以預測變數(自變數)都必須要轉換成dummy variabels，所以如果自變數本身就為數值型變數，使用原始值即可！]]></description>
+			<content:encoded><![CDATA[<p>您好，<br />
+由於glmnet()函數不能處理factor變數，所以預測變數(自變數)都必須要轉換成dummy variabels，所以如果自變數本身就為數值型變數，使用原始值即可！</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: Jenny		</title>
+		<link>/regularized-regression-ridge-lasso-elastic/#comment-142</link>
+
+		<dc:creator><![CDATA[Jenny]]></dc:creator>
+		<pubDate>Mon, 07 Jan 2019 13:01:15 +0000</pubDate>
+		<guid isPermaLink="false">/?p=2359#comment-142</guid>
+
+					<description><![CDATA[謝謝您詳細的解說，受益良多！不過想請教您，在建立Lasso模型前，預測因子(自變數)要先切割成類別變數嗎？或者都用原始值就好呢？例如我有很多實驗室檢測值，我需要先替這個變數的正常值、危險值進行切割，讓它成為類別變數嗎？謝謝您]]></description>
+			<content:encoded><![CDATA[<p>謝謝您詳細的解說，受益良多！不過想請教您，在建立Lasso模型前，預測因子(自變數)要先切割成類別變數嗎？或者都用原始值就好呢？例如我有很多實驗室檢測值，我需要先替這個變數的正常值、危險值進行切割，讓它成為類別變數嗎？謝謝您</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

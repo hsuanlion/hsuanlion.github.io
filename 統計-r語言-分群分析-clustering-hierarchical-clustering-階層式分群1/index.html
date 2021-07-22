@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群方法包括著名的kmeans, hierarchical clustering，分別使用不同分群演算邏輯。本篇將介紹階層式分群的實作與特色。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計"><meta property="og:description" content="Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群方法包括著名的kmeans, hierarchical clustering，分別使用不同分群演算邏輯。本篇將介紹階層式分群的實作與特色。"><meta property="og:url" content="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:tag" content="clustering"><meta property="article:tag" content="hierarchical clustering"><meta property="article:tag" content="分群"><meta property="article:tag" content="分群演算法"><meta property="article:tag" content="資料分群"><meta property="article:tag" content="階層式分群"><meta property="article:section" content=" 程式與統計"><meta property="article:published_time" content="2018-09-05T07:43:45+08:00"><meta property="article:modified_time" content="2020-07-03T02:31:05+08:00"><meta property="og:updated_time" content="2020-07-03T02:31:05+08:00"><meta property="og:image" content="/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-1024x683.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="683"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群方法包括著名的kmeans, hierarchical clustering，分別使用不同分群演算邏輯。本篇將介紹階層式分群的實作與特色。"><meta name="twitter:title" content="Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計"><meta name="twitter:image" content="/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-1157" class="post-1157 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-statistics-model tag-clustering tag-hierarchical-clustering tag-258 tag-260 tag-259 tag-257"><div class="entry-thumb">
+			<img width="5760" height="3840" src="/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="kyle-glenn-686350-unsplash" loading="lazy" srcset="/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash.jpg 5760w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-300x200.jpg 300w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-768x512.jpg 768w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-1024x683.jpg 1024w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-830x553.jpg 830w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-230x153.jpg 230w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-350x233.jpg 350w,/wp-content/uploads/2018/09/kyle-glenn-686350-unsplash-480x320.jpg 480w" sizes="(max-width: 5760px) 100vw, 5760px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/statistics-model/" title="統計模型" class="post-cat">統計模型</a>		</div>
+
+		<h1 class="title-post entry-title">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" rel="bookmark"><time class="entry-date published" datetime="2018-09-05T15:43:45+08:00">2018-09-05</time><time class="updated" datetime="2020-07-03T10:31:05+08:00">2020-07-03</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p>Hierarchical Clustering, 屬於資料分群的一種方法。資料分群屬於非監督式學習，處理的資料是沒有正確答案/標籤/目標變數可參考的。常見的分群方法包括著名的kmeans, hierarchical clustering，分別使用不同分群演算邏輯。本篇將介紹階層式分群的實作與特色。</p>
+<h3>資料分群簡介</h3>
+<ul><li>資料分群是一個將資料分割成數個子集合的方法，主要目的包括：
+<ul><li>找出資料中相近的<span style="color: #9f6ad4;">群聚(clusters)</span>，</li>
+<li>找出各群的<span style="color: #9f6ad4;">代表點</span>。代表點可以是群聚中的<span style="color: #9f6ad4;">中心點(centroids)</span>或是<span style="color: #9f6ad4;">原型(prototypes)</span>。</li>
+</ul></li>
+<li>透過各群的代表點，可以達到幾個目標：
+<ul><li>資料壓縮</li>
+<li>降低雜訊</li>
+<li>降低計算量</li>
+</ul></li>
+<li> 資料分群將<span style="color: #9f6ad4;">依據資料自身屬性計算彼此間的相似度</span>（物以類聚），而<span style="color: #9f6ad4;">「相似度」</span>主要有兩種型態：
+<ul><li>「Compactness」：目標是讓子集合間差異最大化，子集合內差異最小化。如階層式分群和K-means分群。</li>
+<li>「Connectedness」：目標是將可串連在一起的個體分成一群。如譜分群(Spectral Clustering)。</li>
+</ul></li>
+<li>資料分群屬於<span style="color: #9f6ad4;">非監督式學習法(Unsupervised Learning)</span>，即資料沒有標籤(unlabeled data)或沒有標準答案，<span style="color: #9f6ad4;">無法透過所謂的目標變數(response variable)來做分類之訓練</span>。也因為資料沒有標籤之緣故，與監督式學習法和強化式學習法不同，<span style="color: #9f6ad4;">非監督式學習法無法衡量演算法的正確率</span>。</li>
+</ul><p><span style="color: #333333;"><span style="text-decoration: underline;">資料分群系列文</span>章會依序介紹以下幾種常見的分群方法：</span></p>
+<ol><li><a href="/%e7%b5%b1%e8%a8%88-r%e8%aa%9e%e8%a8%80-%e5%88%86%e7%be%a4%e5%88%86%e6%9e%90-clustering-hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a41/">階層式分群(hierarchical clustering)</a>
+<ol><li>聚合式階層分群法 Agglomerative Hierarchical Clustering</li>
+<li>分裂式階層分群法 Divisive Hierarchical Clustering</li>
+<li>最佳分群群數(Determining Optimal Clusters)</li>
+</ol></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群(partitional clustering)</a>
+<ol><li>K-means</li>
+<li>K-medoid</li>
+<li>最佳分群群數(Determining Optimal Clusters)</li>
+</ol></li>
+<li>譜分群(Spectral Clustering)</li>
+</ol><h3>1. 階層式分群(Hierarchical clustering)</h3>
+<ul><li>階層分群法的概念是在分群中建立分群，並不需要預先設定分群數。</li>
+<li>產生的分群結果為一目瞭然的樹狀結構圖（又稱作<span style="color: #9f6ad4;">dendrogram</span>）。</li>
+<li>群數(number of clusters)可由大變小(divisive hierarchical clustering)，或是由小變大(agglomerative hierarchical clustering)，透過群聚反覆的分裂和合併後，在選取最佳的群聚數。</li>
+<li>階層式分群兩種演算法：
+<ul><li>當採行<span style="color: #9f6ad4;">聚合法</span>，又稱作AGNES(Agglomerative Nesting)，資料會由樹狀結構的底部開始開始逐次合併 (<span style="color: #9f6ad4;">bottom-up</span>)，在R語言中所使用的函數為<span style="color: #9f6ad4;">hclust()[in stat package]或agnes[in cluster package]</span>，<span style="color: #9f6ad4;">擅於</span><span style="color: #9f6ad4;">處理與識別小規模群聚</span></li>
+<li>當採行<span style="color: #9f6ad4;">分裂法，<span style="color: #333333;">又稱作DIANA(Divisive Analysis)</span></span>，資料則會由樹狀結構的頂部開始逐次分裂(<span style="color: #9f6ad4;">top-down</span>)，在R語言中使用的套件為<span style="color: #9f6ad4;">diana()[in cluster package]</span>，<span style="color: #9f6ad4;">擅於處理與識別大規模群聚</span>。</li>
+</ul></li>
+<li>階層分群可被用運用<span style="color: #9f6ad4;">數值與類別</span>資料。</li>
+</ul><h3><span style="color: #333333;">1-1. 聚合式階層群聚法（AGNES, bottom-up）</span></h3>
+<p>我們使用Iris資料集-經典的鳶尾花資料來進行聚合式階層群聚法之說明。(<span style="color: #9f6ad4;">*注意，資料必須先預處理遺失值的部分，比如說使用na.omit(data)。</span>)</p>
+
+		<div id="crayon-60f91818e2b13509210579" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+head(iris)
+
+#   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+# 1          5.1         3.5          1.4         0.2  setosa
+# 2          4.9         3.0          1.4         0.2  setosa
+# 3          4.7         3.2          1.3         0.2  setosa
+# 4          4.6         3.1          1.5         0.2  setosa
+# 5          5.0         3.6          1.4         0.2  setosa
+# 6          5.4         3.9          1.7         0.4  setosa</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2b13509210579-9">9</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b13509210579-1">head(iris)</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-2"> </div><div class="crayon-line" id="crayon-60f91818e2b13509210579-3">#   Sepal.Length Sepal.Width Petal.Length Petal.Width Species</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-4"># 1          5.1         3.5          1.4         0.2  setosa</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-5"># 2          4.9         3.0          1.4         0.2  setosa</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-6"># 3          4.7         3.2          1.3         0.2  setosa</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-7"># 4          4.6         3.1          1.5         0.2  setosa</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-8"># 5          5.0         3.6          1.4         0.2  setosa</div><div class="crayon-line" id="crayon-60f91818e2b13509210579-9"># 6          5.4         3.9          1.7         0.4  setosa</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>因為分群法為非監督式學習法，專處理<span style="color: #9f6ad4;">無標籤(</span>un-labeled<span style="color: #9f6ad4;">)<span style="color: #333333;">或</span>無標準答案</span>的資料分群，故我們將分類結果欄位Species從我們的inputData刪除。</p>
+
+		<div id="crayon-60f91818e2b24705369382" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+inputData <- iris[,-5]
+head(inputData)
+
+#   Sepal.Length Sepal.Width Petal.Length Petal.Width
+# 1          5.1         3.5          1.4         0.2
+# 2          4.9         3.0          1.4         0.2
+# 3          4.7         3.2          1.3         0.2
+# 4          4.6         3.1          1.5         0.2
+# 5          5.0         3.6          1.4         0.2
+# 6          5.4         3.9          1.7         0.4</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-9">9</div><div class="crayon-num" data-line="crayon-60f91818e2b24705369382-10">10</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b24705369382-1">inputData <div class="crayon-line" id="crayon-60f91818e2b24705369382-2">head(inputData)</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-3"> </div><div class="crayon-line" id="crayon-60f91818e2b24705369382-4">#   Sepal.Length Sepal.Width Petal.Length Petal.Width</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-5"># 1          5.1         3.5          1.4         0.2</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-6"># 2          4.9         3.0          1.4         0.2</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-7"># 3          4.7         3.2          1.3         0.2</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-8"># 4          4.6         3.1          1.5         0.2</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-9"># 5          5.0         3.6          1.4         0.2</div><div class="crayon-line" id="crayon-60f91818e2b24705369382-10"># 6          5.4         3.9          1.7         0.4</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>在進行聚合式群聚法前，我們先簡單介紹幾個hclust()函數中的重要參數：</p>
+<ul><li>d : 由dist()函數計算出來<span style="color: #9f6ad4;">資料兩兩間的相異度矩陣(dissimilarity matrix)</span>，即兩兩資料間的距離矩陣。</li>
+<li>method: <span style="color: #9f6ad4;">群(clusters)</span><strong>聚合</strong>或<strong>連結</strong>的方式。包括：single(單一）、complete（完整）、average（平均）、Ward’s（華德）和 centroid（中心）等法。其中又以average(平均)聚合方法被認為是最適合的。不同方法對階層分群結果亦有極大影響。</li>
+</ul><p>R語言hclust()套件中提供<span style="color: #9f6ad4;">群聚距離演算法</span>來<span style="color: #9f6ad4;">衡量兩群聚的不相似度</span>，最常見的幾種演算法如下：</p>
+<ul><li>單一連結聚合演算法(single-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">最近</span>的兩個點的距離。傾向產生較於緊緻(compact)的群聚。<br>
+$$d(C_{i},C_{j})=\min_{a\in C_{i},b\in C_{j}}d(a,b)$$</li>
+<li>完整連結聚合演算法(complete-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">最遠</span>的兩個點的距離。傾向產生較於長(long)、鬆散(loose)的群聚。<br>
+$$d(C_{i},C_{j})=\max_{a\in C_{i},b\in C_{j}}d(a,b)$$</li>
+<li>平均連結聚合演算法(average-linkage agglomerative algorithm): 群與群的距離定義為不同群聚中<span style="color: #9f6ad4;">各點與各點距離總和的平均</span>。<br>
+$$d(C_{i},C_{j})=\sum_{a\in C_{i},b\in C_{j}}\frac{d(a,b)}{|C_{i}||C_{j}|}$$<br>
+其中，\(|C_{i}|\)和\(|C_{j}|\)分別為群聚\(C_{i}\)和\(C_{j}\)的大小。</li>
+<li>中心連結聚合演算法(centroid-linkage agglomerative algorithm): 群與群的距離定義為<span style="color: #9f6ad4;">不同群聚中心點之間的距離</span>。<br>
+$$d(A,B)= d(\bar{X}_{A},\bar{X}_{B})=\|\bar{X}_{A}-\bar{X}_{B}\|^2$$</li>
+<li>華德最小變異法(Ward’s Minimum Variance): 最小化各群聚內變異加總(minimize the total within-cluster variance)。主要用來尋找緊湊球型的群聚。<span style="color: #9f6ad4;">反覆比較每對資料<strong>合併後的群內總變異數的增量</strong>，並找增量最小的組別優先合併</span>。越早合併的子集表示其間的相似度越高。<span style="color: #9f6ad4;">而使用華德最小變異法的前提為，初始各點資料距離必須是歐式距離的平方和(Squared Euclidean Distance)</span>。在R套件hclust將參數設為method = “ward.D2″(不是”ward.D”)。（<a href="https://en.wikipedia.org/wiki/Ward%27s_method">華德法參考文獻</a>）</li>
+</ul><p>我們先來試試，不同的資料點間距離矩陣計算之效果。即<span style="color: #9f6ad4;">調整dist()中參數method</span>。</p>
+<ul><li>歐式距離（以二維空間為例）：<span style="color: #9f6ad4;">最常用也是最重要的距離計算法</span>。<br>
+$$d(P_{1},P_{2})=\sqrt{(x_{1}-x_{2})^2+(y_{1}-y_{2})^2}$$</li>
+<li>曼哈頓距離（以二維空間為例）：<br>
+$$d(P_{1},P_{2})=|x_{1}-x_{2}|+|y_{1}-y_{2}|$$</li>
+</ul><p></p>
+
+		<div id="crayon-60f91818e2b2b471256321" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# 由於階層式分群是依據個體間的「距離」來計算彼此的相似度。
+# 我們會先使用dist()函數，來計算所有資料個體間的「距離矩陣(Distance Matrix)」
+# 而「距離」的算法又有：(1)歐式距離(2)曼哈頓距離
+
+E.dist <- dist(x = inputData, method = "euclidean")
+M.dist <- dist(x = inputData, method = "manhattan")
+
+# 讓圖形以一行兩欄的排版方式呈現，如要還原請用dev.off()
+par(mfrow=c(1,2))
+
+# 將以上資料間距離作為參數投入階層式分群函數：hclust()
+# 使用歐式距離進行分群
+h.E.cluster <- hclust(E.dist)
+plot(h.E.cluster, xlab="歐式距離",family="黑體-繁 中黑")
+
+# 使用曼哈頓距離進行分群
+h.M.cluster <- hclust(M.dist) 
+plot(h.M.cluster, xlab="曼哈頓距離", family="黑體-繁 中黑")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-9">9</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-10">10</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-11">11</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-12">12</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-13">13</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-14">14</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-15">15</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-16">16</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-17">17</div><div class="crayon-num" data-line="crayon-60f91818e2b2b471256321-18">18</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b2b471256321-1"># 由於階層式分群是依據個體間的「距離」來計算彼此的相似度。</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-2"># 我們會先使用dist()函數，來計算所有資料個體間的「距離矩陣(Distance Matrix)」</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-3"># 而「距離」的算法又有：(1)歐式距離(2)曼哈頓距離</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-4"> </div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-5">E.dist <div class="crayon-line" id="crayon-60f91818e2b2b471256321-6">M.dist <div class="crayon-line" id="crayon-60f91818e2b2b471256321-7"> </div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-8"># 讓圖形以一行兩欄的排版方式呈現，如要還原請用dev.off()</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-9">par(mfrow=c(1,2))</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-10"> </div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-11"># 將以上資料間距離作為參數投入階層式分群函數：hclust()</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-12"># 使用歐式距離進行分群</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-13">h.E.cluster <div class="crayon-line" id="crayon-60f91818e2b2b471256321-14">plot(h.E.cluster, xlab="歐式距離",family="黑體-繁 中黑")</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-15"> </div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-16"># 使用曼哈頓距離進行分群</div><div class="crayon-line" id="crayon-60f91818e2b2b471256321-17">h.M.cluster <div class="crayon-line" id="crayon-60f91818e2b2b471256321-18">plot(h.M.cluster, xlab="曼哈頓距離", family="黑體-繁 中黑")</div></div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可發現不同資料距離計算會有不同分群結果。</p>
+<ul><li><span style="color: #9f6ad4;">Height</span>表示<span style="color: #9f6ad4;">n-1組</span>實數值。各值為<span style="color: #9f6ad4;">使用特定聚合方法計算出來的標準數值</span>。</li>
+</ul><p><img loading="lazy" class="alignnone size-large wp-image-1221" src="/wp-content/uploads/2018/09/Rplot01-1024x469.jpeg" alt="hierarchical clustering" width="1024" height="469" srcset="/wp-content/uploads/2018/09/Rplot01-1024x469.jpeg 1024w,/wp-content/uploads/2018/09/Rplot01-300x137.jpeg 300w,/wp-content/uploads/2018/09/Rplot01-768x352.jpeg 768w,/wp-content/uploads/2018/09/Rplot01-830x380.jpeg 830w,/wp-content/uploads/2018/09/Rplot01-230x105.jpeg 230w,/wp-content/uploads/2018/09/Rplot01-350x160.jpeg 350w,/wp-content/uploads/2018/09/Rplot01-480x220.jpeg 480w,/wp-content/uploads/2018/09/Rplot01.jpeg 1308w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>比較不同歐式距離搭配不同聚合演算法的分群結果。</p>
+
+		<div id="crayon-60f91818e2b31899338881" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+dev.off()
+par(mfrow= c(3,2),family="黑體-繁 中黑")
+plot(hclust(E.dist, method="single"),xlab = "最近聚合法:single-linkage")   # 最近法
+plot(hclust(E.dist, method="complete"), xlab = "最遠聚合法:complete-linkage")  # 最遠法
+plot(hclust(E.dist, method="average"), xlab = "平均聚合法: average-linkage")  # 平均法
+plot(hclust(E.dist, method="centroid"), xlab = "中心法: centroid-linkage") # 中心法
+plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")  # 華德法</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b31899338881-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b31899338881-1">dev.off()</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-2">par(mfrow= c(3,2),family="黑體-繁 中黑")</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-3">plot(hclust(E.dist, method="single"),xlab = "最近聚合法:single-linkage")   # 最近法</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-4">plot(hclust(E.dist, method="complete"), xlab = "最遠聚合法:complete-linkage")  # 最遠法</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-5">plot(hclust(E.dist, method="average"), xlab = "平均聚合法: average-linkage")  # 平均法</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-6">plot(hclust(E.dist, method="centroid"), xlab = "中心法: centroid-linkage") # 中心法</div><div class="crayon-line" id="crayon-60f91818e2b31899338881-7">plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")  # 華德法</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>從下圖可以發現群聚數結構的幾個特徵：</p>
+<ul><li>Single-linkage法具有「大者恆大」之效果。</li>
+<li>而 complete linkage 和 average linkage 比較具有「齊頭並進」之效果。</li>
+</ul><p><img loading="lazy" class="alignnone size-large wp-image-1261" src="/wp-content/uploads/2018/09/Rplot07-1024x1024.jpeg" alt="hierarchical clustering" width="1024" height="1024" srcset="/wp-content/uploads/2018/09/Rplot07-1024x1024.jpeg 1024w,/wp-content/uploads/2018/09/Rplot07-150x150.jpeg 150w,/wp-content/uploads/2018/09/Rplot07-300x300.jpeg 300w,/wp-content/uploads/2018/09/Rplot07-768x768.jpeg 768w,/wp-content/uploads/2018/09/Rplot07-830x830.jpeg 830w,/wp-content/uploads/2018/09/Rplot07-230x230.jpeg 230w,/wp-content/uploads/2018/09/Rplot07-350x350.jpeg 350w,/wp-content/uploads/2018/09/Rplot07-480x480.jpeg 480w,/wp-content/uploads/2018/09/Rplot07.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>接著，我們聚焦在採用<span style="color: #9f6ad4;">歐式距離</span>搭配華德最小變異聚合演算法。可透過設定<span style="color: #9f6ad4;">hclust()參數method=”ward.D2″</span>。</p>
+
+		<div id="crayon-60f91818e2b63548559992" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+dev.off()
+par(family="黑體-繁 中黑")
+plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b63548559992-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b63548559992-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b63548559992-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b63548559992-1">dev.off()</div><div class="crayon-line" id="crayon-60f91818e2b63548559992-2">par(family="黑體-繁 中黑")</div><div class="crayon-line" id="crayon-60f91818e2b63548559992-3">plot(hclust(E.dist, method="ward.D2"), xlab = "華德法: Ward's Method")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-large wp-image-1236" src="/wp-content/uploads/2018/09/Rplot02_Eu_Ward-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot02_Eu_Ward-1024x683.jpeg 1024w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-300x200.jpeg 300w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-768x512.jpeg 768w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-830x553.jpeg 830w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-230x153.jpeg 230w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-350x233.jpeg 350w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward-480x320.jpeg 480w,/wp-content/uploads/2018/09/Rplot02_Eu_Ward.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>以上結果也可以使用anges()函數來執行。此函數跟hclust()很類似，不同之處是該函數能另外計算<span style="color: #9f6ad4;">聚合係數(agglomerative coefficient)</span>。<span style="color: #9f6ad4;">聚合係數是衡量群聚結構被辨識的程度，聚合係數越接近1代表有堅固的群聚結構(strong clustering structure)</span>。在這個使用歐式距離搭配華德連結演算法的群聚係數有高達99%的表現。</p>
+
+		<div id="crayon-60f91818e2b6c868875381" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Compute with agnes
+library(cluster)
+hc2 <- agnes(E.dist, method = "ward")
+# Agglomerative coefficient
+hc2$ac
+## [1] 0.9908772</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b6c868875381-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b6c868875381-1"># Compute with agnes</div><div class="crayon-line" id="crayon-60f91818e2b6c868875381-2">library(cluster)</div><div class="crayon-line" id="crayon-60f91818e2b6c868875381-3">hc2 <div class="crayon-line" id="crayon-60f91818e2b6c868875381-4"># Agglomerative coefficient</div><div class="crayon-line" id="crayon-60f91818e2b6c868875381-5">hc2$ac</div><div class="crayon-line" id="crayon-60f91818e2b6c868875381-6">## [1] 0.9908772</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們可以用聚合係數來比較多組分群連結演算法的效果。此範例中又以華德法表現最好。</p>
+
+		<div id="crayon-60f91818e2b72113414434" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# methods to assess
+m <- c( "average", "single", "complete", "ward")
+names(m) <- c( "average", "single", "complete", "ward")
+
+# function to compute coefficient
+ac <- function(x) {
+  agnes(E.dist, method = x)$ac
+}
+
+map_dbl(m, ac) #Apply a function to each element of a vector 
+#   average    single  complete      ward 
+# 0.9300174 0.8493364 0.9574622 0.9908772</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-9">9</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-10">10</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-11">11</div><div class="crayon-num" data-line="crayon-60f91818e2b72113414434-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b72113414434-1"># methods to assess</div><div class="crayon-line" id="crayon-60f91818e2b72113414434-2">m <div class="crayon-line" id="crayon-60f91818e2b72113414434-3">names(m) <div class="crayon-line" id="crayon-60f91818e2b72113414434-4"> </div><div class="crayon-line" id="crayon-60f91818e2b72113414434-5"># function to compute coefficient</div><div class="crayon-line" id="crayon-60f91818e2b72113414434-6">ac <div class="crayon-line" id="crayon-60f91818e2b72113414434-7">  agnes(E.dist, method = x)$ac</div><div class="crayon-line" id="crayon-60f91818e2b72113414434-8">}</div><div class="crayon-line" id="crayon-60f91818e2b72113414434-9"> </div><div class="crayon-line" id="crayon-60f91818e2b72113414434-10">map_dbl(m, ac) #Apply a function to each element of a vector </div><div class="crayon-line" id="crayon-60f91818e2b72113414434-11">#   average    single  complete      ward </div><div class="crayon-line" id="crayon-60f91818e2b72113414434-12"># 0.9300174 0.8493364 0.9574622 0.9908772</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>若遇將agnes()產生的樹狀圖繪出可使用函數pltree()。可以發現結果大致上與hclust()結果差不多。</p>
+
+		<div id="crayon-60f91818e2b77979069443" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+dev.off()
+hc2 <- agnes(E.dist, method = "ward")
+pltree(hc2, cex = 0.6, hang = -1, main = "Dendrogram of agnes")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b77979069443-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b77979069443-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b77979069443-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b77979069443-1">dev.off()</div><div class="crayon-line" id="crayon-60f91818e2b77979069443-2">hc2 <div class="crayon-line" id="crayon-60f91818e2b77979069443-3">pltree(hc2, cex = 0.6, hang = -1, main = "Dendrogram of agnes")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-large wp-image-1264" src="/wp-content/uploads/2018/09/Rplot08-1024x614.jpeg" alt="hierarchical clustering" width="1024" height="614" srcset="/wp-content/uploads/2018/09/Rplot08-1024x614.jpeg 1024w,/wp-content/uploads/2018/09/Rplot08-300x180.jpeg 300w,/wp-content/uploads/2018/09/Rplot08-768x461.jpeg 768w,/wp-content/uploads/2018/09/Rplot08-830x498.jpeg 830w,/wp-content/uploads/2018/09/Rplot08-230x138.jpeg 230w,/wp-content/uploads/2018/09/Rplot08-350x210.jpeg 350w,/wp-content/uploads/2018/09/Rplot08-480x288.jpeg 480w,/wp-content/uploads/2018/09/Rplot08.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>對階層分群結果產生的樹狀結構進行<span style="color: #9f6ad4;">截枝</span>可以<span style="color: #9f6ad4;">將觀測值分成數群</span>。<span style="color: #9f6ad4;">截肢方法</span>有兩種：</p>
+<ol><li>指定所要的分群數: rect.hclust(k=…)、cutree(k=…)</li>
+<li>指定截枝的位置: rect.hclust(h=…)</li>
+</ol><p>比如說，指定將資料分成3群與13群。</p>
+
+		<div id="crayon-60f91818e2b7c642014276" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+h.E.Ward.cluster <- hclust(E.dist, method="ward.D2")
+plot(h.E.Ward.cluster)
+rect.hclust(tree =h.E.Ward.cluster, k = 3, border = "red")
+rect.hclust(tree =h.E.Ward.cluster, k = 13, border = "blue")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b7c642014276-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b7c642014276-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b7c642014276-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b7c642014276-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b7c642014276-1">h.E.Ward.cluster <div class="crayon-line" id="crayon-60f91818e2b7c642014276-2">plot(h.E.Ward.cluster)</div><div class="crayon-line" id="crayon-60f91818e2b7c642014276-3">rect.hclust(tree =h.E.Ward.cluster, k = 3, border = "red")</div><div class="crayon-line" id="crayon-60f91818e2b7c642014276-4">rect.hclust(tree =h.E.Ward.cluster, k = 13, border = "blue")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-large wp-image-1237" src="/wp-content/uploads/2018/09/Rplot03-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot03-1024x683.jpeg 1024w,/wp-content/uploads/2018/09/Rplot03-300x200.jpeg 300w,/wp-content/uploads/2018/09/Rplot03-768x512.jpeg 768w,/wp-content/uploads/2018/09/Rplot03-830x553.jpeg 830w,/wp-content/uploads/2018/09/Rplot03-230x153.jpeg 230w,/wp-content/uploads/2018/09/Rplot03-350x233.jpeg 350w,/wp-content/uploads/2018/09/Rplot03-480x320.jpeg 480w,/wp-content/uploads/2018/09/Rplot03.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>比如說，指定截枝高度分別為4和10，可分別將資料分成5組跟3組。</p>
+
+		<div id="crayon-60f91818e2b81570193717" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+h.E.Ward.cluster <- hclust(E.dist, method="ward.D2")
+plot(h.E.Ward.cluster)
+rect.hclust(tree =h.E.Ward.cluster, h = 4, border = "red")
+rect.hclust(tree =h.E.Ward.cluster, h = 10, border = "blue")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b81570193717-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b81570193717-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b81570193717-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b81570193717-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b81570193717-1">h.E.Ward.cluster <div class="crayon-line" id="crayon-60f91818e2b81570193717-2">plot(h.E.Ward.cluster)</div><div class="crayon-line" id="crayon-60f91818e2b81570193717-3">rect.hclust(tree =h.E.Ward.cluster, h = 4, border = "red")</div><div class="crayon-line" id="crayon-60f91818e2b81570193717-4">rect.hclust(tree =h.E.Ward.cluster, h = 10, border = "blue")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-large wp-image-1238" src="/wp-content/uploads/2018/09/Rplot04-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot04-1024x683.jpeg 1024w,/wp-content/uploads/2018/09/Rplot04-300x200.jpeg 300w,/wp-content/uploads/2018/09/Rplot04-768x512.jpeg 768w,/wp-content/uploads/2018/09/Rplot04-830x553.jpeg 830w,/wp-content/uploads/2018/09/Rplot04-230x153.jpeg 230w,/wp-content/uploads/2018/09/Rplot04-350x233.jpeg 350w,/wp-content/uploads/2018/09/Rplot04-480x320.jpeg 480w,/wp-content/uploads/2018/09/Rplot04.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>如果要將資料標記上分群結果，可使用cutree()，並指定參數k為所欲截枝群樹。</p>
+
+		<div id="crayon-60f91818e2b86669124059" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+h.E.Ward.cluster <- hclust(E.dist, method="ward.D2")
+cut.h.cluster <- cutree(tree = h.E.Ward.cluster, k = 3)
+cut.h.cluster
+
+#   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+#  [56] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 3 3 3 2 3 3 3
+# [111] 3 3 3 2 2 3 3 3 3 2 3 2 3 2 3 3 2 2 3 3 3 3 3 2 2 3 3 3 2 3 3 3 2 3 3 3 2 3 3 2</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b86669124059-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b86669124059-1">h.E.Ward.cluster <div class="crayon-line" id="crayon-60f91818e2b86669124059-2">cut.h.cluster <div class="crayon-line" id="crayon-60f91818e2b86669124059-3">cut.h.cluster</div><div class="crayon-line" id="crayon-60f91818e2b86669124059-4"> </div><div class="crayon-line" id="crayon-60f91818e2b86669124059-5">#   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2</div><div class="crayon-line" id="crayon-60f91818e2b86669124059-6">#  [56] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 2 3 3 3 3 2 3 3 3</div><div class="crayon-line" id="crayon-60f91818e2b86669124059-7"># [111] 3 3 3 2 2 3 3 3 3 2 3 2 3 2 3 3 2 2 3 3 3 3 3 2 2 3 3 3 2 3 3 3 2 3 3 3 2 3 3 2</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>分群結果和實際結果比較。</p>
+
+		<div id="crayon-60f91818e2b8c362793046" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+table(cut.h.cluster, iris$Species)
+
+# cut.h.cluster setosa versicolor virginica
+#             1     50          0         0
+#             2      0         49        15
+#             3      0          1        35</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b8c362793046-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b8c362793046-1">table(cut.h.cluster, iris$Species)</div><div class="crayon-line" id="crayon-60f91818e2b8c362793046-2"> </div><div class="crayon-line" id="crayon-60f91818e2b8c362793046-3"># cut.h.cluster setosa versicolor virginica</div><div class="crayon-line" id="crayon-60f91818e2b8c362793046-4">#             1     50          0         0</div><div class="crayon-line" id="crayon-60f91818e2b8c362793046-5">#             2      0         49        15</div><div class="crayon-line" id="crayon-60f91818e2b8c362793046-6">#             3      0          1        35</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>將資料分群的混淆矩陣視覺化。</p>
+
+		<div id="crayon-60f91818e2b94145871090" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(table(iris$Species, cut.h.cluster), main = "Confusion Matrix for Species Clustering", xlab = "Species", ylab = "Cluster")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b94145871090-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b94145871090-1">plot(table(iris$Species, cut.h.cluster), main = "Confusion Matrix for Species Clustering", xlab = "Species", ylab = "Cluster")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現，屬於setosa種類的都被很好的分到第一群，屬於versicolor主要被分到第二群，但virginica似乎沒有分得很好。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1257" src="/wp-content/uploads/2018/09/Rplot05.jpeg" alt="hierarchical clustering" width="800" height="722" srcset="/wp-content/uploads/2018/09/Rplot05.jpeg 800w,/wp-content/uploads/2018/09/Rplot05-300x271.jpeg 300w,/wp-content/uploads/2018/09/Rplot05-768x693.jpeg 768w,/wp-content/uploads/2018/09/Rplot05-230x208.jpeg 230w,/wp-content/uploads/2018/09/Rplot05-350x316.jpeg 350w,/wp-content/uploads/2018/09/Rplot05-480x433.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<p>如果回頭看一下原始資料分佈長相，可以發現versicolor和virginica其實部分資料靠得很近，因此兩種Species被分到第二和第三群也是合理的。</p>
+
+		<div id="crayon-60f91818e2b99654307747" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+ggplot(data = iris,mapping = aes(x = Petal.Length, y = Petal.Width)) +
+  geom_point(aes(col = Species))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b99654307747-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b99654307747-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b99654307747-1">ggplot(data = iris,mapping = aes(x = Petal.Length, y = Petal.Width)) +</div><div class="crayon-line" id="crayon-60f91818e2b99654307747-2">  geom_point(aes(col = Species))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1247" src="/wp-content/uploads/2018/09/Rplot06.jpeg" alt="hierarchical clustering" width="800" height="722" srcset="/wp-content/uploads/2018/09/Rplot06.jpeg 800w,/wp-content/uploads/2018/09/Rplot06-300x271.jpeg 300w,/wp-content/uploads/2018/09/Rplot06-768x693.jpeg 768w,/wp-content/uploads/2018/09/Rplot06-230x208.jpeg 230w,/wp-content/uploads/2018/09/Rplot06-350x316.jpeg 350w,/wp-content/uploads/2018/09/Rplot06-480x433.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>1-2. 分裂式階層群聚法（DIANA, top-down）</p>
+<p>我們使用R內建的USArrests資料集來進行說明。<span style="color: #9f6ad4;">進行分群前，我們先將資料預處理，包括遺失值忽略以及標準化(0~1)</span>。</p>
+
+		<div id="crayon-60f91818e2b9e762831774" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+head(USArrests)
+#            Murder Assault UrbanPop Rape
+# Alabama      13.2     236       58 21.2
+# Alaska       10.0     263       48 44.5
+# Arizona       8.1     294       80 31.0
+# Arkansas      8.8     190       50 19.5
+# California    9.0     276       91 40.6
+# Colorado      7.9     204       78 38.7
+
+inputData <- 
+  USArrests %>% 
+  na.omit() %>% 
+  scale() # scaling/standardizing the data</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-9">9</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-10">10</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-11">11</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-12">12</div><div class="crayon-num" data-line="crayon-60f91818e2b9e762831774-13">13</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2b9e762831774-1">head(USArrests)</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-2">#            Murder Assault UrbanPop Rape</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-3"># Alabama      13.2     236       58 21.2</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-4"># Alaska       10.0     263       48 44.5</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-5"># Arizona       8.1     294       80 31.0</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-6"># Arkansas      8.8     190       50 19.5</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-7"># California    9.0     276       91 40.6</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-8"># Colorado      7.9     204       78 38.7</div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-9"> </div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-10">inputData <div class="crayon-line" id="crayon-60f91818e2b9e762831774-11">  USArrests %>% </div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-12">  na.omit() %>% </div><div class="crayon-line" id="crayon-60f91818e2b9e762831774-13">  scale() # scaling/standardizing the data</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>diana()函數運作方式很類似agnes()，<span style="color: #9f6ad4;">只差diana沒有method參數</span>。</p>
+
+		<div id="crayon-60f91818e2ba3280226853" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# compute divisive hierarchical clustering
+diana_clust <- diana(inputData)
+
+# Divise coefficient; amount of clustering structure found
+diana_clust$dc
+## [1] 0.8514345
+
+# plot dendrogram
+pltree(diana_clust, cex = 0.6, hang = -1, main = "Dendrogram of diana")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-5">5</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-6">6</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-7">7</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-8">8</div><div class="crayon-num" data-line="crayon-60f91818e2ba3280226853-9">9</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2ba3280226853-1"># compute divisive hierarchical clustering</div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-2">diana_clust <div class="crayon-line" id="crayon-60f91818e2ba3280226853-3"> </div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-4"># Divise coefficient; amount of clustering structure found</div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-5">diana_clust$dc</div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-6">## [1] 0.8514345</div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-7"> </div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-8"># plot dendrogram</div><div class="crayon-line" id="crayon-60f91818e2ba3280226853-9">pltree(diana_clust, cex = 0.6, hang = -1, main = "Dendrogram of diana")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>由分裂式階層分群演算法產出的樹狀圖結果如下：</p>
+<ul><li>葉節點（末梢節點）代表個別資料點。</li>
+<li>垂直座標軸的Height代表群聚間的(不)相似度((dis)similarity)， 群聚的高度(height)越高，代表觀測值間越不相似（組內變異越大）。<span style="text-decoration: underline;">需要注意的是，要總結兩個觀測值的相似度，只能用<span style="color: #9f6ad4; text-decoration: underline;">兩觀測值何時被第一次合併的群聚高度</span>來做判斷，而不能以水平軸的距離來評估</span>。</li>
+</ul><p><img loading="lazy" class="alignnone size-large wp-image-1266" src="/wp-content/uploads/2018/09/Rplot09-1024x683.jpeg" alt="hierarchical clustering" width="1024" height="683" srcset="/wp-content/uploads/2018/09/Rplot09-1024x683.jpeg 1024w,/wp-content/uploads/2018/09/Rplot09-300x200.jpeg 300w,/wp-content/uploads/2018/09/Rplot09-768x512.jpeg 768w,/wp-content/uploads/2018/09/Rplot09-830x553.jpeg 830w,/wp-content/uploads/2018/09/Rplot09-230x153.jpeg 230w,/wp-content/uploads/2018/09/Rplot09-350x233.jpeg 350w,/wp-content/uploads/2018/09/Rplot09-480x320.jpeg 480w,/wp-content/uploads/2018/09/Rplot09.jpeg 1500w" sizes="(max-width: 1024px) 100vw, 1024px"></p>
+<p>另外，我們可以透過縱軸的群聚高度來決定分群數目。我們可以使用cutree()函數來得到各觀測值被分類到的群。</p>
+
+		<div id="crayon-60f91818e2ba8934941965" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# Cut diana() tree into 4 groups
+diana_clust <- diana(inputData)
+group <- cutree(diana_clust, k = 4)
+group
+# [1] 1 2 2 3 2 2 3 3 2 1 3 4 2 3 4 3 4 1 4 2 3 2 4 1 2 4 4 2 4 3 2 2 1 4 3 3 3 3 3 1 4 1 2 3 4 3 3 4 4 3</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2ba8934941965-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2ba8934941965-2">2</div><div class="crayon-num" data-line="crayon-60f91818e2ba8934941965-3">3</div><div class="crayon-num" data-line="crayon-60f91818e2ba8934941965-4">4</div><div class="crayon-num" data-line="crayon-60f91818e2ba8934941965-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2ba8934941965-1"># Cut diana() tree into 4 groups</div><div class="crayon-line" id="crayon-60f91818e2ba8934941965-2">diana_clust <div class="crayon-line" id="crayon-60f91818e2ba8934941965-3">group <div class="crayon-line" id="crayon-60f91818e2ba8934941965-4">group</div><div class="crayon-line" id="crayon-60f91818e2ba8934941965-5"># [1] 1 2 2 3 2 2 3 3 2 1 3 4 2 3 4 3 4 1 4 2 3 2 4 1 2 4 4 2 4 3 2 2 1 4 3 3 3 3 3 1 4 1 2 3 4 3 3 4 4 3</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們使用factoextra套件中的fviz_clusterc函數來將分群結果視覺化。</p>
+
+		<div id="crayon-60f91818e2bb0711696920" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(factoextra)
+fviz_cluster(list(data = inputData, cluster = group))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2bb0711696920-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2bb0711696920-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2bb0711696920-1">library(factoextra)</div><div class="crayon-line" id="crayon-60f91818e2bb0711696920-2">fviz_cluster(list(data = inputData, cluster = group))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1267" src="/wp-content/uploads/2018/09/Rplot10.jpeg" alt="hierarchical clustering" width="800" height="796" srcset="/wp-content/uploads/2018/09/Rplot10.jpeg 800w,/wp-content/uploads/2018/09/Rplot10-150x150.jpeg 150w,/wp-content/uploads/2018/09/Rplot10-300x300.jpeg 300w,/wp-content/uploads/2018/09/Rplot10-768x764.jpeg 768w,/wp-content/uploads/2018/09/Rplot10-230x229.jpeg 230w,/wp-content/uploads/2018/09/Rplot10-350x348.jpeg 350w,/wp-content/uploads/2018/09/Rplot10-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<h3>1-3. 決定階層式分群最佳群聚數</h3>
+<h4>1-3-1. Elbow Method</h4>
+<p>使用函數fviz_nbclust()，並將參數FUN指定為hcut(表階層式分群法)。wss代表組內平方誤差。</p>
+
+		<div id="crayon-60f91818e2bb5158272211" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+fviz_nbclust(inputData, FUN = hcut, method = "wss")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2bb5158272211-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2bb5158272211-1">fviz_nbclust(inputData, FUN = hcut, method = "wss")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>由結果圖可知根據Elbow法，最佳分群數目為4群。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1270" src="/wp-content/uploads/2018/09/Rplot11.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot11.jpeg 800w,/wp-content/uploads/2018/09/Rplot11-150x150.jpeg 150w,/wp-content/uploads/2018/09/Rplot11-300x300.jpeg 300w,/wp-content/uploads/2018/09/Rplot11-768x765.jpeg 768w,/wp-content/uploads/2018/09/Rplot11-230x229.jpeg 230w,/wp-content/uploads/2018/09/Rplot11-350x349.jpeg 350w,/wp-content/uploads/2018/09/Rplot11-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<h4>1-3-2. Average Silhouette Method</h4>
+<p>將method參數改為silhouette。</p>
+
+		<div id="crayon-60f91818e2bba014228374" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+fviz_nbclust(x = inputData,FUNcluster = hcut, method = "silhouette")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2bba014228374-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2bba014228374-1">fviz_nbclust(x = inputData,FUNcluster = hcut, method = "silhouette")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>根據Average Silhouette Width，最佳分群數目為2 群。</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1271" src="/wp-content/uploads/2018/09/Rplot12.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot12.jpeg 800w,/wp-content/uploads/2018/09/Rplot12-150x150.jpeg 150w,/wp-content/uploads/2018/09/Rplot12-300x300.jpeg 300w,/wp-content/uploads/2018/09/Rplot12-768x765.jpeg 768w,/wp-content/uploads/2018/09/Rplot12-230x229.jpeg 230w,/wp-content/uploads/2018/09/Rplot12-350x349.jpeg 350w,/wp-content/uploads/2018/09/Rplot12-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<h4>1-3-3. Gap Statistic Method</h4>
+<p>使用clusGap()函數。</p>
+
+		<div id="crayon-60f91818e2bbf957825867" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+gap_stat <- clusGap(x = inputData,FUNcluster = hcut, nstart = 25, K.max = 10, B = 50)
+fviz_gap_stat(gap_stat)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f91818e2bbf957825867-1">1</div><div class="crayon-num" data-line="crayon-60f91818e2bbf957825867-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f91818e2bbf957825867-1">gap_stat <div class="crayon-line" id="crayon-60f91818e2bbf957825867-2">fviz_gap_stat(gap_stat)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>根據Gap(k)統計量，最佳分群數為3群。(＊\(Gap(k)\geq Gap(k+1) – s_{k+1}\))</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1272" src="/wp-content/uploads/2018/09/Rplot13.jpeg" alt="hierarchical clustering" width="800" height="797" srcset="/wp-content/uploads/2018/09/Rplot13.jpeg 800w,/wp-content/uploads/2018/09/Rplot13-150x150.jpeg 150w,/wp-content/uploads/2018/09/Rplot13-300x300.jpeg 300w,/wp-content/uploads/2018/09/Rplot13-768x765.jpeg 768w,/wp-content/uploads/2018/09/Rplot13-230x229.jpeg 230w,/wp-content/uploads/2018/09/Rplot13-350x349.jpeg 350w,/wp-content/uploads/2018/09/Rplot13-480x478.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<h3>總結</h3>
+<ul><li>階層分群主要受：<span style="text-decoration: underline;">資料個體兩兩間距離矩陣衡量方法</span>與<span style="text-decoration: underline;">群與群連結方法所影響</span>。</li>
+<li> 階層分群優點包括：
+<ul><li>概念簡單且樹狀圖(<span style="color: #9f6ad4;">dendrogram</span>)結果一目瞭然。</li>
+<li>只需要資料點間距離即可產出分群結果。</li>
+<li>可以應用在數值或<span style="color: #9f6ad4;">類別</span>資料。</li>
+</ul></li>
+<li><span style="color: #9f6ad4;">但缺點就是運算速度，以及不適用處理大量資料</span>。運算速度方面，可以考慮其他R套件如fastcluster中的hclust函數，執行上會比一般hclust更有效率。</li>
+</ul><hr><p>更多統計模型筆記連結：</p>
+<ol><li><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e8%bf%b4%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">Linear Regression | 線性迴歸模型 | using AirQuality Dataset</a></li>
+<li><a href="/regularized-regression-ridge-lasso-elastic/" target="_blank" rel="noopener noreferrer">Regularized Regression | 正規化迴歸 – Ridge, Lasso, Elastic Net | R語言</a></li>
+<li><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part1 – 資料探勘與處理 | 統計 R語言</a></li>
+<li><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/" target="_blank" rel="noopener noreferrer">Logistic Regression 羅吉斯迴歸 | part2 – 模型建置、診斷與比較 | R語言</a></li>
+<li><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">Decision Tree 決策樹 | CART, Conditional Inference Tree, Random Forest</a></li>
+<li><a href="/regression-tree-%e8%bf%b4%e6%ad%b8%e6%a8%b9-bagging-bootstrap-aggrgation-r%e8%aa%9e%e8%a8%80/" target="_blank" rel="noopener noreferrer">Regression Tree | 迴歸樹, Bagging, Bootstrap Aggregation | R語言</a></li>
+<li><a href="/random-forests-%e9%9a%a8%e6%a9%9f%e6%a3%ae%e6%9e%97/" target="_blank" rel="noopener noreferrer">Random Forests 隨機森林 | randomForest, ranger, h2o | R語言</a></li>
+<li><a href="/gradient-boosting-machines-gbm/" target="_blank" rel="noopener noreferrer">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a></li>
+<li><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R統計</a></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering | 切割式分群 | Kmeans, Kmedoid | Clustering 資料分群</a></li>
+<li><a href="/principal-components-analysis-pca-%e4%b8%bb%e6%88%90%e4%bb%bd%e5%88%86%e6%9e%90/" target="_blank" rel="noopener noreferrer">Principal Components Analysis (PCA) | 主成份分析 | R 統計</a></li>
+</ol><hr><p>參考:</p>
+<ol><li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol></div>
+
+	<footer class="entry-footer"><span class="tags-links"> <a href="/tag/clustering/" rel="tag">clustering</a>0<a href="/tag/hierarchical-clustering/" rel="tag">hierarchical clustering</a>0<a href="/tag/%e5%88%86%e7%be%a4/" rel="tag">分群</a>0<a href="/tag/%e5%88%86%e7%be%a4%e6%bc%94%e7%ae%97%e6%b3%95/" rel="tag">分群演算法</a>0<a href="/tag/%e8%b3%87%e6%96%99%e5%88%86%e7%be%a4/" rel="tag">資料分群</a>0<a href="/tag/%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" rel="tag">階層式分群</a></span>	</footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/decision-tree-surrogate-in-cart/" rel="prev">Tree Surrogate | Tree Surrogate Variables in CART | R 統計</a></div><div class="nav-next"><a href="/partitional-clustering-kmeans-kmedoid/" rel="next">Partitional Clustering 切割式分群 | Kmeans, Kmedoid | Clustering 資料分群</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+			<h4 class="comment-title">
+			在《<span>Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</span>》中有 6 則留言		</h4>
+
+		
+		<ol class="comments-list"><li id="comment-112" class="comment even thread-even depth-1 parent">
+			<article id="div-comment-112" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://2.gravatar.com/avatar/b8989f27132c8075321bb7bf4fbd3102?s=60&d=mm&r=g" srcset="http://2.gravatar.com/avatar/b8989f27132c8075321bb7bf4fbd3102?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">Amy</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comment-112"><time datetime="2018-10-08T11:35:12+08:00">2018-10-0811:35:12</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>請問文中提及階層分群可被用運用數值與類別資料，但如果是類別資料，我應該要如何定義變項的數值及如何計算其距離??</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-112" data-commentid="112" data-postid="1157" data-belowelement="div-comment-112" data-respondelement="respond" data-replyto="回覆給「Amy」" aria-label="回覆給「Amy」">回覆</a></div>			</article><ol class="children"><li id="comment-115" class="comment byuser comment-author-jamleecute bypostauthor odd alt depth-2">
+			<article id="div-comment-115" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://2.gravatar.com/avatar/bd4f120d4d46828d1bb2380433b94a1e?s=60&d=mm&r=g" srcset="http://2.gravatar.com/avatar/bd4f120d4d46828d1bb2380433b94a1e?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">jamleecute</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comment-115"><time datetime="2018-10-17T11:04:53+08:00">2018-10-1711:04:53</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>如遇類別型資料，在計算dissimilarity matrix 使用的距離計算方式是Gower distance(而非傳統的Eucledian distances)，可以使用cluster package中的daisy()函數處理，可以處理混合形態的變數。<br>
+R函數計算方式為 gower.dist https://www.rdocumentation.org/packages/cluster/versions/2.0.6/topics/daisy<br>
+希望有回答到你的問題^^</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-115" data-commentid="115" data-postid="1157" data-belowelement="div-comment-115" data-respondelement="respond" data-replyto="回覆給「jamleecute」" aria-label="回覆給「jamleecute」">回覆</a></div>			</article></li>
+</ol></li>
+		<li id="comment-3281" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-3281" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://2.gravatar.com/avatar/ee7544dc6aa7bb9f3244849e26e89e0f?s=60&d=mm&r=g" srcset="http://2.gravatar.com/avatar/ee7544dc6aa7bb9f3244849e26e89e0f?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">Li</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comment-3281"><time datetime="2019-08-26T09:09:46+08:00">2019-08-2609:09:46</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>最近才發現大大的網站，相見恨晚><<br>
+超級厲害！受用無窮呀！<br>
+非常感謝Orz</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3281" data-commentid="3281" data-postid="1157" data-belowelement="div-comment-3281" data-respondelement="respond" data-replyto="回覆給「Li」" aria-label="回覆給「Li」">回覆</a></div>			</article></li>
+		<li id="comment-3318" class="comment odd alt thread-even depth-1">
+			<article id="div-comment-3318" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://0.gravatar.com/avatar/0da9684f5ff17ce66f55d6d71b4274af?s=60&d=mm&r=g" srcset="http://0.gravatar.com/avatar/0da9684f5ff17ce66f55d6d71b4274af?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">Alex</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comment-3318"><time datetime="2020-08-30T15:24:43+08:00">2020-08-3015:24:43</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>打擾囉!針對您所提供的daisy()函數，來處理資料中有連續型態，和類別型態變數使用，<br>
+想請問，這樣我資料需要預處理，使其標準化後，再套用該函數嗎?<br>
+亦或直接將所分析之資料變數放進去即可呢?</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3318" data-commentid="3318" data-postid="1157" data-belowelement="div-comment-3318" data-respondelement="respond" data-replyto="回覆給「Alex」" aria-label="回覆給「Alex」">回覆</a></div>			</article></li>
+		<li id="comment-3319" class="comment even thread-odd thread-alt depth-1">
+			<article id="div-comment-3319" class="comment-body"><footer class="comment-meta"><div class="comment-author vcard">
+						<img alt="" src="http://0.gravatar.com/avatar/0da9684f5ff17ce66f55d6d71b4274af?s=60&d=mm&r=g" srcset="http://0.gravatar.com/avatar/0da9684f5ff17ce66f55d6d71b4274af?s=120&d=mm&r=g 2x" class="avatar avatar-60 photo" height="60" width="60" loading="lazy"><b class="fn">Alex</b><span class="says">表示:</span>					</div>
+
+					<div class="comment-metadata">
+						<a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#comment-3319"><time datetime="2020-08-30T15:38:34+08:00">2020-08-3015:38:34</time></a>					</div>
+
+									</footer><div class="comment-content">
+					<p>放進去即可呢?打擾囉!針對您所提供的daisy()函數，來處理資料中有連續型態，和類別型態變數使用，<br>
+想請問，這樣我資料需要預處理，使其標準化後，再套用該函數嗎?<br>
+亦或直接將所分析之資料變數</p>
+				</div>
+
+				<div class="reply"><a rel="nofollow" class="comment-reply-link" href="#comment-3319" data-commentid="3319" data-postid="1157" data-belowelement="div-comment-3319" data-respondelement="respond" data-replyto="回覆給「Alex」" aria-label="回覆給「Alex」">回覆</a></div>			</article></li>
+		<li id="comment-3523" class="pingback odd alt thread-even depth-1">
+			<div class="comment-body">
+				自動引用通知: <a href="http://webnas.bhes.ntpc.edu.tw/wordpress/archives/18995" rel="external nofollow ugc" class="url">新北市AI種子教師培訓工作坊-AI概念導讀(1091208) | 碧華國小資訊中心</a> 			</div>
+		</li>
+		</ol><div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="1157" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626937369"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ggplot2 theme : 3 elements - text, line, rectangle | R 資料視覺化 - part2</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整繪圖的三大元素(3 elements)：文字(text elements)、線條(line elements)、方形(rectangle elements)。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="ggplot2 theme : 3 elements - text, line, rectangle | R 資料視覺化 - part2"><meta property="og:description" content="使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整繪圖的三大元素(3 elements)：文字(text elements)、線條(line elements)、方形(rectangle elements)。"><meta property="og:url" content="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:section" content=" 程式與統計"><meta property="article:published_time" content="2018-09-26T07:55:04+08:00"><meta property="article:modified_time" content="2020-07-03T02:28:37+08:00"><meta property="og:updated_time" content="2020-07-03T02:28:37+08:00"><meta property="og:image" content="/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-1024x683.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="683"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整繪圖的三大元素(3 elements)：文字(text elements)、線條(line elements)、方形(rectangle elements)。"><meta name="twitter:title" content="ggplot2 theme : 3 elements - text, line, rectangle | R 資料視覺化 - part2"><meta name="twitter:image" content="/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-1868" class="post-1868 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-data-visualization"><div class="entry-thumb">
+			<img width="4600" height="3067" src="/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="jeshoots-com-219386-unsplash" loading="lazy" srcset="/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash.jpg 4600w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-300x200.jpg 300w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-768x512.jpg 768w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-1024x683.jpg 1024w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-830x553.jpg 830w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-230x153.jpg 230w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-350x233.jpg 350w,/wp-content/uploads/2018/09/jeshoots-com-219386-unsplash-480x320.jpg 480w" sizes="(max-width: 4600px) 100vw, 4600px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/data-visualization/" title="資料視覺化" class="post-cat">資料視覺化</a>		</div>
+
+		<h1 class="title-post entry-title">ggplot2 theme : 3 elements – text, line, rectangle | R 資料視覺化 – part2</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/" rel="bookmark"><time class="entry-date published" datetime="2018-09-26T15:55:04+08:00">2018-09-26</time><time class="updated" datetime="2020-07-03T10:28:37+08:00">2020-07-03</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p>使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整非資料面的繪圖的三大元素(3 elements)：文字(text elements)、線條(line elements)、方形(rectangle elements)。</p>
+<h4>ggplot2 theme 3 elements</h4>
+<ul><li>text elements: plot titles, axis title, legend title, text, axis tick mark labels, 等。</li>
+<li>line elements: axis lines, minor and major grid lines, plot panel border, 等。</li>
+<li>rectangle elements: plot background, panel background, legend background, 等。</li>
+</ul><p>而在theme()圖層中我們用來調整3元素的主要函數如下：</p>
+<ul><li>element_text()</li>
+<li>element_line()</li>
+<li>element_rect()</li>
+</ul><p>以下我們將使用R ggplot套件中的<a href="https://github.com/tidyverse/ggplot2/blob/master/data-raw/tx-housing.R">txhousing</a>資料集進行示範。txhousing為 TAMU real estate center (<a href="http://recenter.tamu.edu/">http://recenter.tamu.edu/</a>)房仲中心收集有關Texus德州房市的資料。資料共8602個觀測值和9個變數，包括city, year, month, date, sales(number of sales, 銷售量), volume(total value of sales, 總銷售金額), median(Median sale price, 銷售額中位數), listings(Total active listings, 總有效房源), inventory(“month inventory”,表示銷售房源所需的月份時間)。</p>
+<h4>Step 1: 繪製資料圖層</h4>
+<p>載入所需套件。</p>
+
+		<div id="crayon-60f9059655f8a039733113" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(ggplot2)
+library(ggpubr) #ggarrange()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655f8a039733113-1">1</div><div class="crayon-num" data-line="crayon-60f9059655f8a039733113-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655f8a039733113-1">library(ggplot2)</div><div class="crayon-line" id="crayon-60f9059655f8a039733113-2">library(ggpubr) #ggarrange()</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>先繪製各時間點各城市的房市銷售量圖。</p>
+
+		<div id="crayon-60f9059655f95082966356" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+data(txhousing)
+df <- txhousing
+g1 <-
+  ggplot(data = df) +
+  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city))
+g1</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655f95082966356-1">1</div><div class="crayon-num" data-line="crayon-60f9059655f95082966356-2">2</div><div class="crayon-num" data-line="crayon-60f9059655f95082966356-3">3</div><div class="crayon-num" data-line="crayon-60f9059655f95082966356-4">4</div><div class="crayon-num" data-line="crayon-60f9059655f95082966356-5">5</div><div class="crayon-num" data-line="crayon-60f9059655f95082966356-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655f95082966356-1">data(txhousing)</div><div class="crayon-line" id="crayon-60f9059655f95082966356-2">df <div class="crayon-line" id="crayon-60f9059655f95082966356-3">g1 <div class="crayon-line" id="crayon-60f9059655f95082966356-4">  ggplot(data = df) +</div><div class="crayon-line" id="crayon-60f9059655f95082966356-5">  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city))</div><div class="crayon-line" id="crayon-60f9059655f95082966356-6">g1</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1874" src="/wp-content/uploads/2018/09/Rplot01-5.jpeg" alt="ggplot2 theme" width="1390" height="500" srcset="/wp-content/uploads/2018/09/Rplot01-5.jpeg 1390w,/wp-content/uploads/2018/09/Rplot01-5-300x108.jpeg 300w,/wp-content/uploads/2018/09/Rplot01-5-768x276.jpeg 768w,/wp-content/uploads/2018/09/Rplot01-5-1024x368.jpeg 1024w,/wp-content/uploads/2018/09/Rplot01-5-830x299.jpeg 830w,/wp-content/uploads/2018/09/Rplot01-5-230x83.jpeg 230w,/wp-content/uploads/2018/09/Rplot01-5-350x126.jpeg 350w,/wp-content/uploads/2018/09/Rplot01-5-480x173.jpeg 480w" sizes="(max-width: 1390px) 100vw, 1390px"></p>
+<p>不顯示圖例。使用theme圖層的legend.position，值可以是(“none”, “left”, “right”, “bottom”, “top”, or two-element numeric vector)。若要不顯示，即指定值為”none”即可。</p>
+
+		<div id="crayon-60f9059655f99903366169" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 <- 
+  ggplot(data = df) +
+  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city)) +
+  theme(legend.position = "none")
+g2</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655f99903366169-1">1</div><div class="crayon-num" data-line="crayon-60f9059655f99903366169-2">2</div><div class="crayon-num" data-line="crayon-60f9059655f99903366169-3">3</div><div class="crayon-num" data-line="crayon-60f9059655f99903366169-4">4</div><div class="crayon-num" data-line="crayon-60f9059655f99903366169-5">5</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655f99903366169-1">g2 <div class="crayon-line" id="crayon-60f9059655f99903366169-2">  ggplot(data = df) +</div><div class="crayon-line" id="crayon-60f9059655f99903366169-3">  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city)) +</div><div class="crayon-line" id="crayon-60f9059655f99903366169-4">  theme(legend.position = "none")</div><div class="crayon-line" id="crayon-60f9059655f99903366169-5">g2</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1875" src="/wp-content/uploads/2018/09/Rplot02-4.jpeg" alt="ggplot2 theme" width="936" height="644" srcset="/wp-content/uploads/2018/09/Rplot02-4.jpeg 936w,/wp-content/uploads/2018/09/Rplot02-4-300x206.jpeg 300w,/wp-content/uploads/2018/09/Rplot02-4-768x528.jpeg 768w,/wp-content/uploads/2018/09/Rplot02-4-830x571.jpeg 830w,/wp-content/uploads/2018/09/Rplot02-4-230x158.jpeg 230w,/wp-content/uploads/2018/09/Rplot02-4-350x241.jpeg 350w,/wp-content/uploads/2018/09/Rplot02-4-480x330.jpeg 480w" sizes="(max-width: 936px) 100vw, 936px"></p>
+<h4>Step 2: 套用快速佈景主題</h4>
+<p>我們試使用幾個ggplot2內建的快速佈景主題函數。*因為主題內建會顯示圖例，為了使不顯示圖例，我們亦另外使用theme(legend.position = “none”)。</p>
+<ul><li>theme_gray(): panel.background底色為深灰。</li>
+<li>theme_bw(): panel.border有上色，panel.background則為白色。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655f9d314741650" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p1 <- g2 + theme_gray() + theme(legend.position = "none") + ggtitle(label = "theme_gray")
+p2 <- g2 + theme_bw() + theme(legend.position = "none") + ggtitle(label = "theme_bw")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655f9d314741650-1">1</div><div class="crayon-num" data-line="crayon-60f9059655f9d314741650-2">2</div><div class="crayon-num" data-line="crayon-60f9059655f9d314741650-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655f9d314741650-1">p1 <div class="crayon-line" id="crayon-60f9059655f9d314741650-2">p2 <div class="crayon-line" id="crayon-60f9059655f9d314741650-3">ggarrange(p1, p2, nrow = 1, ncol = 2)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1911" src="/wp-content/uploads/2018/09/Rplot03_04.jpeg" alt="ggplot2 theme" width="1077" height="583" srcset="/wp-content/uploads/2018/09/Rplot03_04.jpeg 1077w,/wp-content/uploads/2018/09/Rplot03_04-300x162.jpeg 300w,/wp-content/uploads/2018/09/Rplot03_04-768x416.jpeg 768w,/wp-content/uploads/2018/09/Rplot03_04-1024x554.jpeg 1024w,/wp-content/uploads/2018/09/Rplot03_04-830x449.jpeg 830w,/wp-content/uploads/2018/09/Rplot03_04-230x125.jpeg 230w,/wp-content/uploads/2018/09/Rplot03_04-350x189.jpeg 350w,/wp-content/uploads/2018/09/Rplot03_04-480x260.jpeg 480w" sizes="(max-width: 1077px) 100vw, 1077px"></p>
+<ul><li>theme_linedraw(): panel.border有邊框。</li>
+<li>theme_light(): panel.border邊框為淡色。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655fa0596918672" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p1 <- g2 + theme_linedraw() + theme(legend.position = "none")+ ggtitle(label = "theme_linedraw")
+p2 <- g2 + theme_light() + theme(legend.position = "none")  + ggtitle(label = "theme_light")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fa0596918672-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fa0596918672-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fa0596918672-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fa0596918672-1">p1 <div class="crayon-line" id="crayon-60f9059655fa0596918672-2">p2 <div class="crayon-line" id="crayon-60f9059655fa0596918672-3">ggarrange(p1, p2, nrow = 1, ncol = 2)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1912" src="/wp-content/uploads/2018/09/Rplot05_06.jpeg" alt="ggplot2 theme" width="1162" height="550" srcset="/wp-content/uploads/2018/09/Rplot05_06.jpeg 1162w,/wp-content/uploads/2018/09/Rplot05_06-300x142.jpeg 300w,/wp-content/uploads/2018/09/Rplot05_06-768x364.jpeg 768w,/wp-content/uploads/2018/09/Rplot05_06-1024x485.jpeg 1024w,/wp-content/uploads/2018/09/Rplot05_06-830x393.jpeg 830w,/wp-content/uploads/2018/09/Rplot05_06-230x109.jpeg 230w,/wp-content/uploads/2018/09/Rplot05_06-350x166.jpeg 350w,/wp-content/uploads/2018/09/Rplot05_06-480x227.jpeg 480w" sizes="(max-width: 1162px) 100vw, 1162px"></p>
+<ul><li>theme_minimal(): 沒有panel.border。</li>
+<li>theme_classic(): 只剩axis.line。沒有panel.grid.major, panel.grid.minor格線。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655fa4209788536" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p1 <- g2 + theme_minimal() + theme(legend.position = "none") + ggtitle(label = "theme_minimal")
+p2 <- g2 + theme_classic() + theme(legend.position = "none") + ggtitle(label = "theme_classic")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fa4209788536-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fa4209788536-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fa4209788536-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fa4209788536-1">p1 <div class="crayon-line" id="crayon-60f9059655fa4209788536-2">p2 <div class="crayon-line" id="crayon-60f9059655fa4209788536-3">ggarrange(p1, p2, nrow = 1, ncol = 2)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1914" src="/wp-content/uploads/2018/09/Rplot07_08.jpeg" alt="ggplot2 theme" width="1212" height="605" srcset="/wp-content/uploads/2018/09/Rplot07_08.jpeg 1212w,/wp-content/uploads/2018/09/Rplot07_08-300x150.jpeg 300w,/wp-content/uploads/2018/09/Rplot07_08-768x383.jpeg 768w,/wp-content/uploads/2018/09/Rplot07_08-1024x511.jpeg 1024w,/wp-content/uploads/2018/09/Rplot07_08-830x414.jpeg 830w,/wp-content/uploads/2018/09/Rplot07_08-230x115.jpeg 230w,/wp-content/uploads/2018/09/Rplot07_08-350x175.jpeg 350w,/wp-content/uploads/2018/09/Rplot07_08-480x240.jpeg 480w" sizes="(max-width: 1212px) 100vw, 1212px"></p>
+<ul><li>theme_void(): 拿去所有panel格線(grid)與邊框(border)</li>
+<li>theme_dark(): 深色panel.background。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655fa8772583698" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p1 <- g2 + theme_void() + theme(legend.position = "none") + ggtitle(label = "theme_void")
+p2 <- g2 + theme_dark() + theme(legend.position = "none") + ggtitle(label = "theme_dark")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fa8772583698-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fa8772583698-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fa8772583698-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fa8772583698-1">p1 <div class="crayon-line" id="crayon-60f9059655fa8772583698-2">p2 <div class="crayon-line" id="crayon-60f9059655fa8772583698-3">ggarrange(p1, p2, nrow = 1, ncol = 2)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1913" src="/wp-content/uploads/2018/09/Rplot09_10.jpeg" alt="ggplot2 theme" width="1188" height="570" srcset="/wp-content/uploads/2018/09/Rplot09_10.jpeg 1188w,/wp-content/uploads/2018/09/Rplot09_10-300x144.jpeg 300w,/wp-content/uploads/2018/09/Rplot09_10-768x368.jpeg 768w,/wp-content/uploads/2018/09/Rplot09_10-1024x491.jpeg 1024w,/wp-content/uploads/2018/09/Rplot09_10-830x398.jpeg 830w,/wp-content/uploads/2018/09/Rplot09_10-230x110.jpeg 230w,/wp-content/uploads/2018/09/Rplot09_10-350x168.jpeg 350w,/wp-content/uploads/2018/09/Rplot09_10-480x230.jpeg 480w" sizes="(max-width: 1188px) 100vw, 1188px"></p>
+<p>這幾個快速佈景主題函數theme_xx()亦可搭配</p>
+<ul><li>base_size : 基本的字體大小（可改變所有圖形上的文字元素）</li>
+<li>base_family : 基本字體family</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655fab680236699" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p1 <- g2 + theme_bw() + theme(legend.position = "none")+ ggtitle(label = "base_size unchanged")
+p2 <- g2 + theme_bw(base_size = 18) + theme(legend.position = "none")+ ggtitle(label = "base_size = 18")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fab680236699-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fab680236699-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fab680236699-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fab680236699-1">p1 <div class="crayon-line" id="crayon-60f9059655fab680236699-2">p2 <div class="crayon-line" id="crayon-60f9059655fab680236699-3">ggarrange(p1, p2, nrow = 1, ncol = 2)</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1919" src="/wp-content/uploads/2018/09/Rplot11_12.jpeg" alt="ggplot2 theme" width="1182" height="594" srcset="/wp-content/uploads/2018/09/Rplot11_12.jpeg 1182w,/wp-content/uploads/2018/09/Rplot11_12-300x151.jpeg 300w,/wp-content/uploads/2018/09/Rplot11_12-768x386.jpeg 768w,/wp-content/uploads/2018/09/Rplot11_12-1024x515.jpeg 1024w,/wp-content/uploads/2018/09/Rplot11_12-830x417.jpeg 830w,/wp-content/uploads/2018/09/Rplot11_12-230x116.jpeg 230w,/wp-content/uploads/2018/09/Rplot11_12-350x176.jpeg 350w,/wp-content/uploads/2018/09/Rplot11_12-480x241.jpeg 480w" sizes="(max-width: 1182px) 100vw, 1182px"></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 3: 更改plot panel的背景色彩(background colours)與格線(grid lines)</h4>
+<p>panel的背景色彩屬性為panel.background。我們可以使用以下element_rect()中的幾個屬性來調整：</p>
+<ul><li>fill: 填充顏色。</li>
+<li>colour: 外框線條顏色。</li>
+<li>size: 外框線條粗細。</li>
+<li>linetype: 外框線條樣式(blank, solid, dashed, dotted, dotdash, longdash, twodash)</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655faf227354384" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 + theme(panel.background = element_rect(fill = "snow",colour = "mediumorchid",size = 0.5,linetype = "solid"))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655faf227354384-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655faf227354384-1">g2 + theme(panel.background = element_rect(fill = "snow",colour = "mediumorchid",size = 0.5,linetype = "solid"))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1889" src="/wp-content/uploads/2018/09/Rplot13-3.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot13-3.jpeg 800w,/wp-content/uploads/2018/09/Rplot13-3-300x225.jpeg 300w,/wp-content/uploads/2018/09/Rplot13-3-768x576.jpeg 768w,/wp-content/uploads/2018/09/Rplot13-3-230x173.jpeg 230w,/wp-content/uploads/2018/09/Rplot13-3-350x263.jpeg 350w,/wp-content/uploads/2018/09/Rplot13-3-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<p>panel的背景主要、次要格線屬性分別為panel.grid.major, panel.grid.minor。我們則使用element_line()中的幾個屬性來調整：</p>
+<ul><li>colour: 格線顏色。</li>
+<li>size: 格線粗細。</li>
+<li>linetype: 格線樣式。</li>
+</ul><p></p>
+
+		<div id="crayon-60f9059655fb2587983642" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 + theme(panel.background = element_rect(fill = "lightsteelblue",colour = "lightsteelblue",size = 0.5,linetype = "solid"),
+           panel.grid.major = element_line(colour = "white",size = 0.5,linetype = "solid"),
+           panel.grid.minor = element_line(colour = "white",size = 0.25,linetype = "dashed"))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fb2587983642-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fb2587983642-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fb2587983642-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fb2587983642-1">g2 + theme(panel.background = element_rect(fill = "lightsteelblue",colour = "lightsteelblue",size = 0.5,linetype = "solid"),</div><div class="crayon-line" id="crayon-60f9059655fb2587983642-2">           panel.grid.major = element_line(colour = "white",size = 0.5,linetype = "solid"),</div><div class="crayon-line" id="crayon-60f9059655fb2587983642-3">           panel.grid.minor = element_line(colour = "white",size = 0.25,linetype = "dashed"))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1890" src="/wp-content/uploads/2018/09/Rplot14.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot14.jpeg 800w,/wp-content/uploads/2018/09/Rplot14-300x225.jpeg 300w,/wp-content/uploads/2018/09/Rplot14-768x576.jpeg 768w,/wp-content/uploads/2018/09/Rplot14-230x173.jpeg 230w,/wp-content/uploads/2018/09/Rplot14-350x263.jpeg 350w,/wp-content/uploads/2018/09/Rplot14-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<h4>Step 4: 移除panel的邊界border和grid lines格線</h4>
+<p>如果要移除元件，則可使用element_blank()函數。</p>
+
+		<div id="crayon-60f9059655fb6855927635" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 + theme(panel.grid.major = element_blank(),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank())</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fb6855927635-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fb6855927635-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fb6855927635-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fb6855927635-1">g2 + theme(panel.grid.major = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fb6855927635-2">           panel.grid.minor = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fb6855927635-3">           panel.border = element_blank())</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1895" src="/wp-content/uploads/2018/09/Rplot15.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot15.jpeg 800w,/wp-content/uploads/2018/09/Rplot15-300x225.jpeg 300w,/wp-content/uploads/2018/09/Rplot15-768x576.jpeg 768w,/wp-content/uploads/2018/09/Rplot15-230x173.jpeg 230w,/wp-content/uploads/2018/09/Rplot15-350x263.jpeg 350w,/wp-content/uploads/2018/09/Rplot15-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<p>如要留下兩座標軸，則可以調整axis.line屬性。</p>
+
+		<div id="crayon-60f9059655fb9741186158" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 + theme(panel.grid.major = element_blank(),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank(),
+           axis.line = element_line(colour = "lightgray",size = 0.5,linetype = "solid"))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fb9741186158-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fb9741186158-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fb9741186158-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fb9741186158-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fb9741186158-1">g2 + theme(panel.grid.major = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fb9741186158-2">           panel.grid.minor = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fb9741186158-3">           panel.border = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fb9741186158-4">           axis.line = element_line(colour = "lightgray",size = 0.5,linetype = "solid"))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1894" src="/wp-content/uploads/2018/09/Rplot16.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot16.jpeg 800w,/wp-content/uploads/2018/09/Rplot16-300x225.jpeg 300w,/wp-content/uploads/2018/09/Rplot16-768x576.jpeg 768w,/wp-content/uploads/2018/09/Rplot16-230x173.jpeg 230w,/wp-content/uploads/2018/09/Rplot16-350x263.jpeg 350w,/wp-content/uploads/2018/09/Rplot16-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<p>Step 5: 調整繪圖背景plot background（不是panel background)</p>
+<p>改變plot.background的屬性。並移除panel border保留兩軸線。</p>
+
+		<div id="crayon-60f9059655fbc330977416" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+g2 + theme(plot.background = element_rect(fill = "pink"),
+           panel.border = element_blank(),
+           axis.line = element_line(colour = "grey",size = 0.4,linetype = "solid"))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fbc330977416-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fbc330977416-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fbc330977416-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fbc330977416-1">g2 + theme(plot.background = element_rect(fill = "pink"),</div><div class="crayon-line" id="crayon-60f9059655fbc330977416-2">           panel.border = element_blank(),</div><div class="crayon-line" id="crayon-60f9059655fbc330977416-3">           axis.line = element_line(colour = "grey",size = 0.4,linetype = "solid"))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1896" src="/wp-content/uploads/2018/09/Rplot17.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot17.jpeg 800w,/wp-content/uploads/2018/09/Rplot17-300x225.jpeg 300w,/wp-content/uploads/2018/09/Rplot17-768x576.jpeg 768w,/wp-content/uploads/2018/09/Rplot17-230x173.jpeg 230w,/wp-content/uploads/2018/09/Rplot17-350x263.jpeg 350w,/wp-content/uploads/2018/09/Rplot17-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px"></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 6: 使用客製化佈景主題custom theme</h4>
+<p>ggthemes套件內有多組客製化佈景主題<span style="text-decoration: underline; color: #9f6ad4;">themes和scales</span>，可以一次性改變你的繪圖外觀樣貌。</p>
+<p>更多詳細的ggthemes套件說明請參考：<a href="https://jrnold.github.io/ggthemes/reference/index.html" target="_blank" rel="noopener noreferrer">https://jrnold.github.io/</a>ggthemes/reference/index.html</p>
+
+		<div id="crayon-60f9059655fbf842165253" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+install.packages("ggthemes") 
+library(ggthemes)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fbf842165253-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fbf842165253-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fbf842165253-1">install.packages("ggthemes") </div><div class="crayon-line" id="crayon-60f9059655fbf842165253-2">library(ggthemes)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們來試試幾組佈景主題theme_xx()搭配對應的scale_yy_xx()(yy: color, fill, shape, linetype) 或是綜合color,shape,linetype的組合等。</p>
+<h5>6-1. Themes based on Stata graph schemes</h5>
+<p>使用theme_stata()佈景主題，並調整字體大小。</p>
+
+		<div id="crayon-60f9059655fc4101249187" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p <- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(gear))) +
+  geom_point()+ 
+  facet_wrap(facets = ~ am)
+
+p + theme_stata(base_size = 16) +
+  ggtitle("mtcars data")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-4">4</div><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-5">5</div><div class="crayon-num" data-line="crayon-60f9059655fc4101249187-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fc4101249187-1">p <div class="crayon-line" id="crayon-60f9059655fc4101249187-2">  geom_point()+ </div><div class="crayon-line" id="crayon-60f9059655fc4101249187-3">  facet_wrap(facets = ~ am)</div><div class="crayon-line" id="crayon-60f9059655fc4101249187-4"> </div><div class="crayon-line" id="crayon-60f9059655fc4101249187-5">p + theme_stata(base_size = 16) +</div><div class="crayon-line" id="crayon-60f9059655fc4101249187-6">  ggtitle("mtcars data")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1900" src="/wp-content/uploads/2018/09/Rplot18.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot18.jpeg 759w,/wp-content/uploads/2018/09/Rplot18-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot18-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot18-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot18-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<p>加上主題色調。</p>
+
+		<div id="crayon-60f9059655fc7559897284" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p + theme_stata(base_size = 16) +
+  scale_colour_stata() +
+  ggtitle("mtcars data")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fc7559897284-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fc7559897284-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fc7559897284-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fc7559897284-1">p + theme_stata(base_size = 16) +</div><div class="crayon-line" id="crayon-60f9059655fc7559897284-2">  scale_colour_stata() +</div><div class="crayon-line" id="crayon-60f9059655fc7559897284-3">  ggtitle("mtcars data")</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1901" src="/wp-content/uploads/2018/09/Rplot19.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot19.jpeg 759w,/wp-content/uploads/2018/09/Rplot19-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot19-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot19-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot19-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<h5>6-2. Theme with Google Docs Chart defaults</h5>
+<p></p>
+
+		<div id="crayon-60f9059655fca914706361" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p <- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+p + theme_gdocs() + scale_color_gdocs() + ggtitle("mtcars data")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fca914706361-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fca914706361-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fca914706361-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fca914706361-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fca914706361-1">p <div class="crayon-line" id="crayon-60f9059655fca914706361-2">  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +</div><div class="crayon-line" id="crayon-60f9059655fca914706361-3">  facet_wrap(~am)</div><div class="crayon-line" id="crayon-60f9059655fca914706361-4">p + theme_gdocs() + scale_color_gdocs() + ggtitle("mtcars data")</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1902" src="/wp-content/uploads/2018/09/Rplot20.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot20.jpeg 759w,/wp-content/uploads/2018/09/Rplot20-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot20-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot20-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot20-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<h5>6-3. Inverse gray theme</h5>
+<p></p>
+
+		<div id="crayon-60f9059655fcd403645863" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p <- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+p + theme_igray()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fcd403645863-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fcd403645863-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fcd403645863-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fcd403645863-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fcd403645863-1">p <div class="crayon-line" id="crayon-60f9059655fcd403645863-2">  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +</div><div class="crayon-line" id="crayon-60f9059655fcd403645863-3">  facet_wrap(~am)</div><div class="crayon-line" id="crayon-60f9059655fcd403645863-4">p + theme_igray()</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1903" src="/wp-content/uploads/2018/09/Rplot21.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot21.jpeg 759w,/wp-content/uploads/2018/09/Rplot21-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot21-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot21-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot21-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<h5>6-4. ggplot color theme based on the Economist</h5>
+<p></p>
+
+		<div id="crayon-60f9059655fd0336559340" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p <- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am) +
+  # Economist 將x軸標示在右邊
+  scale_y_continuous(position = "right")
+
+#使用economist佈景主題與色調
+p + theme_economist() +
+  scale_colour_economist()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-4">4</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-5">5</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-6">6</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-7">7</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-8">8</div><div class="crayon-num" data-line="crayon-60f9059655fd0336559340-9">9</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fd0336559340-1">p <div class="crayon-line" id="crayon-60f9059655fd0336559340-2">  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-3">  facet_wrap(~am) +</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-4">  # Economist 將x軸標示在右邊</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-5">  scale_y_continuous(position = "right")</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-6"> </div><div class="crayon-line" id="crayon-60f9059655fd0336559340-7">#使用economist佈景主題與色調</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-8">p + theme_economist() +</div><div class="crayon-line" id="crayon-60f9059655fd0336559340-9">  scale_colour_economist()</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1904" src="/wp-content/uploads/2018/09/Rplot22.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot22.jpeg 759w,/wp-content/uploads/2018/09/Rplot22-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot22-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot22-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot22-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>step 7: 自製客製化佈景主題(★★★★)</h4>
+<p>方法1: 使用theme_set() 函數設定當下R session的佈景主題。</p>
+
+		<div id="crayon-60f9059655fd3763273594" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+theme_set(theme_gray(base_size = 20)) # not run</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fd3763273594-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fd3763273594-1">theme_set(theme_gray(base_size = 20)) # not run</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>方法2: 你可以自訂函數。舉例：自訂theme_self()。</p>
+
+		<div id="crayon-60f9059655fd7162348199" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+p <- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+
+theme_self <- function(base_size = 14, base_family = "黑體-繁 中黑") 
+  {
+    theme(panel.background = element_rect(fill = "lavender"),
+          panel.grid.minor = element_line(linetype = "dashed"),
+          text = element_text(family = base_family, size = base_size),
+          legend.background = element_rect(fill = "gray96",colour = "gray88"),
+          plot.title = element_text(hjust = 0.5), #標題置中
+          strip.background = element_rect(fill = "lightgray", colour = NA)
+          # axis.line = element_line(colour = "mediumpurple4")
+          )
+  }
+
+p + theme_self()</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-1">1</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-2">2</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-3">3</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-4">4</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-5">5</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-6">6</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-7">7</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-8">8</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-9">9</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-10">10</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-11">11</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-12">12</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-13">13</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-14">14</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-15">15</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-16">16</div><div class="crayon-num" data-line="crayon-60f9059655fd7162348199-17">17</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9059655fd7162348199-1">p <div class="crayon-line" id="crayon-60f9059655fd7162348199-2">  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-3">  facet_wrap(~am)</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-4"> </div><div class="crayon-line" id="crayon-60f9059655fd7162348199-5">theme_self <div class="crayon-line" id="crayon-60f9059655fd7162348199-6">  {</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-7">    theme(panel.background = element_rect(fill = "lavender"),</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-8">          panel.grid.minor = element_line(linetype = "dashed"),</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-9">          text = element_text(family = base_family, size = base_size),</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-10">          legend.background = element_rect(fill = "gray96",colour = "gray88"),</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-11">          plot.title = element_text(hjust = 0.5), #標題置中</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-12">          strip.background = element_rect(fill = "lightgray", colour = NA)</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-13">          # axis.line = element_line(colour = "mediumpurple4")</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-14">          )</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-15">  }</div><div class="crayon-line" id="crayon-60f9059655fd7162348199-16"> </div><div class="crayon-line" id="crayon-60f9059655fd7162348199-17">p + theme_self()</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img loading="lazy" class="alignnone size-full wp-image-1907" src="/wp-content/uploads/2018/09/Rplot23.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot23.jpeg 759w,/wp-content/uploads/2018/09/Rplot23-300x241.jpeg 300w,/wp-content/uploads/2018/09/Rplot23-230x185.jpeg 230w,/wp-content/uploads/2018/09/Rplot23-350x281.jpeg 350w,/wp-content/uploads/2018/09/Rplot23-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px"></p>
+<h4>總結</h4>
+<p>有了對ggplot2 theme()圖層的三元素(text, line, rectangles)有了基本的了解，即可將自己常用的繪圖屬性設定自製成theme_xx()以後便不用重複更改或重複撰寫程式碼，並且可以根據喜好調整，不受現有的佈景主題所限制。</p>
+<hr><p>更多<span style="color: #9f6ad4;">R資料視覺化</span>學習筆記：</p>
+<ol><li><a href="/r-sqlite-data-visualization-ggplot2/" target="_blank" rel="noopener noreferrer">ggplot2 | 簡易資料視覺化 Basic Data Visualization – part1 | using R SQLite</a></li>
+<li><a href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/" target="_blank" rel="noopener noreferrer">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a></li>
+<li><a href="/summarize-categorical-variables/" target="_blank" rel="noopener noreferrer">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a></li>
+</ol><hr><p>參考連結：</p>
+<ol><li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="http://www.sthda.com/english/wiki/ggplot2-themes-and-background-colors-the-3-elements">ggplot2 themes and background colors : The 3 elements</a></li>
+<li><a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">Colors in R</a></li>
+<li><a href="https://jrnold.github.io/ggthemes/index.html">ggthemes</a></li>
+</ol></div>
+
+	<footer class="entry-footer"></footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/" rel="prev">資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計</a></div><div class="nav-next"><a href="/app-mobile-ad-revenue-admob-%e8%a1%8c%e5%8b%95%e5%bb%a3%e5%91%8a%e6%94%b6%e5%85%a5/" rel="next">開發一個免費App能賺多少錢？ 靠 AdMob 廣告月收3萬實例分享</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="1868" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626932630"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

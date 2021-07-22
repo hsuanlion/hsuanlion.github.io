@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>資料視覺化 &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/category/programming-statistics/data-visualization/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:32:05 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>ggplot2 theme : 3 elements &#8211; text, line, rectangle &#124; R 資料視覺化 &#8211; part2</title>
+		<link>/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/</link>
+					<comments>/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Wed, 26 Sep 2018 07:55:04 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<guid isPermaLink="false">/?p=1868</guid>
+
+					<description><![CDATA[<p>使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整非資料面的繪圖的三大元素 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/">ggplot2 theme : 3 elements &#8211; text, line, rectangle | R 資料視覺化 &#8211; part2</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>使用ggplot2套件完成基本的資料視覺化後，就是調整整體繪圖的外觀色彩，此時主要使用的圖層就是 ggplot2 theme()，來調整非資料面的繪圖的三大元素(3 elements)：文字(text elements)、線條(line elements)、方形(rectangle elements)。</p>
+<h4>ggplot2 theme 3 elements</h4>
+<ul>
+<li>text elements: plot titles, axis title, legend title, text, axis tick mark labels, 等。</li>
+<li>line elements: axis lines, minor and major grid lines, plot panel border, 等。</li>
+<li>rectangle elements: plot background, panel background, legend background, 等。</li>
+</ul>
+<p>而在theme()圖層中我們用來調整3元素的主要函數如下：</p>
+<ul>
+<li>element_text()</li>
+<li>element_line()</li>
+<li>element_rect()</li>
+</ul>
+<p>以下我們將使用R ggplot套件中的<a href="https://github.com/tidyverse/ggplot2/blob/master/data-raw/tx-housing.R">txhousing</a>資料集進行示範。txhousing為 TAMU real estate center (<a href="http://recenter.tamu.edu/">http://recenter.tamu.edu/</a>)房仲中心收集有關Texus德州房市的資料。資料共8602個觀測值和9個變數，包括city, year, month, date, sales(number of sales, 銷售量), volume(total value of sales, 總銷售金額), median(Median sale price, 銷售額中位數), listings(Total active listings, 總有效房源), inventory(&#8220;month inventory&#8221;,表示銷售房源所需的月份時間)。</p>
+<h4>Step 1: 繪製資料圖層</h4>
+<p>載入所需套件。</p><pre class="crayon-plain-tag">library(ggplot2)
+library(ggpubr) #ggarrange()</pre><p>先繪製各時間點各城市的房市銷售量圖。</p><pre class="crayon-plain-tag">data(txhousing)
+df &lt;- txhousing
+g1 &lt;-
+  ggplot(data = df) +
+  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city))
+g1</pre><p><img loading="lazy" class="alignnone size-full wp-image-1874" src="/wp-content/uploads/2018/09/Rplot01-5.jpeg" alt="ggplot2 theme" width="1390" height="500" srcset="/wp-content/uploads/2018/09/Rplot01-5.jpeg 1390w, /wp-content/uploads/2018/09/Rplot01-5-300x108.jpeg 300w, /wp-content/uploads/2018/09/Rplot01-5-768x276.jpeg 768w, /wp-content/uploads/2018/09/Rplot01-5-1024x368.jpeg 1024w, /wp-content/uploads/2018/09/Rplot01-5-830x299.jpeg 830w, /wp-content/uploads/2018/09/Rplot01-5-230x83.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-5-350x126.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-5-480x173.jpeg 480w" sizes="(max-width: 1390px) 100vw, 1390px" /></p>
+<p>不顯示圖例。使用theme圖層的legend.position，值可以是(&#8220;none&#8221;, &#8220;left&#8221;, &#8220;right&#8221;, &#8220;bottom&#8221;, &#8220;top&#8221;, or two-element numeric vector)。若要不顯示，即指定值為&#8221;none&#8221;即可。</p><pre class="crayon-plain-tag">g2 &lt;- 
+  ggplot(data = df) +
+  geom_line(mapping = aes(x = date, y = sales, group = city, colour = city)) +
+  theme(legend.position = "none")
+g2</pre><p><img loading="lazy" class="alignnone size-full wp-image-1875" src="/wp-content/uploads/2018/09/Rplot02-4.jpeg" alt="ggplot2 theme" width="936" height="644" srcset="/wp-content/uploads/2018/09/Rplot02-4.jpeg 936w, /wp-content/uploads/2018/09/Rplot02-4-300x206.jpeg 300w, /wp-content/uploads/2018/09/Rplot02-4-768x528.jpeg 768w, /wp-content/uploads/2018/09/Rplot02-4-830x571.jpeg 830w, /wp-content/uploads/2018/09/Rplot02-4-230x158.jpeg 230w, /wp-content/uploads/2018/09/Rplot02-4-350x241.jpeg 350w, /wp-content/uploads/2018/09/Rplot02-4-480x330.jpeg 480w" sizes="(max-width: 936px) 100vw, 936px" /></p>
+<h4>Step 2: 套用快速佈景主題</h4>
+<p>我們試使用幾個ggplot2內建的快速佈景主題函數。*因為主題內建會顯示圖例，為了使不顯示圖例，我們亦另外使用theme(legend.position = &#8220;none&#8221;)。</p>
+<ul>
+<li>theme_gray(): panel.background底色為深灰。</li>
+<li>theme_bw(): panel.border有上色，panel.background則為白色。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">p1 &lt;- g2 + theme_gray() + theme(legend.position = "none") + ggtitle(label = "theme_gray")
+p2 &lt;- g2 + theme_bw() + theme(legend.position = "none") + ggtitle(label = "theme_bw")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1911" src="/wp-content/uploads/2018/09/Rplot03_04.jpeg" alt="ggplot2 theme" width="1077" height="583" srcset="/wp-content/uploads/2018/09/Rplot03_04.jpeg 1077w, /wp-content/uploads/2018/09/Rplot03_04-300x162.jpeg 300w, /wp-content/uploads/2018/09/Rplot03_04-768x416.jpeg 768w, /wp-content/uploads/2018/09/Rplot03_04-1024x554.jpeg 1024w, /wp-content/uploads/2018/09/Rplot03_04-830x449.jpeg 830w, /wp-content/uploads/2018/09/Rplot03_04-230x125.jpeg 230w, /wp-content/uploads/2018/09/Rplot03_04-350x189.jpeg 350w, /wp-content/uploads/2018/09/Rplot03_04-480x260.jpeg 480w" sizes="(max-width: 1077px) 100vw, 1077px" /></p>
+<ul>
+<li>theme_linedraw(): panel.border有邊框。</li>
+<li>theme_light(): panel.border邊框為淡色。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">p1 &lt;- g2 + theme_linedraw() + theme(legend.position = "none")+ ggtitle(label = "theme_linedraw")
+p2 &lt;- g2 + theme_light() + theme(legend.position = "none")  + ggtitle(label = "theme_light")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1912" src="/wp-content/uploads/2018/09/Rplot05_06.jpeg" alt="ggplot2 theme" width="1162" height="550" srcset="/wp-content/uploads/2018/09/Rplot05_06.jpeg 1162w, /wp-content/uploads/2018/09/Rplot05_06-300x142.jpeg 300w, /wp-content/uploads/2018/09/Rplot05_06-768x364.jpeg 768w, /wp-content/uploads/2018/09/Rplot05_06-1024x485.jpeg 1024w, /wp-content/uploads/2018/09/Rplot05_06-830x393.jpeg 830w, /wp-content/uploads/2018/09/Rplot05_06-230x109.jpeg 230w, /wp-content/uploads/2018/09/Rplot05_06-350x166.jpeg 350w, /wp-content/uploads/2018/09/Rplot05_06-480x227.jpeg 480w" sizes="(max-width: 1162px) 100vw, 1162px" /></p>
+<ul>
+<li>theme_minimal(): 沒有panel.border。</li>
+<li>theme_classic(): 只剩axis.line。沒有panel.grid.major, panel.grid.minor格線。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">p1 &lt;- g2 + theme_minimal() + theme(legend.position = "none") + ggtitle(label = "theme_minimal")
+p2 &lt;- g2 + theme_classic() + theme(legend.position = "none") + ggtitle(label = "theme_classic")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1914" src="/wp-content/uploads/2018/09/Rplot07_08.jpeg" alt="ggplot2 theme" width="1212" height="605" srcset="/wp-content/uploads/2018/09/Rplot07_08.jpeg 1212w, /wp-content/uploads/2018/09/Rplot07_08-300x150.jpeg 300w, /wp-content/uploads/2018/09/Rplot07_08-768x383.jpeg 768w, /wp-content/uploads/2018/09/Rplot07_08-1024x511.jpeg 1024w, /wp-content/uploads/2018/09/Rplot07_08-830x414.jpeg 830w, /wp-content/uploads/2018/09/Rplot07_08-230x115.jpeg 230w, /wp-content/uploads/2018/09/Rplot07_08-350x175.jpeg 350w, /wp-content/uploads/2018/09/Rplot07_08-480x240.jpeg 480w" sizes="(max-width: 1212px) 100vw, 1212px" /></p>
+<ul>
+<li>theme_void(): 拿去所有panel格線(grid)與邊框(border)</li>
+<li>theme_dark(): 深色panel.background。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">p1 &lt;- g2 + theme_void() + theme(legend.position = "none") + ggtitle(label = "theme_void")
+p2 &lt;- g2 + theme_dark() + theme(legend.position = "none") + ggtitle(label = "theme_dark")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1913" src="/wp-content/uploads/2018/09/Rplot09_10.jpeg" alt="ggplot2 theme" width="1188" height="570" srcset="/wp-content/uploads/2018/09/Rplot09_10.jpeg 1188w, /wp-content/uploads/2018/09/Rplot09_10-300x144.jpeg 300w, /wp-content/uploads/2018/09/Rplot09_10-768x368.jpeg 768w, /wp-content/uploads/2018/09/Rplot09_10-1024x491.jpeg 1024w, /wp-content/uploads/2018/09/Rplot09_10-830x398.jpeg 830w, /wp-content/uploads/2018/09/Rplot09_10-230x110.jpeg 230w, /wp-content/uploads/2018/09/Rplot09_10-350x168.jpeg 350w, /wp-content/uploads/2018/09/Rplot09_10-480x230.jpeg 480w" sizes="(max-width: 1188px) 100vw, 1188px" /></p>
+<p>這幾個快速佈景主題函數theme_xx()亦可搭配</p>
+<ul>
+<li>base_size : 基本的字體大小（可改變所有圖形上的文字元素）</li>
+<li>base_family : 基本字體family</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">p1 &lt;- g2 + theme_bw() + theme(legend.position = "none")+ ggtitle(label = "base_size unchanged")
+p2 &lt;- g2 + theme_bw(base_size = 18) + theme(legend.position = "none")+ ggtitle(label = "base_size = 18")
+ggarrange(p1, p2, nrow = 1, ncol = 2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1919" src="/wp-content/uploads/2018/09/Rplot11_12.jpeg" alt="ggplot2 theme" width="1182" height="594" srcset="/wp-content/uploads/2018/09/Rplot11_12.jpeg 1182w, /wp-content/uploads/2018/09/Rplot11_12-300x151.jpeg 300w, /wp-content/uploads/2018/09/Rplot11_12-768x386.jpeg 768w, /wp-content/uploads/2018/09/Rplot11_12-1024x515.jpeg 1024w, /wp-content/uploads/2018/09/Rplot11_12-830x417.jpeg 830w, /wp-content/uploads/2018/09/Rplot11_12-230x116.jpeg 230w, /wp-content/uploads/2018/09/Rplot11_12-350x176.jpeg 350w, /wp-content/uploads/2018/09/Rplot11_12-480x241.jpeg 480w" sizes="(max-width: 1182px) 100vw, 1182px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 3: 更改plot panel的背景色彩(background colours)與格線(grid lines)</h4>
+<p>panel的背景色彩屬性為panel.background。我們可以使用以下element_rect()中的幾個屬性來調整：</p>
+<ul>
+<li>fill: 填充顏色。</li>
+<li>colour: 外框線條顏色。</li>
+<li>size: 外框線條粗細。</li>
+<li>linetype: 外框線條樣式(blank, solid, dashed, dotted, dotdash, longdash, twodash)</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">g2 + theme(panel.background = element_rect(fill = "snow",colour = "mediumorchid",size = 0.5,linetype = "solid"))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1889" src="/wp-content/uploads/2018/09/Rplot13-3.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot13-3.jpeg 800w, /wp-content/uploads/2018/09/Rplot13-3-300x225.jpeg 300w, /wp-content/uploads/2018/09/Rplot13-3-768x576.jpeg 768w, /wp-content/uploads/2018/09/Rplot13-3-230x173.jpeg 230w, /wp-content/uploads/2018/09/Rplot13-3-350x263.jpeg 350w, /wp-content/uploads/2018/09/Rplot13-3-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>panel的背景主要、次要格線屬性分別為panel.grid.major, panel.grid.minor。我們則使用element_line()中的幾個屬性來調整：</p>
+<ul>
+<li>colour: 格線顏色。</li>
+<li>size: 格線粗細。</li>
+<li>linetype: 格線樣式。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">g2 + theme(panel.background = element_rect(fill = "lightsteelblue",colour = "lightsteelblue",size = 0.5,linetype = "solid"),
+           panel.grid.major = element_line(colour = "white",size = 0.5,linetype = "solid"),
+           panel.grid.minor = element_line(colour = "white",size = 0.25,linetype = "dashed"))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1890" src="/wp-content/uploads/2018/09/Rplot14.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot14.jpeg 800w, /wp-content/uploads/2018/09/Rplot14-300x225.jpeg 300w, /wp-content/uploads/2018/09/Rplot14-768x576.jpeg 768w, /wp-content/uploads/2018/09/Rplot14-230x173.jpeg 230w, /wp-content/uploads/2018/09/Rplot14-350x263.jpeg 350w, /wp-content/uploads/2018/09/Rplot14-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<h4>Step 4: 移除panel的邊界border和grid lines格線</h4>
+<p>如果要移除元件，則可使用element_blank()函數。</p><pre class="crayon-plain-tag">g2 + theme(panel.grid.major = element_blank(),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank())</pre><p><img loading="lazy" class="alignnone size-full wp-image-1895" src="/wp-content/uploads/2018/09/Rplot15.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot15.jpeg 800w, /wp-content/uploads/2018/09/Rplot15-300x225.jpeg 300w, /wp-content/uploads/2018/09/Rplot15-768x576.jpeg 768w, /wp-content/uploads/2018/09/Rplot15-230x173.jpeg 230w, /wp-content/uploads/2018/09/Rplot15-350x263.jpeg 350w, /wp-content/uploads/2018/09/Rplot15-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>如要留下兩座標軸，則可以調整axis.line屬性。</p><pre class="crayon-plain-tag">g2 + theme(panel.grid.major = element_blank(),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank(),
+           axis.line = element_line(colour = "lightgray",size = 0.5,linetype = "solid"))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1894" src="/wp-content/uploads/2018/09/Rplot16.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot16.jpeg 800w, /wp-content/uploads/2018/09/Rplot16-300x225.jpeg 300w, /wp-content/uploads/2018/09/Rplot16-768x576.jpeg 768w, /wp-content/uploads/2018/09/Rplot16-230x173.jpeg 230w, /wp-content/uploads/2018/09/Rplot16-350x263.jpeg 350w, /wp-content/uploads/2018/09/Rplot16-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<p>Step 5: 調整繪圖背景plot background（不是panel background)</p>
+<p>改變plot.background的屬性。並移除panel border保留兩軸線。</p><pre class="crayon-plain-tag">g2 + theme(plot.background = element_rect(fill = "pink"),
+           panel.border = element_blank(),
+           axis.line = element_line(colour = "grey",size = 0.4,linetype = "solid"))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1896" src="/wp-content/uploads/2018/09/Rplot17.jpeg" alt="ggplot2 theme" width="800" height="600" srcset="/wp-content/uploads/2018/09/Rplot17.jpeg 800w, /wp-content/uploads/2018/09/Rplot17-300x225.jpeg 300w, /wp-content/uploads/2018/09/Rplot17-768x576.jpeg 768w, /wp-content/uploads/2018/09/Rplot17-230x173.jpeg 230w, /wp-content/uploads/2018/09/Rplot17-350x263.jpeg 350w, /wp-content/uploads/2018/09/Rplot17-480x360.jpeg 480w" sizes="(max-width: 800px) 100vw, 800px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 6: 使用客製化佈景主題custom theme</h4>
+<p>ggthemes套件內有多組客製化佈景主題<span style="text-decoration: underline; color: #9f6ad4;">themes和scales</span>，可以一次性改變你的繪圖外觀樣貌。</p>
+<p>更多詳細的ggthemes套件說明請參考：<a href="https://jrnold.github.io/ggthemes/reference/index.html" target="_blank" rel="noopener noreferrer">https://jrnold.github.io/</a>ggthemes/reference/index.html</p><pre class="crayon-plain-tag">install.packages("ggthemes") 
+library(ggthemes)</pre><p>我們來試試幾組佈景主題theme_xx()搭配對應的scale_yy_xx()(yy: color, fill, shape, linetype) 或是綜合color,shape,linetype的組合等。</p>
+<h5>6-1. Themes based on Stata graph schemes</h5>
+<p>使用theme_stata()佈景主題，並調整字體大小。</p><pre class="crayon-plain-tag">p &lt;- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(gear))) +
+  geom_point()+ 
+  facet_wrap(facets = ~ am)
+
+p + theme_stata(base_size = 16) +
+  ggtitle("mtcars data")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1900" src="/wp-content/uploads/2018/09/Rplot18.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot18.jpeg 759w, /wp-content/uploads/2018/09/Rplot18-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot18-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot18-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot18-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<p>加上主題色調。</p><pre class="crayon-plain-tag">p + theme_stata(base_size = 16) +
+  scale_colour_stata() +
+  ggtitle("mtcars data")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1901" src="/wp-content/uploads/2018/09/Rplot19.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot19.jpeg 759w, /wp-content/uploads/2018/09/Rplot19-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot19-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot19-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot19-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<h5>6-2. Theme with Google Docs Chart defaults</h5>
+<p></p><pre class="crayon-plain-tag">p &lt;- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+p + theme_gdocs() + scale_color_gdocs() + ggtitle("mtcars data")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1902" src="/wp-content/uploads/2018/09/Rplot20.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot20.jpeg 759w, /wp-content/uploads/2018/09/Rplot20-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot20-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot20-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot20-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<h5>6-3. Inverse gray theme</h5>
+<p></p><pre class="crayon-plain-tag">p &lt;- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+p + theme_igray()</pre><p><img loading="lazy" class="alignnone size-full wp-image-1903" src="/wp-content/uploads/2018/09/Rplot21.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot21.jpeg 759w, /wp-content/uploads/2018/09/Rplot21-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot21-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot21-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot21-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<h5>6-4. ggplot color theme based on the Economist</h5>
+<p></p><pre class="crayon-plain-tag">p &lt;- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am) +
+  # Economist 將x軸標示在右邊
+  scale_y_continuous(position = "right")
+
+#使用economist佈景主題與色調
+p + theme_economist() +
+  scale_colour_economist()</pre><p><img loading="lazy" class="alignnone size-full wp-image-1904" src="/wp-content/uploads/2018/09/Rplot22.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot22.jpeg 759w, /wp-content/uploads/2018/09/Rplot22-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot22-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot22-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot22-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>step 7: 自製客製化佈景主題(★★★★)</h4>
+<p>方法1: 使用theme_set() 函數設定當下R session的佈景主題。</p><pre class="crayon-plain-tag">theme_set(theme_gray(base_size = 20)) # not run</pre><p>方法2: 你可以自訂函數。舉例：自訂theme_self()。</p><pre class="crayon-plain-tag">p &lt;- ggplot(mtcars) +
+  geom_point(aes(x = wt, y = mpg, colour = factor(gear))) +
+  facet_wrap(~am)
+
+theme_self &lt;- function(base_size = 14, base_family = "黑體-繁 中黑") 
+  {
+    theme(panel.background = element_rect(fill = "lavender"),
+          panel.grid.minor = element_line(linetype = "dashed"),
+          text = element_text(family = base_family, size = base_size),
+          legend.background = element_rect(fill = "gray96",colour = "gray88"),
+          plot.title = element_text(hjust = 0.5), #標題置中
+          strip.background = element_rect(fill = "lightgray", colour = NA)
+          # axis.line = element_line(colour = "mediumpurple4")
+          )
+  }
+
+p + theme_self()</pre><p><img loading="lazy" class="alignnone size-full wp-image-1907" src="/wp-content/uploads/2018/09/Rplot23.jpeg" alt="ggplot2 theme" width="759" height="610" srcset="/wp-content/uploads/2018/09/Rplot23.jpeg 759w, /wp-content/uploads/2018/09/Rplot23-300x241.jpeg 300w, /wp-content/uploads/2018/09/Rplot23-230x185.jpeg 230w, /wp-content/uploads/2018/09/Rplot23-350x281.jpeg 350w, /wp-content/uploads/2018/09/Rplot23-480x386.jpeg 480w" sizes="(max-width: 759px) 100vw, 759px" /></p>
+<h4>總結</h4>
+<p>有了對ggplot2 theme()圖層的三元素(text, line, rectangles)有了基本的了解，即可將自己常用的繪圖屬性設定自製成theme_xx()以後便不用重複更改或重複撰寫程式碼，並且可以根據喜好調整，不受現有的佈景主題所限制。</p>
+<hr />
+<p>更多<span style="color: #9f6ad4;">R資料視覺化</span>學習筆記：</p>
+<ol>
+<li><a href="/r-sqlite-data-visualization-ggplot2/" target="_blank" rel="noopener noreferrer">ggplot2 | 簡易資料視覺化 Basic Data Visualization &#8211; part1 | using R SQLite</a></li>
+<li><a href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/" target="_blank" rel="noopener noreferrer">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a></li>
+<li><a href="/summarize-categorical-variables/" target="_blank" rel="noopener noreferrer">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a></li>
+</ol>
+<hr />
+<p>參考連結：</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="http://www.sthda.com/english/wiki/ggplot2-themes-and-background-colors-the-3-elements">ggplot2 themes and background colors : The 3 elements</a></li>
+<li><a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">Colors in R</a></li>
+<li><a href="https://jrnold.github.io/ggthemes/index.html">ggthemes</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/">ggplot2 theme : 3 elements &#8211; text, line, rectangle | R 資料視覺化 &#8211; part2</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>dual y-axis plotting 雙Y軸 繪圖 &#124; R 資料視覺化 Data Visualization 小技巧</title>
+		<link>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/</link>
+					<comments>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Fri, 21 Sep 2018 09:01:44 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<category><![CDATA[data visualization]]></category>
+		<category><![CDATA[dual y-axis]]></category>
+		<category><![CDATA[ggplot2]]></category>
+		<category><![CDATA[雙Y軸]]></category>
+		<guid isPermaLink="false">/?p=1762</guid>
+
+					<description><![CDATA[<p>很多時候在比較不同單位的資料走勢時，比如說身高v.s.體重或氣溫v.s.降雨量，會需要雙Y軸(dual y-axis)來繪製，除了有效標記不同資料單位區間大小， [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>很多時候在比較不同單位的資料走勢時，比如說身高v.s.體重或氣溫v.s.降雨量，會需要<span style="color: #9f6ad4;">雙Y軸(dual y-axis)</span>來繪製，除了有效標記不同資料單位區間大小，並能將兩資料的Y位置等比例壓縮成等高的Y軸區間以利比較。本篇學習筆記將比較ggplot2()與plot()繪製<span style="color: #9f6ad4;">雙y軸(dual y-axis)</span>方法優劣。</p>
+<h3>dual y-axis plotting 雙Y軸 繪圖</h3>
+<h4>step 1: data preparation</h4>
+<p>我們使用<a href="https://www.cwb.gov.tw/V7/climate/monthlyMean/Taiwan_precp.htm">中央氣象局的台北月平均氣溫與降雨量統計資料</a>。</p>
+<p>我們直接將台北月平均氣溫與降雨量的查詢結果複製到剪貼簿，並使用read.table(<span style="color: #9f6ad4;">pipe(&#8220;</span>pbpaste<span style="color: #9f6ad4;">)</span>)的方式讀取。</p>
+<p>(*此法為mac系統的剪貼簿，如果為window系統剪貼簿，則改為<span style="color: #9f6ad4;">“clipboard”</span>)</p><pre class="crayon-plain-tag">temp &lt;- read.table(pipe("pbpaste"), sep="\t", header=F) %&gt;% as.numeric()
+
+precipitation &lt;- read.table(pipe("pbpaste"), sep = "\t", header = F) %&gt;% as.numeric()</pre><p>接著將月份時間資訊、氣溫與降雨量三個向量合併成data frame。</p><pre class="crayon-plain-tag">df &lt;- data.frame(date = seq.Date(from = as.Date("2010-01-01"), to = as.Date("2010-12-01"), by = "month"), temp, precipitation)
+df
+#          date temp precipitation
+# 1  2010-01-01 16.1          83.2
+# 2  2010-02-01 16.5         170.3
+# 3  2010-03-01 18.5         180.4
+# 4  2010-04-01 21.9         177.8
+# 5  2010-05-01 25.2         234.5
+# 6  2010-06-01 27.7         325.9
+# 7  2010-07-01 29.6         245.1
+# 8  2010-08-01 29.2         322.1
+# 9  2010-09-01 27.4         360.5
+# 10 2010-10-01 24.5         148.9
+# 11 2010-11-01 21.5          83.1
+# 12 2010-12-01 17.9          73.3</pre><p>摘要氣溫與降雨量敘述統計。</p><pre class="crayon-plain-tag">summary(df[-1])
+
+#      temp       precipitation  
+# Min.   :16.10   Min.   : 73.3  
+# 1st Qu.:18.35   1st Qu.:132.5  
+# Median :23.20   Median :179.1  
+# Mean   :23.00   Mean   :200.4  
+# 3rd Qu.:27.48   3rd Qu.:264.4  
+# Max.   :29.60   Max.   :360.5</pre><p></p>
+<h4>step 2: plotting using ggplot2()</h4>
+<p>先畫出月份氣溫變化圖。</p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date)) + 
+  scale_x_date(date_breaks = "month") +
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1765" src="/wp-content/uploads/2018/09/Rplot01-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="618" srcset="/wp-content/uploads/2018/09/Rplot01-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot01-3-291x300.jpeg 291w, /wp-content/uploads/2018/09/Rplot01-3-230x237.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-3-350x361.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-3-480x494.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>加上第二座標軸。</p>
+<ul>
+<li>使用scale_y_axis(name = &#8230;, limits= &#8230;)調整主要Y標軸的命名(name)與區間。</li>
+<li>使用scale_y_axis(<span style="color: #9f6ad4;">sec.axis = sec_axis()</span>)加上第二Y軸，調整降雨單位與命名第二Y軸名稱。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity") +
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date)) + 
+  scale_x_date(date_breaks = "month") +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑") # 解決中文亂碼問題
+        )</pre><p><img loading="lazy" class="alignnone size-large wp-image-1766" src="/wp-content/uploads/2018/09/Rplot02-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot02-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot02-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot02-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot02-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot02-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>調整色彩與主題外觀。</p>
+<ul>
+<li>geom_bar(): 使用colour, fill 來調整長條圖的線條與填充色彩。</li>
+<li>geom_point(): 使用size, shape, fill 來調整點的大小、形狀與填充色彩。</li>
+<li>使用主題圖層theme_bw()。</li>
+<li>使用theme()中的panel.grid.major, panel.grid.minor參數將繪圖面板背景的主要次要隔線拿掉。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity", colour = gray(0.5), fill = gray(0.5)) +  # gray() Gray Level Specification
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date), size = 3, shape = 21, fill = "white") + 
+  scale_x_date(name = "Month",date_breaks = "month") +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme_bw() + 
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()</pre><p><img loading="lazy" class="alignnone size-large wp-image-1767" src="/wp-content/uploads/2018/09/Rplot03-4.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot03-4.jpeg 600w, /wp-content/uploads/2018/09/Rplot03-4-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot03-4-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot03-4-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot03-4-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>調整x軸月份時間標示方式。</p>
+<ul>
+<li>載入專門處理時間的lubridate套件。我們將使用套件中的month()函數回傳日期的月份並轉換成月份名稱。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(lubridate)
+
+ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity", colour = gray(0.5), fill = gray(0.5)) +  # gray() Gray Level Specification
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date), size = 3, shape = 21, fill = "white") + 
+  scale_x_date(name = "Month",date_breaks = "month",labels = function(date){return(month(date,label = T,abbr = F))}) +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme_bw() + 
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()
+  )</pre><p><img loading="lazy" class="alignnone size-large wp-image-1768" src="/wp-content/uploads/2018/09/Rplot04-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot04-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot04-3-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot04-3-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot04-3-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot04-3-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>即完成使用ggplot2繪製的雙Y軸(dual y-axis)圖表。</p>
+<h4>step 3: plotting using plot() &amp; barplot() &amp; axis</h4>
+<p>我們另外使用非ggplot2套件的方法來處理雙Y軸(dual y-axis)繪圖問題。</p>
+<p>首先，我們先畫出每月氣溫變化曲線。</p>
+<ul>
+<li>使用par(mar = c(bottom, left, top, right)) 來調整繪圖區邊界寬度。</li>
+<li>plot()中，使用type參數來調整</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1770" src="/wp-content/uploads/2018/09/Rplot05-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="618" srcset="/wp-content/uploads/2018/09/Rplot05-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot05-3-291x300.jpeg 291w, /wp-content/uploads/2018/09/Rplot05-3-230x237.jpeg 230w, /wp-content/uploads/2018/09/Rplot05-3-350x361.jpeg 350w, /wp-content/uploads/2018/09/Rplot05-3-480x494.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>接著，我們就現有圖層上，再加上新圖層barplot()，使用par(new = TRUE)。</p>
+<ul>
+<li>因為是疊加上去的，為了避免重複的x軸和y軸，我們使用參數xaxt = &#8216;n&#8217;, yaxt = &#8216;n&#8217;將barplot()的x,y軸關閉。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1771" src="/wp-content/uploads/2018/09/Rplot06-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot06-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot06-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot06-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot06-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot06-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>加上<span style="color: #9f6ad4;">右邊y軸</span>的資訊。</p>
+<ul>
+<li>我們使用axis(side = &#8230;)來指定座標軸位置。1=below, 2=left, 3=above and<span style="color: #9f6ad4;"> 4=right</span>。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1772" src="/wp-content/uploads/2018/09/Rplot07-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot07-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot07-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot07-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot07-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot07-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>接著使用mtext()標上右邊座標軸的名稱。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4) 
+mtext("percipitation(mm)", side = 4, line = 3)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1773" src="/wp-content/uploads/2018/09/Rplot08-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot08-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot08-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot08-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot08-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot08-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>最後加上曲線跟長條圖的圖示說明方框於左上角。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4)
+mtext("percipitation(mm)", side = 4, line = 3) 
+legend("topleft", c("temp", "percipitation"), pch=c(1,15), lty = c(1, 0), col=c("blue","gray"), pt.cex = 1.5)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1774" src="/wp-content/uploads/2018/09/Rplot09-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot09-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot09-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot09-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot09-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot09-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>即完成。<span style="text-decoration: underline;">這邊的好處是，左右兩側Y軸不需特別調整單位縮放問題，即可壓縮在標準化後的等長區間</span>。<span style="color: #9f6ad4;">但缺點是，曲線和長條圖在X軸上沒能對齊</span>。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>step 4 : using beaver1 &amp; beaver2 data plotting double lines with dual y-axis</h4>
+<p>我們試用另外一組資料(海狸體溫資料: beaver1, beaver2)示範，<span style="text-decoration: underline;">如何使用plot() + axis()來繪製雙Y軸的兩條曲線</span>。（<span style="color: #9f6ad4;">因為都是曲線，就沒有對齊問題，適用於比較曲線圖</span>）</p>
+<p>載入海狸1和海狸2的體溫資料</p><pre class="crayon-plain-tag">head(beaver1)
+#   day time  temp activ
+# 1 346  840 36.33     0
+# 2 346  850 36.34     0
+# 3 346  900 36.35     0
+# 4 346  910 36.42     0
+# 5 346  920 36.55     0
+# 6 346  930 36.69     0
+head(beaver2)
+#   day time  temp activ
+# 1 307  930 36.58     0
+# 2 307  940 36.73     0
+# 3 307  950 36.93     0
+# 4 307 1000 37.15     0
+# 5 307 1010 37.23     0
+# 6 307 1020 37.24     0
+
+
+dim(beaver1)
+# [1] 114   4
+dim(beaver2)
+# [1] 100   4</pre><p>先畫出第一隻海狸的體溫。</p><pre class="crayon-plain-tag">plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1779" src="/wp-content/uploads/2018/09/Rplot10-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot10-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot10-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot10-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot10-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot10-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot10-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>再畫出第二隻海狸的體溫。因為是要加在前一張圖層，故我們使用par(new = TRUE)。</p><pre class="crayon-plain-tag">plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature")
+par(new = TRUE)
+plot(beaver2[,3], type = "l", xaxt = 'n', yaxt='n', ylab = '', xlab = '')</pre><p><img loading="lazy" class="alignnone size-full wp-image-1780" src="/wp-content/uploads/2018/09/Rplot11-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot11-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot11-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot11-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot11-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot11-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot11-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>我們來新增第二個y軸並加上新y軸名稱，並條整兩條數列外觀與整體圖表主題。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature",
+     main = "Beaver temperature plot", xlab = "time",
+     col = "blue")
+par(new = TRUE)
+plot(beaver2[,3], type = "l", xaxt = 'n', yaxt='n', ylab = '', xlab = '',
+     lty = 2, col = "red")
+axis(side = 4)
+mtext("beaver2 temperature", side = 4, line = 3) 
+legend("topleft", c("beaver1", "beaver2"),
+       col = c("blue", "red"), lty = c(1, 2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1782" src="/wp-content/uploads/2018/09/Rplot12-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot12-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot12-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot12-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot12-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot12-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot12-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>為了確認兩條曲線上每一點是否對齊，我們可以調整曲線樣式（並同時調整圖例說明）。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(beaver1[1:100,3], type = "o", ylab = "beaver1 temperature",
+     main = "Beaver temperature plot", xlab = "time",
+     col = "blue")
+par(new = TRUE)
+plot(beaver2[,3], type = "o", xaxt = 'n', yaxt='n', ylab = '', xlab = '',
+     lty = 2, col = "red")
+axis(side = 4) 
+mtext("beaver2 temperature", side = 4, line = 3) 
+       col = c("blue", "red"), lty = c(1, 2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1781" src="/wp-content/uploads/2018/09/Rplot13-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot13-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot13-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot13-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot13-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot13-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot13-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>由上圖可發現，<span style="text-decoration: underline;">當兩筆資料都為曲線資料，即可在x軸對齊的基礎下使用雙Y軸比較走勢</span>。</p>
+<hr />
+<p>更多資料視覺化學習筆記：</p>
+<p><a href="/r-sqlite-data-visualization-ggplot2/" target="_blank" rel="noopener noreferrer">ggplot2 | 簡易資料視覺化 Basic Data Visualization &#8211; part1 | using R SQLite</a></p>
+<p><a href="/summarize-categorical-variables/" target="_blank" rel="noopener noreferrer">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a></p>
+<hr />
+<p>參考連結：</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="https://whatalnk.github.io/r-tips/ggplot2-secondary-y-axis.nb.html">ggplot2: Secondary Y axis</a></li>
+<li><a href="https://thepracticalr.wordpress.com/2016/08/30/2-y-axis-plotting/">2 Y-AXIS PLOTTING</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>Summarize Categorical Variables &#124; 類別變數摘要 &#124; 統計 R語言</title>
+		<link>/summarize-categorical-variables/</link>
+					<comments>/summarize-categorical-variables/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 28 Aug 2018 13:45:29 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<category><![CDATA[ggplot2]]></category>
+		<category><![CDATA[summarize categorical variables]]></category>
+		<category><![CDATA[類別變數摘要]]></category>
+		<category><![CDATA[類別變數視覺化]]></category>
+		<guid isPermaLink="false">/?p=1014</guid>
+
+					<description><![CDATA[<p>本篇筆記主要介紹簡單基礎 Summarize categorical variables 摘要類別變數的方法。包括類別次數或百分比交叉表/聯列表，以及將結果視覺 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/summarize-categorical-variables/">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇筆記主要介紹簡單基礎 Summarize categorical variables 摘要類別變數的方法。包括類別次數或百分比交叉表/聯列表，以及將結果視覺化的長條圖(bar chart)。有效熟悉類別變數資料探索方法並熟悉基本的R繪圖函數。</p>
+<h3>「 Summarize Categorical Variables 類別變數摘要」學習筆記重點</h3>
+<ul>
+<li>目標變數(Dependent Variable) : Categorical （本範例將Survived設定為欲探討的目標變數）</li>
+<li>預測變數(Independent Variable) : Categorical</li>
+<li>使用資料集：1912年4月14日鐵達尼號沈船資料。我們使用<a href="https://www.rdocumentation.org/packages/titanic/versions/0.1.0">titanic_train資料</a>中共891筆乘客資料來示範如何摘要類別變數。</li>
+</ul>
+<p>學習重點包括：</p>
+<ol>
+<li>類別變數摘要table(表格、交叉表、列聯表)</li>
+<li>類別變數資訊基礎視覺化</li>
+<li>類別變數資訊進階視覺化(ggplot2)</li>
+</ol>
+<p>資料集載入與檢視</p><pre class="crayon-plain-tag">library(titanic)
+data("titanic_train")
+df &lt;- titanic_train
+
+# View(df)
+head(df)
+
+#   PassengerId Survived Pclass                                                Name    Sex Age SibSp Parch
+# 1           1        0      3                             Braund, Mr. Owen Harris   male  22     1     0
+# 2           2        1      1 Cumings, Mrs. John Bradley (Florence Briggs Thayer) female  38     1     0
+# 3           3        1      3                              Heikkinen, Miss. Laina female  26     0     0
+# 4           4        1      1        Futrelle, Mrs. Jacques Heath (Lily May Peel) female  35     1     0
+# 5           5        0      3                            Allen, Mr. William Henry   male  35     0     0
+# 6           6        0      3                                    Moran, Mr. James   male  NA     0     0
+#             Ticket    Fare Cabin Embarked
+# 1        A/5 21171  7.2500              S
+# 2         PC 17599 71.2833   C85        C
+# 3 STON/O2. 3101282  7.9250              S
+# 4           113803 53.1000  C123        S
+# 5           373450  8.0500              S
+# 6           330877  8.4583              Q</pre><p>檢視資料結構</p><pre class="crayon-plain-tag">str(df)
+
+# 'data.frame':	891 obs. of  12 variables:
+# $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
+# $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
+# $ Pclass     : int  3 1 3 1 3 3 1 3 3 2 ...
+# $ Name       : chr  "Braund, Mr. Owen Harris" "Cumings, Mrs. John Bradley (Florence Briggs Thayer)" "Heikkinen, Miss. Laina" "Futrelle, Mrs. Jacques Heath (Lily May Peel)" ...
+# $ Sex        : chr  "male" "female" "female" "female" ...
+# $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
+# $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
+# $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
+# $ Ticket     : chr  "A/5 21171" "PC 17599" "STON/O2. 3101282" "113803" ...
+# $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
+# $ Cabin      : chr  "" "C85" "" "C123" ...
+# $ Embarked   : chr  "S" "C" "S" "S" ...</pre><p>為了後續類別變數間分析，我們將以下變數進行型態轉換：</p>
+<p>(1) Survived(是否生還)將原本整數(0,1)轉換為factor的levels(&#8220;Died&#8221;, &#8220;Survived&#8221;)</p>
+<p>(2)Pclass(座艙等級)將原本整數(1,2,3)轉換為factor的levels(&#8216;First&#8217;,&#8217;Second&#8217;,&#8217;Third&#8217;)</p><pre class="crayon-plain-tag"># enable objects in the database can be accessed by simply giving their names.
+attach(df)
+# 不用呼叫database,直接呼叫variable's name
+Survived &lt;- factor(x = Survived,levels = c(0,1),labels = c('Died','Survived'))
+Pclass &lt;- factor(x = Pclass, levels = c(1,2,3), labels = c('First','Second','Third'))</pre><p></p>
+<h3>1. 類別變數摘要table(表格、交叉表、列聯表)</h3>
+<p>類別變數次數分佈: table()</p><pre class="crayon-plain-tag">SurT &lt;- table(Survived)
+SurT
+
+#   Survived
+#       Died Survived 
+#        549      342</pre><p>如果要加上加總項: addmargins()</p><pre class="crayon-plain-tag">addmargins(SurT)
+
+#   Survived
+#       Died Survived      Sum 
+#        549      342      891</pre><p>如果要計算table裡面的比例: prop.table()</p><pre class="crayon-plain-tag">prop.table(SurT)
+
+#   Survived
+#       Died Survived 
+#      0.616    0.384</pre><p>如果要調整小數位數: 可以使用round()</p><pre class="crayon-plain-tag">round(prop.table(SurT), digits = 2)
+
+#   Survived
+#       Died Survived
+#       0.62     0.38</pre><p>如果要進一步將Survival生存依據Class座艙等級區分，我們會需要<span style="color: #9f6ad4;">交叉表(Cross Table)</span>或<span style="color: #9f6ad4;">列聯表(Contingency Table)</span>。</p><pre class="crayon-plain-tag">cross &lt;- table(Survived, Pclass)
+cross
+
+#           Pclass
+# Survived   First Second Third
+#   Died        80     97   372
+#   Survived   136     87   119</pre><p>亦可使用addmargins()，替表格加上列和行的加總項</p><pre class="crayon-plain-tag">addmargins(cross)
+#           Pclass
+# Survived   First Second Third Sum
+#   Died        80     97   372 549
+#   Survived   136     87   119 342
+#   Sum        216    184   491 891</pre><p>並可以透過addmargins()中的參數margin=1,2來調整是否計算加總列/行。</p><pre class="crayon-plain-tag"># 只要加總行：
+addmargins(cross, margin = 1)
+#           Pclass
+# Survived   First Second Third
+#   Died        80     97   372
+#   Survived   136     87   119
+#   Sum        216    184   491
+
+# 只要加總列：
+addmargins(cross, margin = 2)
+#           Pclass
+# Survived   First Second Third Sum
+#   Died        80     97   372 549
+#   Survived   136     87   119 342</pre><p>如果要產生列聯表的機率數值，使用prop.table()。</p>
+<p>當我們想知道不同座艙等級(Pclass)乘客的生存比例(Survived)是否有差異時，可以計算以下列聯表機率：</p><pre class="crayon-plain-tag">#計算column的百分比分佈。如果要計算row的百分比分佈，margin=1
+prop.table(cross, margin = 2) 
+
+#         Pclass
+# Survived   First Second Third
+#   Died     0.370  0.527 0.758
+#   Survived 0.630  0.473 0.242</pre><p></p>
+<h3>2. 類別變數資訊進階視覺化</h3>
+<p>如果希望進一步將這個列聯表機率資訊視覺化: 使用barplot()</p><pre class="crayon-plain-tag">barplot(cross,xlab = 'Class',ylab = 'Frequency',main = "Survival by Class",col = c('darkblue','lightcyan'),
+        legend.text = rownames(cross), #圖示說明各顏色所代表類別
+        args.legend = list(x = 'topleft'))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1017" src="/wp-content/uploads/2018/08/Pic01.jpeg" alt="Summarize Categorical Variables" width="816" height="731" srcset="/wp-content/uploads/2018/08/Pic01.jpeg 816w, /wp-content/uploads/2018/08/Pic01-300x269.jpeg 300w, /wp-content/uploads/2018/08/Pic01-768x688.jpeg 768w" sizes="(max-width: 816px) 100vw, 816px" /></p>
+<p>但只有frequencoes資訊是比較難比較出個座艙等級的survival比例變化。這時會用percentage來觀察，只需將cross改就prop.table(cross)。只是barplot()無法標上百分比資訊於圖上。</p><pre class="crayon-plain-tag">barplot(prop.table(cross,2),xlab = 'Class',ylab = 'Frequency',main = "Survival by Class",col = c('darkblue','lightcyan'),
+        legend.text = rownames(cross), #圖示說明各顏色所代表類別
+        args.legend = list(x = 'topleft'))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1018" src="/wp-content/uploads/2018/08/Pic02.jpeg" alt="Summarize Categorical Variables" width="816" height="731" srcset="/wp-content/uploads/2018/08/Pic02.jpeg 816w, /wp-content/uploads/2018/08/Pic02-300x269.jpeg 300w, /wp-content/uploads/2018/08/Pic02-768x688.jpeg 768w" sizes="(max-width: 816px) 100vw, 816px" /></p>
+<p>如果想將stacked bar改變成並排的clustered bar，則須將參數設定為beside = True。</p><pre class="crayon-plain-tag">barplot(prop.table(cross,2),xlab = 'Class',ylab = 'Frequency',main = "Survival by Class",col = c('darkblue','lightcyan'),
+        legend.text = rownames(cross), #圖示說明各顏色所代表類別
+        beside = TRUE,
+        args.legend = list(x = 'topleft'))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1024" src="/wp-content/uploads/2018/08/Pic05.jpeg" alt="Summarize Categorical Variables" width="816" height="731" srcset="/wp-content/uploads/2018/08/Pic05.jpeg 816w, /wp-content/uploads/2018/08/Pic05-300x269.jpeg 300w, /wp-content/uploads/2018/08/Pic05-768x688.jpeg 768w" sizes="(max-width: 816px) 100vw, 816px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>3. 類別變數資訊進階視覺化(ggplot2)</h3>
+<p>為了解決label的問題，我們改使用<span style="color: #9f6ad4;">ggplot2套件</span>來繪製。先將df中factor生成。</p><pre class="crayon-plain-tag">df$Survived &lt;- factor(x = df$Survived,levels = c(0,1),labels = c('Died','Survived'))
+df$Pclass &lt;- factor(x = df$Pclass, levels = c(1,2,3), labels = c('First','Second','Third'))</pre><p>Frequencies次數圖</p><pre class="crayon-plain-tag">ggplot(data = df, aes(x = Pclass, fill = Survived)) +
+  geom_bar() +
+  geom_text(stat = "count", aes(label=..count..),size=4.5,position = position_stack(vjust = 0.5)) +
+  scale_fill_brewer(palette="Paired")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1019" src="/wp-content/uploads/2018/08/pic03-1-1024x928.png" alt="Summarize Categorical Variables" width="960" height="870" srcset="/wp-content/uploads/2018/08/pic03-1-1024x928.png 1024w, /wp-content/uploads/2018/08/pic03-1-300x272.png 300w, /wp-content/uploads/2018/08/pic03-1-768x696.png 768w, /wp-content/uploads/2018/08/pic03-1-1140x1034.png 1140w" sizes="(max-width: 960px) 100vw, 960px" /></p>
+<p>Percentage百分比圖</p><pre class="crayon-plain-tag"># 首先，先計算根據不同Pclass所計算的生存比率分佈
+df.summary &lt;- 
+  df %&gt;% group_by(Pclass) %&gt;% 
+  count(Survived) %&gt;% 
+  mutate(ratio=scales::percent(n/sum(n))) %&gt;% 
+  ungroup()
+
+# 將不同的Pclass的機率分佈標記上
+ggplot(df, aes(x = Pclass, fill = Survived)) +
+  geom_bar(position = "fill") + 
+  geom_text(data=df.summary, aes(y=n,label=ratio),
+            position=position_fill(vjust=0.5)) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_brewer(palette="Paired")</pre><p><img loading="lazy" class="alignnone size-large wp-image-1020" src="/wp-content/uploads/2018/08/pic04-1-1024x928.png" alt="Summarize Categorical Variables" width="960" height="870" srcset="/wp-content/uploads/2018/08/pic04-1-1024x928.png 1024w, /wp-content/uploads/2018/08/pic04-1-300x272.png 300w, /wp-content/uploads/2018/08/pic04-1-768x696.png 768w, /wp-content/uploads/2018/08/pic04-1-1140x1034.png 1140w" sizes="(max-width: 960px) 100vw, 960px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多資料視覺化筆記連結：</p>
+<p><a href="/r_sqlite_data_visualization_ggplot2_part1/" target="_blank" rel="noopener">簡易資料視覺化 Data Visualization &#8211; part1</a></p>
+<p>這篇文章 <a rel="nofollow" href="/summarize-categorical-variables/">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/summarize-categorical-variables/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ggplot2 &#124;  簡易資料視覺化 Basic Data Visualization &#8211; part 1 &#124; using R SQLite</title>
+		<link>/r-sqlite-data-visualization-ggplot2/</link>
+					<comments>/r-sqlite-data-visualization-ggplot2/#comments</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 08 May 2018 14:00:57 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<category><![CDATA[bar]]></category>
+		<category><![CDATA[barchart]]></category>
+		<category><![CDATA[data visualization]]></category>
+		<category><![CDATA[dplyr]]></category>
+		<category><![CDATA[geom_bar]]></category>
+		<category><![CDATA[geom_col]]></category>
+		<category><![CDATA[ggplot2]]></category>
+		<category><![CDATA[R]]></category>
+		<category><![CDATA[SQLite]]></category>
+		<guid isPermaLink="false">/?p=1408</guid>
+
+					<description><![CDATA[<p>本篇學習筆記主要介紹如何使用R ggplot2 套件的圖層概念來進行資料視覺化 Data Visualization，使用數據則為透過R連接SQLite 資料庫 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/r-sqlite-data-visualization-ggplot2/">ggplot2 |  簡易資料視覺化 Basic Data Visualization &#8211; part 1 | using R SQLite</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇學習筆記主要介紹如何使用R ggplot2 套件的圖層概念來進行資料視覺化 Data Visualization，使用數據則為透過R連接SQLite 資料庫而取得。R基本上可以從資料庫下載資料和上傳資料，使用的函數依據資料庫不同而有所異，但所有資料庫指令都還是基本的SQL語法。</p>
+<h3>本篇筆記重點</h3>
+<ul>
+<li>如合使用R連接SQLite資料庫</li>
+<li>簡易資料處理</li>
+<li>進行簡易視覺化</li>
+</ul>
+<h4>本篇將分為幾個步驟：</h4>
+<p>step 1 :使用R連接SQLite DB</p>
+<p>step 2: 資料處理 using dplyr</p>
+<p>step 3 : 簡易資料視覺化 using ggplot2</p>
+<h3>step 1: 使用R連接SQLite DB</h3>
+<p>載入所需套件</p><pre class="crayon-plain-tag">library(RSQLite) #連接SQLite DB
+library(dplyr) #資料處理</pre><p>建立db連線</p><pre class="crayon-plain-tag">con &lt;- dbConnect(SQLite(), dbname="test.db")</pre><p>列出所有DB中的table</p><pre class="crayon-plain-tag">dbListTables(con)
+# [1] "records"</pre><p>查看table&#8221;records&#8221;資料欄位</p><pre class="crayon-plain-tag">dbListFields(con,"records")
+# [1] "boardname"  "popularity" "timestamp"</pre><p>輸入指令並回傳資料。並記得關閉連線。</p><pre class="crayon-plain-tag">pttRecords &lt;-
+  dbGetQuery(con,'select * from records')
+
+class(pttRecords)
+# [1] "data.frame"
+
+# 關閉連線
+dbDisconnect(con)</pre><p>檢視資料前十列。</p><pre class="crayon-plain-tag">pttRecords %&gt;% head(10)
+
+#      boardname popularity           timestamp
+# 1    Gossiping      15386 2018-05-07 22:24:30
+# 2          NBA       5076 2018-05-07 22:24:30
+# 3     Baseball       3759 2018-05-07 22:24:30
+# 4        Stock       3204 2018-05-07 22:24:30
+# 5       C_Chat       2882 2018-05-07 22:24:30
+# 6          sex       2301 2018-05-07 22:24:30
+# 7          LoL       2255 2018-05-07 22:24:30
+# 8        movie       2209 2018-05-07 22:24:30
+# 9    WomenTalk       1659 2018-05-07 22:24:30
+# 10 Lifeismoney       1377 2018-05-07 22:24:30</pre><p>SQL 基本語法：<a href="https://www.w3schools.com/sql/">https://www.w3schools.com/sql/</a></p>
+<h3>step 2: 資料處理 using dplyr</h3>
+<p>先檢視時間戳distinct value</p><pre class="crayon-plain-tag">pttRecords %&gt;% select(timestamp) %&gt;% distinct()
+#             timestamp
+# 1 2018-05-07 22:24:30
+# 2 2018-05-08 21:42:39</pre><p>篩選某一天時間戳的資料並按照各版位人氣高到低排序</p><pre class="crayon-plain-tag">tmp &lt;- pttRecords %&gt;% filter(timestamp == '2018-05-07 22:24:30') %&gt;% 
+  arrange(desc(popularity))</pre><p>篩選人氣前10的版位資料</p><pre class="crayon-plain-tag">tmp2 &lt;- tmp %&gt;% head(10)</pre><p></p>
+<h3>Step 3 : 簡易資料視覺化using ggplot2</h3>
+<p>將該時間戳top10版位人氣繪製bar圖。繪製<span style="color: #9f6ad4;">bar chart(x: discrete, y: continuous)</span>有兩種方法：(<span style="color: #9f6ad4;">*如果x,y皆為 continuus，則使用geom_histogram()</span>)。</p>
+<ul>
+<li><span style="color: #9f6ad4;">geom_col()</span>: stat預設值為stat_identity，即bar圖的高會使用資料的值。</li>
+<li><span style="color: #9f6ad4;">geom_bar()</span>: stat預設值為&#8221;stat_count&#8221;，即每個x資料點對應的資料次數。如果希望bar圖的高度呈現資料值，則須將stat = &#8220;identity&#8221;。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(ggplot2)
+a &lt;- ggplot(tmp2,aes(reorder(boardname, -popularity) ,popularity))
+
+# bar chart method 1:
+a + geom_col()
+# bar chart method 2:
+a + geom_bar(stat = "identity")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1410" src="/wp-content/uploads/2018/09/ptt_pop_01.png" alt="r ggplot2" width="710" height="454" srcset="/wp-content/uploads/2018/09/ptt_pop_01.png 710w, /wp-content/uploads/2018/09/ptt_pop_01-300x192.png 300w, /wp-content/uploads/2018/09/ptt_pop_01-230x147.png 230w, /wp-content/uploads/2018/09/ptt_pop_01-350x224.png 350w, /wp-content/uploads/2018/09/ptt_pop_01-480x307.png 480w" sizes="(max-width: 710px) 100vw, 710px" /></p>
+<p>如果想要進一步將bar圖依據不同版位上色，我們可以選取自己想要的色調</p><pre class="crayon-plain-tag"># 列出所有色調模組
+RColorBrewer::display.brewer.all()</pre><p><img loading="lazy" class="alignnone size-full wp-image-1436" src="/wp-content/uploads/2018/05/Rplot01.jpeg" alt="r ggplot2" width="600" height="815" srcset="/wp-content/uploads/2018/05/Rplot01.jpeg 600w, /wp-content/uploads/2018/05/Rplot01-221x300.jpeg 221w, /wp-content/uploads/2018/05/Rplot01-230x312.jpeg 230w, /wp-content/uploads/2018/05/Rplot01-350x475.jpeg 350w, /wp-content/uploads/2018/05/Rplot01-480x652.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>我們使用<span style="color: #9f6ad4;">scale_fill_brewer()</span>圖層來指定色調（我們從上圖選擇&#8217;Set3&#8217;的palette）。</p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3')</pre><p><img loading="lazy" class="alignnone size-full wp-image-1437" src="/wp-content/uploads/2018/05/Rplot03.jpeg" alt="r ggplot2" width="819" height="580" srcset="/wp-content/uploads/2018/05/Rplot03.jpeg 819w, /wp-content/uploads/2018/05/Rplot03-300x212.jpeg 300w, /wp-content/uploads/2018/05/Rplot03-768x544.jpeg 768w, /wp-content/uploads/2018/05/Rplot03-230x163.jpeg 230w, /wp-content/uploads/2018/05/Rplot03-350x248.jpeg 350w, /wp-content/uploads/2018/05/Rplot03-480x340.jpeg 480w" sizes="(max-width: 819px) 100vw, 819px" /></p>
+<p>從上圖，我們發現X軸的每行資料欄位的字部分疊在一起，於是我們近一步進行以下調整：</p>
+<ul>
+<li><span style="color: #333333;"><span style="color: #9f6ad4;">theme()圖層</span>：</span>
+<ul>
+<li><span style="color: #333333;">axis.text.x參數：將X軸的文字做一些角度旋轉。</span></li>
+<li><span style="color: #333333;">text參數：指定中文字型，以解決中文亂碼問題。</span></li>
+</ul>
+</li>
+<li><span style="color: #333333;"><span style="color: #9f6ad4;">labs()圖層</span>：</span>
+<ul>
+<li><span style="color: #333333;">title: 圖標題</span></li>
+<li><span style="color: #333333;">x: x軸標題</span></li>
+<li><span style="color: #333333;">y: y軸標題</span></li>
+</ul>
+</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3') +
+  labs(title = 'PPT人氣版位Top10',
+       x = "版位", 
+       y = "人氣") + 
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) # 將title置中</pre><p><img loading="lazy" class="alignnone size-full wp-image-1438" src="/wp-content/uploads/2018/05/Rplot04.jpeg" alt="r ggplot2" width="700" height="580" srcset="/wp-content/uploads/2018/05/Rplot04.jpeg 700w, /wp-content/uploads/2018/05/Rplot04-300x249.jpeg 300w, /wp-content/uploads/2018/05/Rplot04-230x191.jpeg 230w, /wp-content/uploads/2018/05/Rplot04-350x290.jpeg 350w, /wp-content/uploads/2018/05/Rplot04-480x398.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>調整y軸數值單位與顯示方式。因為y軸為連續數值，因此我們使用<span style="color: #9f6ad4;">scale_y_continuous()</span>圖層。</p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3') +
+  labs(title = 'PPT人氣版位Top10',
+       x = "版位", 
+       y = "人氣") + 
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) + # 將title置中
+  scale_y_continuous(labels = scales::unit_format("k", 1e-3), #以每千單位顯示
+                     breaks = seq(0,20000, by=2000) #每兩千為間隔
+                     )</pre><p><img loading="lazy" class="alignnone size-full wp-image-1439" src="/wp-content/uploads/2018/05/Rplot05.jpeg" alt="r ggplot2" width="700" height="580" srcset="/wp-content/uploads/2018/05/Rplot05.jpeg 700w, /wp-content/uploads/2018/05/Rplot05-300x249.jpeg 300w, /wp-content/uploads/2018/05/Rplot05-230x191.jpeg 230w, /wp-content/uploads/2018/05/Rplot05-350x290.jpeg 350w, /wp-content/uploads/2018/05/Rplot05-480x398.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>將每一條bar加上數值標籤。我們可以新增<span style="color: #9f6ad4;">geom_text()</span>圖層。(*這邊因為會用到str_c()函數來串連多個字串成一個新字串，我們載入套件stringr)</p><pre class="crayon-plain-tag">library(stringr) #欲使用str_c()函數: Join multiple strings into a single string.
+gg &lt;- 
+  a + 
+    geom_bar(stat = "identity",aes(fill = boardname)) +
+    geom_text(aes(label = str_c(round(popularity/1000,1),'K'), y = popularity + 300)) +
+    scale_fill_brewer(palette = 'Set3') +
+    labs(title = 'PPT人氣版位Top10',
+         x = "版位", 
+         y = "人氣") + 
+    theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+          axis.text.x = element_text(angle = 45, vjust = 0.5),
+          plot.title = element_text(hjust = 0.5)) + # 將title置中
+    scale_y_continuous(labels = scales::unit_format("k", 1e-3), #以每千單位顯示
+                       breaks = seq(0,20000, by=2000) #每兩千為間隔
+                       )
+gg</pre><p>如果想要近一步調整整體圖形風格，可使用<span style="color: #9f6ad4;">theme_xxx()</span>圖層。</p>
+<ul>
+<li>我們使用比較常用的幾種風格，包括：<span style="color: #9f6ad4;">theme_bw(), theme_classic(), theme_dark(), theme_minimal(), theme_grey(), theme_linedraw()</span>。</li>
+<li>為了比較不同theme的效果，我們使用<span style="color: #9f6ad4;">ggpubr套件中的ggarnage()函數來排版</span>六張圖表。（只適用ggplot2的物件）</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">theme1 &lt;- 
+gg + 
+  theme_bw() +
+  labs(subtitle="BW Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+        )
+    
+
+theme2 &lt;-   
+gg + 
+  theme_classic() + 
+  labs(subtitle="Classic Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+        )
+
+theme3 &lt;- 
+gg + 
+  theme_dark() + 
+  labs(subtitle = "Dark Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme4 &lt;- 
+gg + 
+  theme_minimal() + 
+  labs(subtitle = "Minimal Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme5 &lt;- 
+gg + 
+  theme_grey() + 
+  labs(subtitle = "Grey Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme6 &lt;- 
+gg + 
+  theme_linedraw() + 
+  labs(subtitle = "Linedraw Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+library(ggpubr)
+ggarrange(theme1, theme2, theme3, theme4, theme5, theme6, ncol = 3, nrow = 2)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1442" src="/wp-content/uploads/2018/05/Rplot07-1-1024x555.jpeg" alt="r ggplot2" width="1024" height="555" srcset="/wp-content/uploads/2018/05/Rplot07-1-1024x555.jpeg 1024w, /wp-content/uploads/2018/05/Rplot07-1-300x163.jpeg 300w, /wp-content/uploads/2018/05/Rplot07-1-768x416.jpeg 768w, /wp-content/uploads/2018/05/Rplot07-1-830x450.jpeg 830w, /wp-content/uploads/2018/05/Rplot07-1-230x125.jpeg 230w, /wp-content/uploads/2018/05/Rplot07-1-350x190.jpeg 350w, /wp-content/uploads/2018/05/Rplot07-1-480x260.jpeg 480w, /wp-content/uploads/2018/05/Rplot07-1.jpeg 1300w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>經過上述一系列圖層疊加調整，便完成了我們簡單的bar chart囉！</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1443" src="/wp-content/uploads/2018/05/Rplot08.jpeg" alt="r ggplot2" width="752" height="700" srcset="/wp-content/uploads/2018/05/Rplot08.jpeg 752w, /wp-content/uploads/2018/05/Rplot08-300x279.jpeg 300w, /wp-content/uploads/2018/05/Rplot08-230x214.jpeg 230w, /wp-content/uploads/2018/05/Rplot08-350x326.jpeg 350w, /wp-content/uploads/2018/05/Rplot08-480x447.jpeg 480w" sizes="(max-width: 752px) 100vw, 752px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>探索更多統計模型學習筆記：</p>
+<p><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e5%9b%9e%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">線性回歸模型</a></p>
+<p><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part1</a></p>
+<p><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part2</a></p>
+<p><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">決策樹/隨機森林</a></p>
+<p><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群法</a></p>
+<p><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">階層式分群法</a></p>
+<hr />
+<p>參考:</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/r-sqlite-data-visualization-ggplot2/">ggplot2 |  簡易資料視覺化 Basic Data Visualization &#8211; part 1 | using R SQLite</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/r-sqlite-data-visualization-ggplot2/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

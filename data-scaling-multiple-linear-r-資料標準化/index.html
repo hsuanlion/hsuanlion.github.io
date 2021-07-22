@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是不能直接拿來做比較的。為了比較每一個解釋變數變動一單位對目標變數之影響大小，我們需事前將目標變數與解釋變數進行-資料標準化-處理。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計"><meta property="og:description" content="在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是不能直接拿來做比較的。為了比較每一個解釋變數變動一單位對目標變數之影響大小，我們需事前將目標變數與解釋變數進行-資料標準化-處理。"><meta property="og:url" content="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:tag" content="data scale"><meta property="article:tag" content="data scaling"><meta property="article:tag" content="multiple regression"><meta property="article:tag" content="多元回歸分析"><meta property="article:tag" content="複回歸分析"><meta property="article:tag" content="資料標準化"><meta property="article:section" content=" 程式與統計"><meta property="article:published_time" content="2018-09-25T13:19:38+08:00"><meta property="article:modified_time" content="2020-07-03T02:28:53+08:00"><meta property="og:updated_time" content="2020-07-03T02:28:53+08:00"><meta property="og:image" content="/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-1024x768.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="768"><meta property="og:image:alt" content="資料標準化 data scaling"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是不能直接拿來做比較的。為了比較每一個解釋變數變動一單位對目標變數之影響大小，我們需事前將目標變數與解釋變數進行-資料標準化-處理。"><meta name="twitter:title" content="資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計"><meta name="twitter:image" content="/wp-content/uploads/2018/09/nick-morrison-325805-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-1813" class="post-1813 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-statistics-model tag-data-scale tag-data-scaling tag-multiple-regression tag-303 tag-302 tag-301"><div class="entry-thumb">
+			<img width="4608" height="3456" src="/wp-content/uploads/2018/09/nick-morrison-325805-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="資料標準化 data scaling" loading="lazy" srcset="/wp-content/uploads/2018/09/nick-morrison-325805-unsplash.jpg 4608w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-300x225.jpg 300w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-768x576.jpg 768w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-1024x768.jpg 1024w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-830x623.jpg 830w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-230x173.jpg 230w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-350x263.jpg 350w,/wp-content/uploads/2018/09/nick-morrison-325805-unsplash-480x360.jpg 480w" sizes="(max-width: 4608px) 100vw, 4608px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/statistics-model/" title="統計模型" class="post-cat">統計模型</a>		</div>
+
+		<h1 class="title-post entry-title">資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/" rel="bookmark"><time class="entry-date published" datetime="2018-09-25T21:19:38+08:00">2018-09-25</time><time class="updated" datetime="2020-07-03T10:28:53+08:00">2020-07-03</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p>在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是不能直接拿來做比較的。為了比較每一個解釋變數變動一單位對目標變數之影響大小，我們需事前將目標變數與解釋變數進行-資料標準化-處理。</p>
+<h4>多元線性回歸方程式</h4>
+<p>$$y=\beta_{0} + \beta_{1}*x_{1} + … + \beta_{i}*x_{i}+\epsilon_{i}$$</p>
+<h4>解釋變數\(X_{j}\)的參數估計值\(\hat{\beta}_{j}\)之含義</h4>
+<p>解釋變數\(X_{j}\)的參數估計值\(\hat{\beta}_{j}\)之含義為：在其他解釋變數不變下，解釋變數\(X_{j}\)變動一個衡量單位，目標變數將變動\(\hat{\beta}_{j}\)個衡量單位。即</p>
+<p>$$\frac{dy}{dx_{j}}=\beta_{j}$$</p>
+<p>若要比較不同解釋變數對目標變數之影響大小(\(\hat{\beta}_{j}\))，我們必須進行標準化回歸，即將目標變數與預測變數一併標準化。</p>
+<h4>標準化回歸</h4>
+<p>標準化回歸就將目標變數和預測變數分別減去各自的平均數再除以各自的標準差，即計算z-score，再將標準化的目標與解釋變數投入回歸模型。</p>
+<p>$$Z=\frac{x-\bar{x}}{s_{x}}$$</p>
+<h4>step 1: Data scaling 資料標準化</h4>
+<p>在R程式語言中，我們則可以使用scale()函數。scale()函數預設將資料center到資料平均值，並除以標準差(standard deviation)來scale資料。</p>
+<p>我們使用R內建mtcars資料集來進行示範。</p>
+
+		<div id="crayon-60f9058f5e2da670108069" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+data("mtcars")
+
+df <- data.frame(mpg = mtcars$mpg, hp = mtcars$hp, disp = mtcars$disp, wt = mtcars$wt)
+summary(df)
+
+#      mpg              hp             disp             wt       
+# Min.   :10.40   Min.   : 52.0   Min.   : 71.1   Min.   :1.513  
+# 1st Qu.:15.43   1st Qu.: 96.5   1st Qu.:120.8   1st Qu.:2.581  
+# Median :19.20   Median :123.0   Median :196.3   Median :3.325  
+# Mean   :20.09   Mean   :146.7   Mean   :230.7   Mean   :3.217  
+# 3rd Qu.:22.80   3rd Qu.:180.0   3rd Qu.:326.0   3rd Qu.:3.610  
+# Max.   :33.90   Max.   :335.0   Max.   :472.0   Max.   :5.424</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-7">7</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-8">8</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-9">9</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-10">10</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-11">11</div><div class="crayon-num" data-line="crayon-60f9058f5e2da670108069-12">12</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2da670108069-1">data("mtcars")</div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-2"> </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-3">df <div class="crayon-line" id="crayon-60f9058f5e2da670108069-4">summary(df)</div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-5"> </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-6">#      mpg              hp             disp             wt       </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-7"># Min.   :10.40   Min.   : 52.0   Min.   : 71.1   Min.   :1.513  </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-8"># 1st Qu.:15.43   1st Qu.: 96.5   1st Qu.:120.8   1st Qu.:2.581  </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-9"># Median :19.20   Median :123.0   Median :196.3   Median :3.325  </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-10"># Mean   :20.09   Mean   :146.7   Mean   :230.7   Mean   :3.217  </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-11"># 3rd Qu.:22.80   3rd Qu.:180.0   3rd Qu.:326.0   3rd Qu.:3.610  </div><div class="crayon-line" id="crayon-60f9058f5e2da670108069-12"># Max.   :33.90   Max.   :335.0   Max.   :472.0   Max.   :5.424</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們將資料進行標準化。</p>
+
+		<div id="crayon-60f9058f5e2e5799476583" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+scale_df <- scale(df)
+summary(scale_df)
+#      mpg                hp               disp               wt         
+# Min.   :-1.6079   Min.   :-1.3810   Min.   :-1.2879   Min.   :-1.7418  
+# 1st Qu.:-0.7741   1st Qu.:-0.7320   1st Qu.:-0.8867   1st Qu.:-0.6500  
+# Median :-0.1478   Median :-0.3455   Median :-0.2777   Median : 0.1101  
+# Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+# 3rd Qu.: 0.4495   3rd Qu.: 0.4859   3rd Qu.: 0.7688   3rd Qu.: 0.4014  
+# Max.   : 2.2913   Max.   : 2.7466   Max.   : 1.9468   Max.   : 2.2553</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-7">7</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-8">8</div><div class="crayon-num" data-line="crayon-60f9058f5e2e5799476583-9">9</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-1">scale_df <div class="crayon-line" id="crayon-60f9058f5e2e5799476583-2">summary(scale_df)</div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-3">#      mpg                hp               disp               wt         </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-4"># Min.   :-1.6079   Min.   :-1.3810   Min.   :-1.2879   Min.   :-1.7418  </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-5"># 1st Qu.:-0.7741   1st Qu.:-0.7320   1st Qu.:-0.8867   1st Qu.:-0.6500  </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-6"># Median :-0.1478   Median :-0.3455   Median :-0.2777   Median : 0.1101  </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-7"># Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-8"># 3rd Qu.: 0.4495   3rd Qu.: 0.4859   3rd Qu.: 0.7688   3rd Qu.: 0.4014  </div><div class="crayon-line" id="crayon-60f9058f5e2e5799476583-9"># Max.   : 2.2913   Max.   : 2.7466   Max.   : 1.9468   Max.   : 2.2553</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>並使用attribute()檢視各變數所使用的center和scale。</p>
+
+		<div id="crayon-60f9058f5e2ea702335378" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+attributes(scale_df)
+
+# $dim
+# [1] 32  4
+# 
+# $dimnames
+# $dimnames[[1]]
+# NULL
+# 
+# $dimnames[[2]]
+# [1] "mpg"  "hp"   "disp" "wt"  
+# 
+# 
+# $`scaled:center`
+#       mpg        hp      disp        wt 
+#  20.09062 146.68750 230.72188   3.21725 
+# 
+# $`scaled:scale`
+#         mpg          hp        disp          wt 
+#   6.0269481  68.5628685 123.9386938   0.9784574</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-7">7</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-8">8</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-9">9</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-10">10</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-11">11</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-12">12</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-13">13</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-14">14</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-15">15</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-16">16</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-17">17</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-18">18</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-19">19</div><div class="crayon-num" data-line="crayon-60f9058f5e2ea702335378-20">20</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-1">attributes(scale_df)</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-2"> </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-3"># $dim</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-4"># [1] 32  4</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-5"># </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-6"># $dimnames</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-7"># $dimnames[[1]]</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-8"># NULL</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-9"># </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-10"># $dimnames[[2]]</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-11"># [1] "mpg"  "hp"   "disp" "wt"  </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-12"># </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-13"># </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-14"># $`scaled:center`</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-15">#       mpg        hp      disp        wt </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-16">#  20.09062 146.68750 230.72188   3.21725 </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-17"># </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-18"># $`scaled:scale`</div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-19">#         mpg          hp        disp          wt </div><div class="crayon-line" id="crayon-60f9058f5e2ea702335378-20">#   6.0269481  68.5628685 123.9386938   0.9784574</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可以發現center和scale分別皆為預設的變數平均值與標準差。</p>
+
+		<div id="crayon-60f9058f5e2ef369428271" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+apply(X = df,MARGIN = 2,FUN = mean)
+#      mpg        hp      disp        wt 
+# 20.09062 146.68750 230.72188   3.21725
+apply(X = df,MARGIN = 2,FUN = sd)
+#       mpg          hp        disp          wt 
+# 6.0269481  68.5628685 123.9386938   0.9784574</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2ef369428271-6">6</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-1">apply(X = df,MARGIN = 2,FUN = mean)</div><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-2">#      mpg        hp      disp        wt </div><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-3"># 20.09062 146.68750 230.72188   3.21725</div><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-4">apply(X = df,MARGIN = 2,FUN = sd)</div><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-5">#       mpg          hp        disp          wt </div><div class="crayon-line" id="crayon-60f9058f5e2ef369428271-6"># 6.0269481  68.5628685 123.9386938   0.9784574</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>step 2: 進行標準化回歸</h4>
+<ul><li><span style="text-decoration: underline;"><strong>標準化回歸模型中的各項估計參數</strong>通常被稱作為<span style="color: #9f6ad4; text-decoration: underline;">\(\beta\)係數「Beta Coefficents」</span></span>。<span style="text-decoration: underline;">其估計值的大小可直接被拿來進行多元變數影響力之比較</span>。</li>
+<li>標準化模型中的解釋變數都是標準化後的Z-score，<span style="text-decoration: underline;">是以各變數的<span style="color: #9f6ad4; text-decoration: underline;">樣本標準差</span>為衡量單位</span>，因此每一個解釋變數的變動一單位的程度都是相同的。</li>
+<li><span style="color: #9f6ad4;">解釋變數\(X_{j}\)的\(\beta_{j}\)係數<span style="color: #333333;">代表著</span>：其他解釋變數不變的情況下，解釋變數\(X_{j}\)變動一個單位（一個樣本標準差，\(s_{x}\)），目標變數將變動\(\beta_{j}\)個樣本標準差，即變動\(\beta_{j}\times s_{y}\)。</span></li>
+<li>標準化回歸方程式：<br>
+$$y^*=\beta_{0}^* + \beta_{1}^**x_{1}^* + … + \beta_{i}^**x_{i}^*+\epsilon_{i}^*$$<br>
+其中，<br>
+$$y^*=\frac{y-\bar{y}}{s_{y}},\space x^*=\frac{x-\bar{x}}{s_{x}},\space \beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}$$</li>
+</ul><p></p>
+
+		<div id="crayon-60f9058f5e2f4599453297" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+mod_scale <- lm(formula = mpg ~ ., data = as.data.frame(scale_df))
+summary(mod_scale)
+# Call:
+#   lm(formula = mpg ~ ., data = scale_df)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.64562 -0.27212 -0.02854  0.17607  0.97245 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(>|t|)   
+# (Intercept)  3.568e-17  7.740e-02   0.000  1.00000   
+# hp          -3.544e-01  1.301e-01  -2.724  0.01097 * 
+# disp        -1.927e-02  2.128e-01  -0.091  0.92851   
+# wt          -6.171e-01  1.731e-01  -3.565  0.00133 **
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.4379 on 28 degrees of freedom
+# Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 
+# F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-7">7</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-8">8</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-9">9</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-10">10</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-11">11</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-12">12</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-13">13</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-14">14</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-15">15</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-16">16</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-17">17</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-18">18</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-19">19</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-20">20</div><div class="crayon-num" data-line="crayon-60f9058f5e2f4599453297-21">21</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-1">mod_scale <div class="crayon-line" id="crayon-60f9058f5e2f4599453297-2">summary(mod_scale)</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-3"># Call:</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-4">#   lm(formula = mpg ~ ., data = scale_df)</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-5"># </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-6"># Residuals:</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-7">#      Min       1Q   Median       3Q      Max </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-8"># -0.64562 -0.27212 -0.02854  0.17607  0.97245 </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-9"># </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-10"># Coefficients:</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-11">#               Estimate Std. Error t value Pr(>|t|)   </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-12"># (Intercept)  3.568e-17  7.740e-02   0.000  1.00000   </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-13"># hp          -3.544e-01  1.301e-01  -2.724  0.01097 * </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-14"># disp        -1.927e-02  2.128e-01  -0.091  0.92851   </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-15"># wt          -6.171e-01  1.731e-01  -3.565  0.00133 **</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-16"># ---</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-17"># Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-18"># </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-19"># Residual standard error: 0.4379 on 28 degrees of freedom</div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-20"># Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 </div><div class="crayon-line" id="crayon-60f9058f5e2f4599453297-21"># F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們同時執行未標準化回歸的結果。</p>
+
+		<div id="crayon-60f9058f5e2f7880221344" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+mod <- lm(formula = mpg ~ ., data = df)
+summary(mod)
+
+# Call:
+#   lm(formula = mpg ~ ., data = df)
+# 
+# Residuals:
+#    Min     1Q Median     3Q    Max 
+# -3.891 -1.640 -0.172  1.061  5.861 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 37.105505   2.110815  17.579  < 2e-16 ***
+# hp          -0.031157   0.011436  -2.724  0.01097 *  
+# disp        -0.000937   0.010350  -0.091  0.92851    
+# wt          -3.800891   1.066191  -3.565  0.00133 ** 
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 2.639 on 28 degrees of freedom
+# Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 
+# F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-7">7</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-8">8</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-9">9</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-10">10</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-11">11</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-12">12</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-13">13</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-14">14</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-15">15</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-16">16</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-17">17</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-18">18</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-19">19</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-20">20</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-21">21</div><div class="crayon-num" data-line="crayon-60f9058f5e2f7880221344-22">22</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-1">mod <div class="crayon-line" id="crayon-60f9058f5e2f7880221344-2">summary(mod)</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-3"> </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-4"># Call:</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-5">#   lm(formula = mpg ~ ., data = df)</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-6"># </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-7"># Residuals:</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-8">#    Min     1Q Median     3Q    Max </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-9"># -3.891 -1.640 -0.172  1.061  5.861 </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-10"># </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-11"># Coefficients:</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-12">#              Estimate Std. Error t value Pr(>|t|)    </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-13"># (Intercept) 37.105505   2.110815  17.579  <div class="crayon-line" id="crayon-60f9058f5e2f7880221344-14"># hp          -0.031157   0.011436  -2.724  0.01097 *  </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-15"># disp        -0.000937   0.010350  -0.091  0.92851    </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-16"># wt          -3.800891   1.066191  -3.565  0.00133 ** </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-17"># ---</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-18"># Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-19"># </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-20"># Residual standard error: 2.639 on 28 degrees of freedom</div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-21"># Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 </div><div class="crayon-line" id="crayon-60f9058f5e2f7880221344-22"># F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>可發現:</p>
+<ul><li>mod_scale和mod<span style="color: #9f6ad4;">兩個模型的Multiple R-squared(0.8268)、Adjusted R-squared(0.8083) 、F-statistic(44.57 on 3 and 28 DF)、P-value(8.65e-11)等顯著性結果都相同</span>。</li>
+<li><span style="color: #9f6ad4;">資料標準化僅改變了「估計參數(estimate)」和「標準誤(std. error)」的部分</span>。</li>
+</ul><div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 3: 比較標準化前後回歸係數差異</h4>
+<p>我們根據\(\beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}\)的關係式來重新計算標準化前後估計參數間的關係。</p>
+<p>先查看兩組模型的估計參數如下：</p>
+
+		<div id="crayon-60f9058f5e2fb482503701" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+mod_scale$coefficients
+#  (Intercept)            hp          disp            wt 
+# 3.567690e-17 -3.544385e-01 -1.926874e-02 -6.170635e-01 
+
+mod$coefficients
+# (Intercept)            hp          disp            wt 
+# 37.1055052690 -0.0311565508 -0.0009370091 -3.8008905826</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2fb482503701-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-1">mod_scale$coefficients</div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-2">#  (Intercept)            hp          disp            wt </div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-3"># 3.567690e-17 -3.544385e-01 -1.926874e-02 -6.170635e-01 </div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-4"> </div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-5">mod$coefficients</div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-6"># (Intercept)            hp          disp            wt </div><div class="crayon-line" id="crayon-60f9058f5e2fb482503701-7"># 37.1055052690 -0.0311565508 -0.0009370091 -3.8008905826</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>查看data scaling各變數的平均數與標準差值。</p>
+
+		<div id="crayon-60f9058f5e2ff482660713" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# attr() : Get or set specific attributes of an object.
+attr(scale_df,'scaled:center')
+#      mpg        hp      disp        wt 
+# 20.09062 146.68750 230.72188   3.21725 
+attr(scale_df,'scaled:scale')
+#       mpg          hp        disp          wt 
+# 6.0269481  68.5628685 123.9386938   0.9784574</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-3">3</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-4">4</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-5">5</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-6">6</div><div class="crayon-num" data-line="crayon-60f9058f5e2ff482660713-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-1"># attr() : Get or set specific attributes of an object.</div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-2">attr(scale_df,'scaled:center')</div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-3">#      mpg        hp      disp        wt </div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-4"># 20.09062 146.68750 230.72188   3.21725 </div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-5">attr(scale_df,'scaled:scale')</div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-6">#       mpg          hp        disp          wt </div><div class="crayon-line" id="crayon-60f9058f5e2ff482660713-7"># 6.0269481  68.5628685 123.9386938   0.9784574</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>根據\(\beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}\)，使用未標準化估係數計算標準化係數如下：</p>
+
+		<div id="crayon-60f9058f5e302259678288" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+(coeff_scale <- mod$coefficients*attr(scale_df,'scaled:scale')/attr(scale_df,'scaled:scale')[1])
+# (Intercept)          hp        disp          wt 
+# 37.10550527 -0.35443851 -0.01926874 -0.61706350</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e302259678288-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e302259678288-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e302259678288-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e302259678288-1">(coeff_scale <div class="crayon-line" id="crayon-60f9058f5e302259678288-2"># (Intercept)          hp        disp          wt </div><div class="crayon-line" id="crayon-60f9058f5e302259678288-3"># 37.10550527 -0.35443851 -0.01926874 -0.61706350</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>或是將標準化係數還原如下：</p>
+
+		<div id="crayon-60f9058f5e306347310587" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+(coeff_orig <- mod_scale$coefficients/attr(scale_df,'scaled:scale')*attr(scale_df,'scaled:scale')[1])
+#  (Intercept)            hp          disp            wt 
+# 3.567690e-17 -3.115655e-02 -9.370091e-04 -3.800891e+00</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f9058f5e306347310587-1">1</div><div class="crayon-num" data-line="crayon-60f9058f5e306347310587-2">2</div><div class="crayon-num" data-line="crayon-60f9058f5e306347310587-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f9058f5e306347310587-1">(coeff_orig <div class="crayon-line" id="crayon-60f9058f5e306347310587-2">#  (Intercept)            hp          disp            wt </div><div class="crayon-line" id="crayon-60f9058f5e306347310587-3"># 3.567690e-17 -3.115655e-02 -9.370091e-04 -3.800891e+00</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>結論</h4>
+<ul><li>常用的資料標準化方法：使用平均值作為中心點，並使用樣本標準差作為衡量單位。<br>
+$$Z=\frac{x-\bar{x}}{s_{x}}$$</li>
+<li>資料標準化僅影響各預測變數的<span style="text-decoration: underline;">係數</span>與<span style="text-decoration: underline;">標準誤</span>標準化前後之大小，其中<span style="text-decoration: underline;">係數標準化前(\(\beta\))後(\(\beta^*\))</span>之關係如下：<br>
+$$\beta_{j}^*=\frac{\beta_{j}\times s_{x}}{s_{y}}$$</li>
+<li>資料標準化並<span style="color: #9f6ad4;"><strong>不會</strong></span>對<span style="text-decoration: underline;">各係數顯著性</span>和<span style="text-decoration: underline;">模型顯著性</span>與<span style="text-decoration: underline;">調整後R平方等統計量</span>有所影響。</li>
+<li>資料標準化的目的是讓各變數的估計參數大小可以彼此比較，並以此推論各解釋變數的影響力。<span style="text-decoration: underline;">並非建模必要步驟</span>。</li>
+</ul><div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br><br><ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br><script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr><p>更多統計模型學習筆記連結：</p>
+<p><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e5%9b%9e%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">線性回歸模型</a></p>
+<p><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part1</a></p>
+<p><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part2</a></p>
+<p><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">決策樹/隨機森林</a></p>
+<p><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">階層式分群法</a></p>
+<p><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群法</a></p>
+<hr><p>參考連結：</p>
+<ol><li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="http://www2.kobe-u.ac.jp/~kawabat/ch06.pdf">http://www2.kobe-u.ac.jp/~kawabat/ch06.pdf</a></li>
+<li><a href="http://web.nchu.edu.tw/~finmyc/stat13p.pdf">http://web.nchu.edu.tw/~finmyc/stat13p.pdf</a></li>
+</ol></div>
+
+	<footer class="entry-footer"><span class="tags-links"> <a href="/tag/data-scale/" rel="tag">data scale</a>0<a href="/tag/data-scaling/" rel="tag">data scaling</a>0<a href="/tag/multiple-regression/" rel="tag">multiple regression</a>0<a href="/tag/%e5%a4%9a%e5%85%83%e5%9b%9e%e6%ad%b8%e5%88%86%e6%9e%90/" rel="tag">多元回歸分析</a>0<a href="/tag/%e8%a4%87%e5%9b%9e%e6%ad%b8%e5%88%86%e6%9e%90/" rel="tag">複回歸分析</a>0<a href="/tag/%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/" rel="tag">資料標準化</a></span>	</footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/" rel="prev">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a></div><div class="nav-next"><a href="/ggplot2-theme-r-visualization-%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96/" rel="next">ggplot2 theme : 3 elements – text, line, rectangle | R 資料視覺化 – part2</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="1813" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626932623"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

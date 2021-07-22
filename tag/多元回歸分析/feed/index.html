@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>多元回歸分析 &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/%e5%a4%9a%e5%85%83%e5%9b%9e%e6%ad%b8%e5%88%86%e6%9e%90/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:28:53 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 &#124; R統計</title>
+		<link>/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/</link>
+					<comments>/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 25 Sep 2018 13:19:38 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[統計模型]]></category>
+		<category><![CDATA[data scale]]></category>
+		<category><![CDATA[data scaling]]></category>
+		<category><![CDATA[multiple regression]]></category>
+		<category><![CDATA[多元回歸分析]]></category>
+		<category><![CDATA[複回歸分析]]></category>
+		<category><![CDATA[資料標準化]]></category>
+		<guid isPermaLink="false">/?p=1813</guid>
+
+					<description><![CDATA[<p>在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/">資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>在進行多元線性回歸分時，會遇到多變數彼此單位標準不一致的情況，如果想要比較回歸方程式不同解釋變數的估計參數彼此間的大小關係時，若沒有進行-資料標準化-之處理，是不能直接拿來做比較的。為了比較每一個解釋變數變動一單位對目標變數之影響大小，我們需事前將目標變數與解釋變數進行-資料標準化-處理。</p>
+<h4>多元線性回歸方程式</h4>
+<p>$$y=\beta_{0} + \beta_{1}*x_{1} + &#8230; + \beta_{i}*x_{i}+\epsilon_{i}$$</p>
+<h4>解釋變數\(X_{j}\)的參數估計值\(\hat{\beta}_{j}\)之含義</h4>
+<p>解釋變數\(X_{j}\)的參數估計值\(\hat{\beta}_{j}\)之含義為：在其他解釋變數不變下，解釋變數\(X_{j}\)變動一個衡量單位，目標變數將變動\(\hat{\beta}_{j}\)個衡量單位。即</p>
+<p>$$\frac{dy}{dx_{j}}=\beta_{j}$$</p>
+<p>若要比較不同解釋變數對目標變數之影響大小(\(\hat{\beta}_{j}\))，我們必須進行標準化回歸，即將目標變數與預測變數一併標準化。</p>
+<h4>標準化回歸</h4>
+<p>標準化回歸就將目標變數和預測變數分別減去各自的平均數再除以各自的標準差，即計算z-score，再將標準化的目標與解釋變數投入回歸模型。</p>
+<p>$$Z=\frac{x-\bar{x}}{s_{x}}$$</p>
+<h4>step 1: Data scaling 資料標準化</h4>
+<p>在R程式語言中，我們則可以使用scale()函數。scale()函數預設將資料center到資料平均值，並除以標準差(standard deviation)來scale資料。</p>
+<p>我們使用R內建mtcars資料集來進行示範。</p><pre class="crayon-plain-tag">data("mtcars")
+
+df &lt;- data.frame(mpg = mtcars$mpg, hp = mtcars$hp, disp = mtcars$disp, wt = mtcars$wt)
+summary(df)
+
+#      mpg              hp             disp             wt       
+# Min.   :10.40   Min.   : 52.0   Min.   : 71.1   Min.   :1.513  
+# 1st Qu.:15.43   1st Qu.: 96.5   1st Qu.:120.8   1st Qu.:2.581  
+# Median :19.20   Median :123.0   Median :196.3   Median :3.325  
+# Mean   :20.09   Mean   :146.7   Mean   :230.7   Mean   :3.217  
+# 3rd Qu.:22.80   3rd Qu.:180.0   3rd Qu.:326.0   3rd Qu.:3.610  
+# Max.   :33.90   Max.   :335.0   Max.   :472.0   Max.   :5.424</pre><p>我們將資料進行標準化。</p><pre class="crayon-plain-tag">scale_df &lt;- scale(df)
+summary(scale_df)
+#      mpg                hp               disp               wt         
+# Min.   :-1.6079   Min.   :-1.3810   Min.   :-1.2879   Min.   :-1.7418  
+# 1st Qu.:-0.7741   1st Qu.:-0.7320   1st Qu.:-0.8867   1st Qu.:-0.6500  
+# Median :-0.1478   Median :-0.3455   Median :-0.2777   Median : 0.1101  
+# Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
+# 3rd Qu.: 0.4495   3rd Qu.: 0.4859   3rd Qu.: 0.7688   3rd Qu.: 0.4014  
+# Max.   : 2.2913   Max.   : 2.7466   Max.   : 1.9468   Max.   : 2.2553</pre><p>並使用attribute()檢視各變數所使用的center和scale。</p><pre class="crayon-plain-tag">attributes(scale_df)
+
+# $dim
+# [1] 32  4
+# 
+# $dimnames
+# $dimnames[[1]]
+# NULL
+# 
+# $dimnames[[2]]
+# [1] "mpg"  "hp"   "disp" "wt"  
+# 
+# 
+# $`scaled:center`
+#       mpg        hp      disp        wt 
+#  20.09062 146.68750 230.72188   3.21725 
+# 
+# $`scaled:scale`
+#         mpg          hp        disp          wt 
+#   6.0269481  68.5628685 123.9386938   0.9784574</pre><p>可以發現center和scale分別皆為預設的變數平均值與標準差。</p><pre class="crayon-plain-tag">apply(X = df,MARGIN = 2,FUN = mean)
+#      mpg        hp      disp        wt 
+# 20.09062 146.68750 230.72188   3.21725
+apply(X = df,MARGIN = 2,FUN = sd)
+#       mpg          hp        disp          wt 
+# 6.0269481  68.5628685 123.9386938   0.9784574</pre><p></p>
+<h4>step 2: 進行標準化回歸</h4>
+<ul>
+<li><span style="text-decoration: underline;"><strong>標準化回歸模型中的各項估計參數</strong>通常被稱作為<span style="color: #9f6ad4; text-decoration: underline;">\(\beta\)係數「Beta Coefficents」</span></span>。<span style="text-decoration: underline;">其估計值的大小可直接被拿來進行多元變數影響力之比較</span>。</li>
+<li>標準化模型中的解釋變數都是標準化後的Z-score，<span style="text-decoration: underline;">是以各變數的<span style="color: #9f6ad4; text-decoration: underline;">樣本標準差</span>為衡量單位</span>，因此每一個解釋變數的變動一單位的程度都是相同的。</li>
+<li><span style="color: #9f6ad4;">解釋變數\(X_{j}\)的\(\beta_{j}\)係數<span style="color: #333333;">代表著</span>：其他解釋變數不變的情況下，解釋變數\(X_{j}\)變動一個單位（一個樣本標準差，\(s_{x}\)），目標變數將變動\(\beta_{j}\)個樣本標準差，即變動\(\beta_{j}\times s_{y}\)。</span></li>
+<li>標準化回歸方程式：<br />
+$$y^*=\beta_{0}^* + \beta_{1}^**x_{1}^* + &#8230; + \beta_{i}^**x_{i}^*+\epsilon_{i}^*$$<br />
+其中，<br />
+$$y^*=\frac{y-\bar{y}}{s_{y}},\space x^*=\frac{x-\bar{x}}{s_{x}},\space \beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}$$</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">mod_scale &lt;- lm(formula = mpg ~ ., data = as.data.frame(scale_df))
+summary(mod_scale)
+# Call:
+#   lm(formula = mpg ~ ., data = scale_df)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -0.64562 -0.27212 -0.02854  0.17607  0.97245 
+# 
+# Coefficients:
+#               Estimate Std. Error t value Pr(&gt;|t|)   
+# (Intercept)  3.568e-17  7.740e-02   0.000  1.00000   
+# hp          -3.544e-01  1.301e-01  -2.724  0.01097 * 
+# disp        -1.927e-02  2.128e-01  -0.091  0.92851   
+# wt          -6.171e-01  1.731e-01  -3.565  0.00133 **
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.4379 on 28 degrees of freedom
+# Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 
+# F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</pre><p>我們同時執行未標準化回歸的結果。</p><pre class="crayon-plain-tag">mod &lt;- lm(formula = mpg ~ ., data = df)
+summary(mod)
+
+# Call:
+#   lm(formula = mpg ~ ., data = df)
+# 
+# Residuals:
+#    Min     1Q Median     3Q    Max 
+# -3.891 -1.640 -0.172  1.061  5.861 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(&gt;|t|)    
+# (Intercept) 37.105505   2.110815  17.579  &lt; 2e-16 ***
+# hp          -0.031157   0.011436  -2.724  0.01097 *  
+# disp        -0.000937   0.010350  -0.091  0.92851    
+# wt          -3.800891   1.066191  -3.565  0.00133 ** 
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 2.639 on 28 degrees of freedom
+# Multiple R-squared:  0.8268,	Adjusted R-squared:  0.8083 
+# F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</pre><p>可發現:</p>
+<ul>
+<li>mod_scale和mod<span style="color: #9f6ad4;">兩個模型的Multiple R-squared(0.8268)、Adjusted R-squared(0.8083) 、F-statistic(44.57 on 3 and 28 DF)、P-value(8.65e-11)等顯著性結果都相同</span>。</li>
+<li><span style="color: #9f6ad4;">資料標準化僅改變了「估計參數(estimate)」和「標準誤(std. error)」的部分</span>。</li>
+</ul>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>Step 3: 比較標準化前後回歸係數差異</h4>
+<p>我們根據\(\beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}\)的關係式來重新計算標準化前後估計參數間的關係。</p>
+<p>先查看兩組模型的估計參數如下：</p><pre class="crayon-plain-tag">mod_scale$coefficients
+#  (Intercept)            hp          disp            wt 
+# 3.567690e-17 -3.544385e-01 -1.926874e-02 -6.170635e-01 
+
+mod$coefficients
+# (Intercept)            hp          disp            wt 
+# 37.1055052690 -0.0311565508 -0.0009370091 -3.8008905826</pre><p>查看data scaling各變數的平均數與標準差值。</p><pre class="crayon-plain-tag"># attr() : Get or set specific attributes of an object.
+attr(scale_df,'scaled:center')
+#      mpg        hp      disp        wt 
+# 20.09062 146.68750 230.72188   3.21725 
+attr(scale_df,'scaled:scale')
+#       mpg          hp        disp          wt 
+# 6.0269481  68.5628685 123.9386938   0.9784574</pre><p>根據\(\beta_{j}^*=\frac{\beta_{j}*s_{x}}{s_{y}}\)，使用未標準化估係數計算標準化係數如下：</p><pre class="crayon-plain-tag">(coeff_scale &lt;- mod$coefficients*attr(scale_df,'scaled:scale')/attr(scale_df,'scaled:scale')[1])
+# (Intercept)          hp        disp          wt 
+# 37.10550527 -0.35443851 -0.01926874 -0.61706350</pre><p>或是將標準化係數還原如下：</p><pre class="crayon-plain-tag">(coeff_orig &lt;- mod_scale$coefficients/attr(scale_df,'scaled:scale')*attr(scale_df,'scaled:scale')[1])
+#  (Intercept)            hp          disp            wt 
+# 3.567690e-17 -3.115655e-02 -9.370091e-04 -3.800891e+00</pre><p></p>
+<h4>結論</h4>
+<ul>
+<li>常用的資料標準化方法：使用平均值作為中心點，並使用樣本標準差作為衡量單位。<br />
+$$Z=\frac{x-\bar{x}}{s_{x}}$$</li>
+<li>資料標準化僅影響各預測變數的<span style="text-decoration: underline;">係數</span>與<span style="text-decoration: underline;">標準誤</span>標準化前後之大小，其中<span style="text-decoration: underline;">係數標準化前(\(\beta\))後(\(\beta^*\))</span>之關係如下：<br />
+$$\beta_{j}^*=\frac{\beta_{j}\times s_{x}}{s_{y}}$$</li>
+<li>資料標準化並<span style="color: #9f6ad4;"><strong>不會</strong></span>對<span style="text-decoration: underline;">各係數顯著性</span>和<span style="text-decoration: underline;">模型顯著性</span>與<span style="text-decoration: underline;">調整後R平方等統計量</span>有所影響。</li>
+<li>資料標準化的目的是讓各變數的估計參數大小可以彼此比較，並以此推論各解釋變數的影響力。<span style="text-decoration: underline;">並非建模必要步驟</span>。</li>
+</ul>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多統計模型學習筆記連結：</p>
+<p><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e5%9b%9e%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">線性回歸模型</a></p>
+<p><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part1</a></p>
+<p><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part2</a></p>
+<p><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">決策樹/隨機森林</a></p>
+<p><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">階層式分群法</a></p>
+<p><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群法</a></p>
+<hr />
+<p>參考連結：</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="http://www2.kobe-u.ac.jp/~kawabat/ch06.pdf">http://www2.kobe-u.ac.jp/~kawabat/ch06.pdf</a></li>
+<li><a href="http://web.nchu.edu.tw/~finmyc/stat13p.pdf">http://web.nchu.edu.tw/~finmyc/stat13p.pdf</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/">資料標準化(Data Scaling)對複回歸分析(Mutiple Regression)的影響 | R統計</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/data-scaling-multiple-linear-r-%e8%b3%87%e6%96%99%e6%a8%99%e6%ba%96%e5%8c%96/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

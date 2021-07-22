@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>遺失值處理 &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:34:50 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>Missing Value Treatment &#124; 遺失值處理 &#124; 統計 R語言</title>
+		<link>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/</link>
+					<comments>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 28 Aug 2018 10:50:19 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[統計模型]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[knn]]></category>
+		<category><![CDATA[mice]]></category>
+		<category><![CDATA[missing value treatment]]></category>
+		<category><![CDATA[rpart]]></category>
+		<category><![CDATA[遺失值處理]]></category>
+		<guid isPermaLink="false">/?p=743</guid>
+
+					<description><![CDATA[<p>在進行資料分析時，常遇到的問題就是遺失值處理(Missing Value Treatment)。特別是重要特徵變數有遺失值時，是無法輕易忽略的。比如說，在進行回 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/">Missing Value Treatment | 遺失值處理 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>在進行資料分析時，常遇到的問題就是遺失值處理(Missing Value Treatment)。特別是重要特徵變數有遺失值時，是無法輕易忽略的。比如說，在進行回歸模型建置時，資料列若有任一特徵值是NA(Not Available)時，整列資料就將 被忽略不使用，這樣無疑會使我們失去很多資訊。</p>
+<h3>Missing Value Treatment</h3>
+<p>一般來說，我們會先判斷遺失資料在整體資料中所佔比例，若極小比例，是可以直接刪除資料列。但如果特徵變數中有超過5％的遺失比例，就得進行遺失值處理(Missing Value Treatment)。</p>
+<p>本篇將介紹常用的幾種Missing Value Treatment，依據不同狀況而使用，包括：</p>
+<ol>
+<li>刪除有遺失值的資料列</li>
+<li>刪除特徵變數</li>
+<li>使用平均數(mean)/中位數(median)/眾數(mode)填補</li>
+<li>預測(Prediction)
+<ol>
+<li>kNN (k-Nearest Neighbours)</li>
+<li>rpart (決策樹)</li>
+<li>MICE (Multivariate Imputation by Chained Equations)</li>
+</ol>
+</li>
+</ol>
+<h3>資料集準備</h3>
+<p>我們將使用mlbench package中的BostonHousing資料集來進行遺失值處理示範。由於BostonHousing原始資料集是沒有遺失值的，所以我們會隨機插入遺失值。最後則將預測值與實際值進行比較，以評估各個遺失值處理法的效果好壞。</p>
+<p>首先，我們載入資料集，並隨機將變數rad和ptraio的40列變成遺失值NA。</p><pre class="crayon-plain-tag">data("BostonHousing", package = "mlbench")
+original &lt;- BostonHousing
+
+set.seed(100)
+BostonHousing[sample(1:nrow(BostonHousing),40),"rad"] &lt;- NA
+BostonHousing[sample(1:nrow(BostonHousing),40), "ptratio"] &lt;- NA
+head(BostonHousing)</pre><p>檢視隨機插入遺失值得資料頭幾列。</p><pre class="crayon-plain-tag">&gt; head(BostonHousing)
+crim zn indus chas nox rm age dis rad tax ptratio b lstat medv
+1 0.00632 18 2.31 0 0.538 6.58 65.2 4.09 1 296 15.3 397 4.98 24.0
+2 0.02731 0 7.07 0 0.469 6.42 78.9 4.97 2 242 17.8 397 9.14 21.6
+3 0.02729 0 7.07 0 0.469 7.18 61.1 4.97 2 242 17.8 393 4.03 34.7
+4 0.03237 0 2.18 0 0.458 7.00 45.8 6.06 3 222 18.7 395 2.94 33.4
+5 0.06905 0 2.18 0 0.458 7.15 54.2 6.06 3 222 18.7 397 5.33 36.2
+6 0.02985 0 2.18 0 0.458 6.43 58.7 6.06 3 222 18.7 394 5.21 28.7</pre><p>接著，我們使用的mice套件檢視資料遺失值分佈的pattern。</p><pre class="crayon-plain-tag">install.packages("mice")
+library(mice)
+md.pattern(BostonHousing) # missing data pattern
+
+# crim zn indus chas nox rm age dis rad tax ptratio b lstat medv
+# 1 0.00632 18 2.31 0 0.538 6.58 65.2 4.09 1 296 15.3 397 4.98 24.0
+# 2 0.02731 0 7.07 0 0.469 6.42 78.9 4.97 2 242 17.8 397 9.14 21.6
+# 3 0.02729 0 7.07 0 0.469 7.18 61.1 4.97 2 242 17.8 393 4.03 34.7
+# 4 0.03237 0 2.18 0 0.458 7.00 45.8 6.06 3 222 18.7 395 2.94 33.4
+# 5 0.06905 0 2.18 0 0.458 7.15 54.2 6.06 3 222 18.7 397 5.33 36.2
+# 6 0.02985 0 2.18 0 0.458 6.43 58.7 6.06 3 222 18.7 394 5.21 28.7</pre><p></p>
+<h3>1. 刪除資料列法</h3>
+<p>如果資料集數量夠大，且要預測的事件在訓練資料集中有足夠具代表性的比重，可以選擇忽略遺失資料列。可以在建立模型時，將參數設成na.action=na.omit。務必要確保：(1)資料量夠大，模型不會失去預測能力(2)不構成偏差，即原始目標事件比例不會因為刪除遺失值而發生改變</p><pre class="crayon-plain-tag"># example 1
+lm(medv ~ ptratio + rad, data = BostonHousing, na.action = na.omit) # 雖然na.omit是預設值</pre><p></p>
+<h3>2. 刪除特徵變數法</h3>
+<p>如果該特徵變數遺失值得數量較其他變數都來的多，而且如果移除該變數你可以拯救許多筆資料，你可以考慮將該變數移除，除非該變數在業務經驗中是很重要的變數。屬於一種「變數重要性」與「遺失資料數」之間的抉擇。</p>
+<h3>3. 使用平均數(mean)/中位數(median)/眾數(mode)填補</h3>
+<p>使用平均數/中位數/眾數填補遺失值是一個較粗糙的手段，視情況而定，如果該變數變異性低或是對目標變數的影響利沒這麼高，則此粗略的近似法是可被接受，且可能可以產生不錯的結果。</p><pre class="crayon-plain-tag"># 可以使用Hmisc套件的imputte()來填補
+library(Hmisc)
+impute(BostonHousing$ptratio, mean)  # replace with mean
+impute(BostonHousing$ptratio, median)  # median
+impute(BostonHousing$ptratio, 20)  # replace specific number
+# 或是手動填補
+BostonHousing$ptratio[is.na(BostonHousing$ptratio)] &lt;- mean(BostonHousing$ptratio, na.rm = T)  # not run</pre><p>我們來計算使用平均值填補的正確率。</p><pre class="crayon-plain-tag">library(DMwR)
+actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- rep(mean(BostonHousing$ptratio, na.rm = TRUE), length(actuals))
+regr.eval(trues = actuals,preds = predicteds)
+
+# &gt; regr.eval(trues = actuals,preds = predicteds)
+#   mae    mse   rmse   mape 
+#   1.6232 4.1931 2.0477 0.0955</pre><p><span style="color: #333333;">其中幾個</span><span style="color: #0000ff;"><span style="color: #333333;">衡量</span><span style="color: #9f6ad4;">預測精準(Forcast Accuracy)</span></span>的方法如下：</p>
+<p><span style="color: #9f6ad4;">MAPE代表的是平均絕對誤差百分比(mean absolute percentage error)</span>。</p>
+<p>$$MAPE=\frac{1}{n}\sum_{t=1}^n\left|\frac{y_{t}-\hat{y_{t}}}{y_{t}}\right|$$</p>
+<p>其中，\(\hat{y_{t}}\)代表預測值，\(y_{t}\)則為實際值。</p>
+<p><span style="color: #9f6ad4;">RSME代表均方根誤差(Root-Square-Mean Error)</span>。</p>
+<p>$$RSME=\sqrt\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})^2}{n}$$</p>
+<p><span style="color: #9f6ad4;">MSE代表均方誤差(Mean-Square Error)</span>。即絕對誤差的平均值。</p>
+<p>$$MSE=\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})^2}{n}$$</p>
+<p><span style="color: #9f6ad4;">MAE代表平均絕對誤差(mean absolute error)</span>。</p>
+<p>$$MAE=\frac{\sum_{t=1}^n(\hat{y_{t}}-y_{t})}{n}$$</p>
+<p>我們可以看到平均值填補的MAPE(平均絕對誤差百分比)為0.0955。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h3>4. 預測(Prediction)</h3>
+<h4>4-1. kNN法(k-Nearest Neighbours)</h4>
+<p>套件DMwR中的knnImputation法，使用k個最鄰近的資料點來做估計遺失值。簡單來說，就是會根據每個遺失資料點，去計算歐幾里得距離找出最鄰近的k個資料點，並計算這k個資料加權平均值(使用距離加權)來填補。<span style="color: #9f6ad4;">優點是，你可以呼叫一次此函數，即可一次填補完所有特徵變數中的遺失值</span>。你也不需要指定要填補的變數，因為該函數式使用所有資料集當作參數。<span style="color: #9f6ad4;">但必須注意，不能將目標變數納入預測參數中</span>，因為在測試/正式預測環境中，如果資料有遺失值，你是無法使用未知的目標變數來當作預測變數的。</p><pre class="crayon-plain-tag">library(DMwR)
+# 將目標變數移除，進行knn預測填補
+knnOutput &lt;- knnImputation(data = BostonHousing[,!names(BostonHousing)%in% 'medv'])
+anyNA(knnOutput)
+
+# &gt; anyNA(knnOutput)
+#   [1] FALSE</pre><p>計算使用k-NN法的精準度。</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- knnOutput[is.na(BostonHousing$ptratio), "ptratio"]
+regr.eval(actuals, predicteds)
+
+#        mae        mse       rmse       mape 
+# 1.00188715 1.97910183 1.40680554 0.05859526</pre><p>其中MAPE(平均絕對誤差百分比)為0.059(&lt;0.0955)。誤差值較平均值填補法改善(降低)了38%。</p>
+<h4>4-2. 決策樹(rpart)</h4>
+<p><span style="text-decoration: underline;">kNN法的限制就是，如果<span style="color: #9f6ad4; text-decoration: underline;">遺失值是factor(類別變數)</span>，則不能使用</span>。而<span style="color: #9f6ad4;">函數rpat()和mice()則能處理這個情況。函數rpart()的優勢就是，預測變數中，只要有一個變數沒有遺失值即可</span>。(更多有關決策樹遺失值填補: <a href="/decision_tree_surrogate_in_cart/" target="_blank" rel="noopener noreferrer">Tree Surrogate in CART</a>)</p>
+<p>我們來使用rpart()處理遺失直預測。</p>
+<ul>
+<li>如果要預測的目標變數為類別變數，則將參數設定為method=class。</li>
+<li>如果要預測的目標變數為數值變數，則間參數設定為method=anova。</li>
+<li>並同樣注意，不要將目標變數投入為預測變數了。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(rpart)
+
+# 預測類別變數model
+class_mod &lt;- rpart(formula = rad ~ . -medv, data = BostonHousing[!is.na(BostonHousing$rad),], method = "class", na.action = na.omit)
+# 預測數值變數model
+anova_mod &lt;- rpart(formula = ptratio ~ . -medv, data = BostonHousing[!is.na(BostonHousing$ptratio),], method = "anova", na.action = na.omit)
+
+rad_predict &lt;- predict(object = class_mod,newdata = BostonHousing[is.na(BostonHousing$rad),])
+ptratio_predict &lt;- predict(object = anova_mod, newdata = BostonHousing[is.na(BostonHousing$ptratio),])</pre><p>計算使用rpart決策樹法填補ptratio的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- ptratio_predict
+regr.eval(trues = actuals, preds = predicteds)
+
+#        mae        mse       rmse       mape 
+# 0.71061673 0.99693845 0.99846805 0.04099908</pre><p>比較起kNN法，MAPE(平均絕對誤差百分比)改善(降低)了30%(from 0.059 to 0.041)。</p>
+<p>計算使用rpart決策樹法填補rad的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$rad[is.na(BostonHousing$rad)]
+predicteds &lt;- as.numeric(colnames(rad_predict)[apply(rad_predict, 1, which.max)])
+mean(actuals != predicteds)
+# &gt; mean(actuals != predicteds)
+#   [1] 0.25</pre><p></p>
+<h4>4-3. MICE (Multivariate Imputation by Chained Equations)</h4>
+<ul>
+<li>MICE是 Multivariate Imputation by Chained Equations 的縮寫，是一套R進階處理遺失值得套件。</li>
+<li>他的做法稍微特殊一點，將遺失值處理分成兩階段來進行，先是使用mice()來建立預測模型，在使用complete()來產生填補完整後的資料集。</li>
+<li>mice(df)會產生多組不同資料填補後的資料集結果，而complete()則會使用其中一組填補結果來完整資料集，預設為第一組。</li>
+</ul>
+<div><strong>MICE代表： Multivariate Imputations by Chained Equations (MICE)，具有以下幾個特點：</strong></div>
+<ul>
+<li>
+<div>主要可用來產生多元變數(multivariate)的多組空值填補值(multiple imputations)（可透過mice()函式中的參數m，number of mutiple imputations，來指定要產生幾組填補值解，預設為5組）。</div>
+</li>
+<li>
+<div>透過<a href="https://zh.wikipedia.org/wiki/%E5%90%89%E5%B8%83%E6%96%AF%E9%87%87%E6%A0%B7">Gibbs sampling</a>法來對多元變數產稱多組空值填補值。</div>
+</li>
+<li>
+<div>MICE填補方法是採用Fully Conditional Specification，即每一個不完整的變數都是分別用獨立的模型來預測空值的。</div>
+</li>
+<li>
+<div>MICE可處理連續型變數(continuous)、二元變數(binary)、無順序類別型變數(unordered categorical)、有序類別變數(ordered categorical)。</div>
+</li>
+<li>
+<div>MICE在預測目標欄位時(target column)，預設會使用其他非目標欄位來作為預測變數(predictors)。如遇預測變數本身也不完整的情況，最新產生的一組填補值會被用來完整預測變數，再進行目標變數的填補預測。</div>
+</li>
+<li>
+<div>我們可以替不同欄位指定各自的單變數填補模型(univariate imputation model)，使用方法範例：mice(data, meth=c(&#8216;sample&#8217;,&#8217;pmm&#8217;,&#8217;logreg&#8217;,&#8217;norm&#8217;)))。</div>
+</li>
+<li>
+<div>單變數填補模型可以使用內建的方法或是自訂方法(mice.impute.myfunc)(mice(method = c(&#8220;xxx&#8221;, &#8220;myfunc&#8221;))。</div>
+</li>
+<li>
+<div>常見的幾種內建填補模型包括：</div>
+</li>
+<li>
+<ul>
+<li>
+<div>pmm (Predictive mean matching) : 任何變數型態</div>
+</li>
+<li>
+<div>cart (Classification and regression trees) : 任何變數型態</div>
+</li>
+<li>
+<div>rf (Random forest imputations) : 任何變數型態</div>
+</li>
+<li>
+<div>logreg (Logistic regression) : 二元類別型態 (binary)</div>
+</li>
+</ul>
+</li>
+</ul>
+<div><strong>MICE package套件中的主要函式說明：</strong></div>
+<ul>
+<li>
+<div>md.pattern() : inspect the missing data pattern</div>
+</li>
+<li>
+<div>mice(): impute the missing values *m* times</div>
+</li>
+<li>
+<div>with(): analyzed completed data sets =&gt; Performs a computation of each of imputed datasets in data. with (data, expr = formula, &#8230;)。將產生的m組填補值套用到計算公式。</div>
+</li>
+<li>
+<div>pool(): combine parameter estimates =&gt; Pool the results of the repeated analyses。綜合m組填補數據所產生的模型的估計係數(estimates)、標準差(std.error)、和p-value。</div>
+</li>
+<li>
+<div><a href="https://www.rdocumentation.org/packages/mice/versions/3.3.0/topics/pool.compare">pool.compare()</a> : pool.compare(fit1, fit0, method = c(&#8220;wald&#8221;, &#8220;likelihood&#8221;), data = NULL)。使用方法&#8221;wald&#8221;或&#8221;likelihood&#8221;來比較兩種模型公式套用在所有填補數據的綜合結果。</div>
+</li>
+<li>
+<div>complete(): export imputed data 儲存和輸出其中一組完整填補數據</div>
+</li>
+<li>
+<div>ampute(): generate missing data =&gt; Generate simulated incomplete data 產生模擬的不完整數據</div>
+</li>
+</ul>
+<p>我們來看看如何使用mice()法來預測ptratio和rad。</p><pre class="crayon-plain-tag">library(mice)
+miceMod &lt;- mice(data = BostonHousing[,!names(BostonHousing) %in% "medv"],
+                method = "rf", #可以指定單一或多個補值法for不同的欄位，If specified as a single string, the same method will be used for all blocks
+                m = 5, #可以指定產生幾組預測果，預設為五組
+                maxit = 5 #可以指定迭代次數，預設為五次
+                ) # perform mice imputation, based on random forests.
+miceOutput &lt;- complete(miceMod,action = 1) #Complete a data frame with missing combinations of data. 預設action為第一組資料。
+
+anyNA(miceOutput)
+# [1] FALSE</pre><p>計算使用MICE法填補ptratio的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$ptratio[is.na(BostonHousing$ptratio)]
+predicteds &lt;- miceOutput[is.na(BostonHousing$ptratio),"ptratio"]
+regr.eval(actuals,predicteds)
+
+#        mae        mse       rmse       mape 
+# 0.35000000 0.77700000 0.88147603 0.01965896</pre><p>使用MICE法填補ptraio的MAPE(平均絕對誤差百分比)較rpart決策樹法改進（降低）了48% (from 0.041 to 0.020)。</p>
+<p>計算使用MICE法填補rad的精準度：</p><pre class="crayon-plain-tag">actuals &lt;- original$rad[is.na(BostonHousing$rad)]
+predicteds &lt;- miceOutput[is.na(BostonHousing$rad),"rad"]
+mean(actuals != predicteds) 
+# [1] 0.225</pre><p>使用MICE法填補rad的誤差較rpart決策樹法改進（降低）了10% （from 0.25 to 0.225)。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多遺失值處理參考文章：</p>
+<ol>
+<li><a href="https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/" target="_blank" rel="noopener noreferrer">Tutorial on 5 Powerful R Packages used for imputing missing values</a></li>
+<li><a href="https://www.r-bloggers.com/imputing-missing-data-with-r-mice-package/" target="_blank" rel="noopener noreferrer">Imputing missing data with R; MICE package</a></li>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/">Missing Value Treatment | 遺失值處理 | 統計 R語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/missing-value-treatment-%e9%81%ba%e5%a4%b1%e5%80%bc%e8%99%95%e7%90%86/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>dual y-axis &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/dual-y-axis/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:28:18 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>dual y-axis plotting 雙Y軸 繪圖 &#124; R 資料視覺化 Data Visualization 小技巧</title>
+		<link>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/</link>
+					<comments>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Fri, 21 Sep 2018 09:01:44 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<category><![CDATA[data visualization]]></category>
+		<category><![CDATA[dual y-axis]]></category>
+		<category><![CDATA[ggplot2]]></category>
+		<category><![CDATA[雙Y軸]]></category>
+		<guid isPermaLink="false">/?p=1762</guid>
+
+					<description><![CDATA[<p>很多時候在比較不同單位的資料走勢時，比如說身高v.s.體重或氣溫v.s.降雨量，會需要雙Y軸(dual y-axis)來繪製，除了有效標記不同資料單位區間大小， [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>很多時候在比較不同單位的資料走勢時，比如說身高v.s.體重或氣溫v.s.降雨量，會需要<span style="color: #9f6ad4;">雙Y軸(dual y-axis)</span>來繪製，除了有效標記不同資料單位區間大小，並能將兩資料的Y位置等比例壓縮成等高的Y軸區間以利比較。本篇學習筆記將比較ggplot2()與plot()繪製<span style="color: #9f6ad4;">雙y軸(dual y-axis)</span>方法優劣。</p>
+<h3>dual y-axis plotting 雙Y軸 繪圖</h3>
+<h4>step 1: data preparation</h4>
+<p>我們使用<a href="https://www.cwb.gov.tw/V7/climate/monthlyMean/Taiwan_precp.htm">中央氣象局的台北月平均氣溫與降雨量統計資料</a>。</p>
+<p>我們直接將台北月平均氣溫與降雨量的查詢結果複製到剪貼簿，並使用read.table(<span style="color: #9f6ad4;">pipe(&#8220;</span>pbpaste<span style="color: #9f6ad4;">)</span>)的方式讀取。</p>
+<p>(*此法為mac系統的剪貼簿，如果為window系統剪貼簿，則改為<span style="color: #9f6ad4;">“clipboard”</span>)</p><pre class="crayon-plain-tag">temp &lt;- read.table(pipe("pbpaste"), sep="\t", header=F) %&gt;% as.numeric()
+
+precipitation &lt;- read.table(pipe("pbpaste"), sep = "\t", header = F) %&gt;% as.numeric()</pre><p>接著將月份時間資訊、氣溫與降雨量三個向量合併成data frame。</p><pre class="crayon-plain-tag">df &lt;- data.frame(date = seq.Date(from = as.Date("2010-01-01"), to = as.Date("2010-12-01"), by = "month"), temp, precipitation)
+df
+#          date temp precipitation
+# 1  2010-01-01 16.1          83.2
+# 2  2010-02-01 16.5         170.3
+# 3  2010-03-01 18.5         180.4
+# 4  2010-04-01 21.9         177.8
+# 5  2010-05-01 25.2         234.5
+# 6  2010-06-01 27.7         325.9
+# 7  2010-07-01 29.6         245.1
+# 8  2010-08-01 29.2         322.1
+# 9  2010-09-01 27.4         360.5
+# 10 2010-10-01 24.5         148.9
+# 11 2010-11-01 21.5          83.1
+# 12 2010-12-01 17.9          73.3</pre><p>摘要氣溫與降雨量敘述統計。</p><pre class="crayon-plain-tag">summary(df[-1])
+
+#      temp       precipitation  
+# Min.   :16.10   Min.   : 73.3  
+# 1st Qu.:18.35   1st Qu.:132.5  
+# Median :23.20   Median :179.1  
+# Mean   :23.00   Mean   :200.4  
+# 3rd Qu.:27.48   3rd Qu.:264.4  
+# Max.   :29.60   Max.   :360.5</pre><p></p>
+<h4>step 2: plotting using ggplot2()</h4>
+<p>先畫出月份氣溫變化圖。</p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date)) + 
+  scale_x_date(date_breaks = "month") +
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1765" src="/wp-content/uploads/2018/09/Rplot01-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="618" srcset="/wp-content/uploads/2018/09/Rplot01-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot01-3-291x300.jpeg 291w, /wp-content/uploads/2018/09/Rplot01-3-230x237.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-3-350x361.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-3-480x494.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>加上第二座標軸。</p>
+<ul>
+<li>使用scale_y_axis(name = &#8230;, limits= &#8230;)調整主要Y標軸的命名(name)與區間。</li>
+<li>使用scale_y_axis(<span style="color: #9f6ad4;">sec.axis = sec_axis()</span>)加上第二Y軸，調整降雨單位與命名第二Y軸名稱。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity") +
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date)) + 
+  scale_x_date(date_breaks = "month") +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑") # 解決中文亂碼問題
+        )</pre><p><img loading="lazy" class="alignnone size-large wp-image-1766" src="/wp-content/uploads/2018/09/Rplot02-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot02-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot02-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot02-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot02-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot02-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>調整色彩與主題外觀。</p>
+<ul>
+<li>geom_bar(): 使用colour, fill 來調整長條圖的線條與填充色彩。</li>
+<li>geom_point(): 使用size, shape, fill 來調整點的大小、形狀與填充色彩。</li>
+<li>使用主題圖層theme_bw()。</li>
+<li>使用theme()中的panel.grid.major, panel.grid.minor參數將繪圖面板背景的主要次要隔線拿掉。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity", colour = gray(0.5), fill = gray(0.5)) +  # gray() Gray Level Specification
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date), size = 3, shape = 21, fill = "white") + 
+  scale_x_date(name = "Month",date_breaks = "month") +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme_bw() + 
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()</pre><p><img loading="lazy" class="alignnone size-large wp-image-1767" src="/wp-content/uploads/2018/09/Rplot03-4.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot03-4.jpeg 600w, /wp-content/uploads/2018/09/Rplot03-4-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot03-4-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot03-4-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot03-4-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>調整x軸月份時間標示方式。</p>
+<ul>
+<li>載入專門處理時間的lubridate套件。我們將使用套件中的month()函數回傳日期的月份並轉換成月份名稱。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(lubridate)
+
+ggplot(data = df) +
+  geom_bar(mapping = aes(y = precipitation * 30/361, x = date), stat = "identity", colour = gray(0.5), fill = gray(0.5)) +  # gray() Gray Level Specification
+  geom_line(mapping = aes(y = temp, x = date)) + 
+  geom_point(mapping = aes(y = temp, x = date), size = 3, shape = 21, fill = "white") + 
+  scale_x_date(name = "Month",date_breaks = "month",labels = function(date){return(month(date,label = T,abbr = F))}) +
+  scale_y_continuous(name = expression("Temperature ("~degree~"C)"), limits = c(0,30), sec.axis = sec_axis(~. *361/30, name = "Percipitation降雨量(mm毫米)"))+
+  theme_bw() + 
+  theme(axis.text.x = element_text(vjust = 0.5, angle = 45),
+        text = element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()
+  )</pre><p><img loading="lazy" class="alignnone size-large wp-image-1768" src="/wp-content/uploads/2018/09/Rplot04-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot04-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot04-3-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot04-3-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot04-3-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot04-3-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>即完成使用ggplot2繪製的雙Y軸(dual y-axis)圖表。</p>
+<h4>step 3: plotting using plot() &amp; barplot() &amp; axis</h4>
+<p>我們另外使用非ggplot2套件的方法來處理雙Y軸(dual y-axis)繪圖問題。</p>
+<p>首先，我們先畫出每月氣溫變化曲線。</p>
+<ul>
+<li>使用par(mar = c(bottom, left, top, right)) 來調整繪圖區邊界寬度。</li>
+<li>plot()中，使用type參數來調整</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1770" src="/wp-content/uploads/2018/09/Rplot05-3.jpeg" alt="dual y-axis 雙Y軸" width="600" height="618" srcset="/wp-content/uploads/2018/09/Rplot05-3.jpeg 600w, /wp-content/uploads/2018/09/Rplot05-3-291x300.jpeg 291w, /wp-content/uploads/2018/09/Rplot05-3-230x237.jpeg 230w, /wp-content/uploads/2018/09/Rplot05-3-350x361.jpeg 350w, /wp-content/uploads/2018/09/Rplot05-3-480x494.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>接著，我們就現有圖層上，再加上新圖層barplot()，使用par(new = TRUE)。</p>
+<ul>
+<li>因為是疊加上去的，為了避免重複的x軸和y軸，我們使用參數xaxt = &#8216;n&#8217;, yaxt = &#8216;n&#8217;將barplot()的x,y軸關閉。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1771" src="/wp-content/uploads/2018/09/Rplot06-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot06-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot06-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot06-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot06-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot06-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>加上<span style="color: #9f6ad4;">右邊y軸</span>的資訊。</p>
+<ul>
+<li>我們使用axis(side = &#8230;)來指定座標軸位置。1=below, 2=left, 3=above and<span style="color: #9f6ad4;"> 4=right</span>。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1772" src="/wp-content/uploads/2018/09/Rplot07-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot07-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot07-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot07-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot07-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot07-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>接著使用mtext()標上右邊座標軸的名稱。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4) 
+mtext("percipitation(mm)", side = 4, line = 3)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1773" src="/wp-content/uploads/2018/09/Rplot08-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot08-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot08-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot08-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot08-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot08-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>最後加上曲線跟長條圖的圖示說明方框於左上角。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(df$date,df$temp, type = "o", ylab = expression("temperature("~degree~"C)"),
+     main = "台北月平均氣溫與降雨量", xlab = "month",
+     col = "blue", family="黑體-繁 中黑", ylim = c(0,30))
+par(new = TRUE)
+barplot(df$precipitation,main = "",xaxt = 'n', yaxt = 'n', col = gray(0.8, 0.5),ylim = c(0,370))
+axis(side = 4)
+mtext("percipitation(mm)", side = 4, line = 3) 
+legend("topleft", c("temp", "percipitation"), pch=c(1,15), lty = c(1, 0), col=c("blue","gray"), pt.cex = 1.5)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1774" src="/wp-content/uploads/2018/09/Rplot09-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="693" srcset="/wp-content/uploads/2018/09/Rplot09-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot09-2-260x300.jpeg 260w, /wp-content/uploads/2018/09/Rplot09-2-230x266.jpeg 230w, /wp-content/uploads/2018/09/Rplot09-2-350x404.jpeg 350w, /wp-content/uploads/2018/09/Rplot09-2-480x554.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>即完成。<span style="text-decoration: underline;">這邊的好處是，左右兩側Y軸不需特別調整單位縮放問題，即可壓縮在標準化後的等長區間</span>。<span style="color: #9f6ad4;">但缺點是，曲線和長條圖在X軸上沒能對齊</span>。</p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>step 4 : using beaver1 &amp; beaver2 data plotting double lines with dual y-axis</h4>
+<p>我們試用另外一組資料(海狸體溫資料: beaver1, beaver2)示範，<span style="text-decoration: underline;">如何使用plot() + axis()來繪製雙Y軸的兩條曲線</span>。（<span style="color: #9f6ad4;">因為都是曲線，就沒有對齊問題，適用於比較曲線圖</span>）</p>
+<p>載入海狸1和海狸2的體溫資料</p><pre class="crayon-plain-tag">head(beaver1)
+#   day time  temp activ
+# 1 346  840 36.33     0
+# 2 346  850 36.34     0
+# 3 346  900 36.35     0
+# 4 346  910 36.42     0
+# 5 346  920 36.55     0
+# 6 346  930 36.69     0
+head(beaver2)
+#   day time  temp activ
+# 1 307  930 36.58     0
+# 2 307  940 36.73     0
+# 3 307  950 36.93     0
+# 4 307 1000 37.15     0
+# 5 307 1010 37.23     0
+# 6 307 1020 37.24     0
+
+
+dim(beaver1)
+# [1] 114   4
+dim(beaver2)
+# [1] 100   4</pre><p>先畫出第一隻海狸的體溫。</p><pre class="crayon-plain-tag">plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1779" src="/wp-content/uploads/2018/09/Rplot10-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot10-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot10-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot10-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot10-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot10-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot10-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>再畫出第二隻海狸的體溫。因為是要加在前一張圖層，故我們使用par(new = TRUE)。</p><pre class="crayon-plain-tag">plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature")
+par(new = TRUE)
+plot(beaver2[,3], type = "l", xaxt = 'n', yaxt='n', ylab = '', xlab = '')</pre><p><img loading="lazy" class="alignnone size-full wp-image-1780" src="/wp-content/uploads/2018/09/Rplot11-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot11-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot11-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot11-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot11-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot11-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot11-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>我們來新增第二個y軸並加上新y軸名稱，並條整兩條數列外觀與整體圖表主題。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(beaver1[1:100,3], type = "l", ylab = "beaver1 temperature",
+     main = "Beaver temperature plot", xlab = "time",
+     col = "blue")
+par(new = TRUE)
+plot(beaver2[,3], type = "l", xaxt = 'n', yaxt='n', ylab = '', xlab = '',
+     lty = 2, col = "red")
+axis(side = 4)
+mtext("beaver2 temperature", side = 4, line = 3) 
+legend("topleft", c("beaver1", "beaver2"),
+       col = c("blue", "red"), lty = c(1, 2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1782" src="/wp-content/uploads/2018/09/Rplot12-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot12-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot12-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot12-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot12-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot12-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot12-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>為了確認兩條曲線上每一點是否對齊，我們可以調整曲線樣式（並同時調整圖例說明）。</p><pre class="crayon-plain-tag">par(mar = c(5,5,3,5))
+plot(beaver1[1:100,3], type = "o", ylab = "beaver1 temperature",
+     main = "Beaver temperature plot", xlab = "time",
+     col = "blue")
+par(new = TRUE)
+plot(beaver2[,3], type = "o", xaxt = 'n', yaxt='n', ylab = '', xlab = '',
+     lty = 2, col = "red")
+axis(side = 4) 
+mtext("beaver2 temperature", side = 4, line = 3) 
+       col = c("blue", "red"), lty = c(1, 2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1781" src="/wp-content/uploads/2018/09/Rplot13-2.jpeg" alt="dual y-axis 雙Y軸" width="600" height="600" srcset="/wp-content/uploads/2018/09/Rplot13-2.jpeg 600w, /wp-content/uploads/2018/09/Rplot13-2-150x150.jpeg 150w, /wp-content/uploads/2018/09/Rplot13-2-300x300.jpeg 300w, /wp-content/uploads/2018/09/Rplot13-2-230x230.jpeg 230w, /wp-content/uploads/2018/09/Rplot13-2-350x350.jpeg 350w, /wp-content/uploads/2018/09/Rplot13-2-480x480.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<p>由上圖可發現，<span style="text-decoration: underline;">當兩筆資料都為曲線資料，即可在x軸對齊的基礎下使用雙Y軸比較走勢</span>。</p>
+<hr />
+<p>更多資料視覺化學習筆記：</p>
+<p><a href="/r-sqlite-data-visualization-ggplot2/" target="_blank" rel="noopener noreferrer">ggplot2 | 簡易資料視覺化 Basic Data Visualization &#8211; part1 | using R SQLite</a></p>
+<p><a href="/summarize-categorical-variables/" target="_blank" rel="noopener noreferrer">Summarize Categorical Variables | 類別變數摘要 | 統計 R語言</a></p>
+<hr />
+<p>參考連結：</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="https://whatalnk.github.io/r-tips/ggplot2-secondary-y-axis.nb.html">ggplot2: Secondary Y axis</a></li>
+<li><a href="https://thepracticalr.wordpress.com/2016/08/30/2-y-axis-plotting/">2 Y-AXIS PLOTTING</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/">dual y-axis plotting 雙Y軸 繪圖 | R 資料視覺化 Data Visualization 小技巧</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/dual-y-axis-plotting-%e9%9b%99y%e8%bb%b8-%e7%b9%aa%e5%9c%96-ggplot2/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

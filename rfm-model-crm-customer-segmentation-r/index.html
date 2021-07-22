@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#"><head><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計</title><meta name="robots" content="max-image-preview:large"><meta name="description" content="RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評估最適化的CRM方案，極大化投資報酬率。比如說，若能知道各客群歷史回應率，就能預測不同客群的行銷效果(預期回應人數與報酬率)，並客製化CRM行銷策略。"><meta property="og:locale" content="zh_TW"><meta property="og:type" content="article"><meta property="og:title" content="RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計"><meta property="og:description" content="RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評估最適化的CRM方案，極大化投資報酬率。比如說，若能知道各客群歷史回應率，就能預測不同客群的行銷效果(預期回應人數與報酬率)，並客製化CRM行銷策略。"><meta property="og:url" content="/rfm-model-crm-customer-segmentation-r/"><meta property="og:site_name" content="果醬珍珍•JamJam"><meta property="article:tag" content="CRM"><meta property="article:tag" content="RFM Model"><meta property="article:section" content="統計分析"><meta property="article:published_time" content="2018-12-05T03:23:22+08:00"><meta property="article:modified_time" content="2020-07-03T02:27:36+08:00"><meta property="og:updated_time" content="2020-07-03T02:27:36+08:00"><meta property="og:image" content="/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-1024x683.jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="683"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評估最適化的CRM方案，極大化投資報酬率。比如說，若能知道各客群歷史回應率，就能預測不同客群的行銷效果(預期回應人數與報酬率)，並客製化CRM行銷策略。"><meta name="twitter:title" content="RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計"><meta name="twitter:image" content="/wp-content/uploads/2018/12/campaign-creators-771730-unsplash.jpg"><link rel="dns-prefetch" href="//fonts.googleapis.com"><link rel="dns-prefetch" href="//s.w.org"><link rel="stylesheet" id="crayon-css" href="/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-theme-hwj-based-on-monokai-css" href="/wp-content/uploads/crayon-syntax-highlighter/themes/hwj-based-on-monokai/hwj-based-on-monokai.css" type="text/css" media="all"><link rel="stylesheet" id="crayon-font-monospace-css" href="/wp-content/plugins/crayon-syntax-highlighter/fonts/monospace.css" type="text/css" media="all"><link rel="stylesheet" id="sb_instagram_styles-css" href="/wp-content/plugins/instagram-feed/css/sb-instagram-2-2.min.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-bootstrap-css" href="/wp-content/themes/hwj-based-on-sydney/css/bootstrap/bootstrap.min.css" type="text/css" media="all"><link rel="stylesheet" id="wp-block-library-css" href="/wp-includes/css/dist/block-library/style.min.css" type="text/css" media="all"><link rel="stylesheet" id="titan-adminbar-styles-css" href="/wp-content/plugins/anti-spam/assets/css/admin-bar.css" type="text/css" media="all"><link rel="stylesheet" id="sydney-fonts-css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C400italic%2C600%7CRaleway%3A400%2C500%2C600" type="text/css" media="all"><link rel="stylesheet" id="sydney-style-css" href="/wp-content/themes/hwj-based-on-sydney/style.css" type="text/css" media="all"><style id="sydney-style-inline-css" type="text/css">
+.site-title { font-size:32px; }
+.site-description { font-size:16px; }
+#mainnav ul li a { font-size:14px; }
+h1 { font-size:52px; }
+h2 { font-size:42px; }
+h3 { font-size:32px; }
+h4 { font-size:25px; }
+h5 { font-size:20px; }
+h6 { font-size:18px; }
+body { font-size:16px; }
+.single .hentry .title-post { font-size:24px; }
+.header-image { background-size:cover;}
+.header-image { height:500px; }
+.widget-area .widget_fp_social a,#mainnav ul li a:hover, .sydney_contact_info_widget span, .roll-team .team-content .name,.roll-team .team-item .team-pop .team-social li:hover a,.roll-infomation li.address:before,.roll-infomation li.phone:before,.roll-infomation li.email:before,.roll-testimonials .name,.roll-button.border,.roll-button:hover,.roll-icon-list .icon i,.roll-icon-list .content h3 a:hover,.roll-icon-box.white .content h3 a,.roll-icon-box .icon i,.roll-icon-box .content h3 a:hover,.switcher-container .switcher-icon a:focus,.go-top:hover,.hentry .meta-post a:hover,#mainnav > ul > li > a.active, #mainnav > ul > li > a:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .text-color, .social-menu-widget a, .social-menu-widget a:hover, .archive .team-social li a, a, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,.classic-alt .meta-post a,.single .hentry .meta-post a { color:#3d3d3d}
+.reply,.woocommerce div.product .woocommerce-tabs ul.tabs li.active,.woocommerce #respond input#submit,.woocommerce a.button,.woocommerce button.button,.woocommerce input.button,.project-filter li a.active, .project-filter li a:hover,.preloader .pre-bounce1, .preloader .pre-bounce2,.roll-team .team-item .team-pop,.roll-progress .progress-animate,.roll-socials li a:hover,.roll-project .project-item .project-pop,.roll-project .project-filter li.active,.roll-project .project-filter li:hover,.roll-button.light:hover,.roll-button.border:hover,.roll-button,.roll-icon-box.white .icon,.owl-theme .owl-controls .owl-page.active span,.owl-theme .owl-controls.clickable .owl-page:hover span,.go-top,.bottom .socials li:hover a,.sidebar .widget:before,.blog-pagination ul li.active,.blog-pagination ul li:hover a,.content-area .hentry:after,.text-slider .maintitle:after,.error-wrap #search-submit:hover,#mainnav .sub-menu li:hover > a,#mainnav ul li ul:after, button, input[type="button"], input[type="reset"], input[type="submit"], .panel-grid-cell .widget-title:after { background-color:#3d3d3d}
+.roll-socials li a:hover,.roll-socials li a,.roll-button.light:hover,.roll-button.border,.roll-button,.roll-icon-list .icon,.roll-icon-box .icon,.owl-theme .owl-controls .owl-page span,.comment .comment-detail,.widget-tags .tag-list a:hover,.blog-pagination ul li,.hentry blockquote,.error-wrap #search-submit:hover,textarea:focus,input[type="text"]:focus,input[type="password"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="time"]:focus,input[type="week"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="color"]:focus, button, input[type="button"], input[type="reset"], input[type="submit"], .archive .team-social li a { border-color:#3d3d3d}
+.site-header.float-header { background-color:rgba(0,0,0,0.9);}
+@media only screen and (max-width: 1024px) { .site-header { background-color:#000000;}}
+.site-title a, .site-title a:hover { color:#ffffff}
+.site-description { color:#ffffff}
+#mainnav ul li a, #mainnav ul li::before { color:#ffffff}
+#mainnav .sub-menu li a { color:#ffffff}
+#mainnav .sub-menu li a { background:#1c1c1c}
+.text-slider .maintitle, .text-slider .subtitle { color:#ffffff}
+body { color:#5e5e5e}
+#secondary { background-color:#ffffff}
+#secondary, #secondary a, #secondary .widget-title { color:#767676}
+.footer-widgets { background-color:#252525}
+.btn-menu { color:#ffffff}
+#mainnav ul li a:hover { color:#d65050}
+.site-footer { background-color:#1c1c1c}
+.site-footer,.site-footer a { color:#666666}
+.overlay { background-color:#000000}
+.page-wrap { padding-top:10px;}
+.page-wrap { padding-bottom:100px;}
+@media only screen and (max-width: 1025px) {		
+			.mobile-slide {
+				display: block;
+			}
+			.slide-item {
+				background-image: none !important;
+			}
+			.header-slider {
+			}
+			.slide-item {
+				height: auto !important;
+			}
+			.slide-inner {
+				min-height: initial;
+			} 
+		}
+@media only screen and (max-width: 780px) { 
+    	h1 { font-size: 32px;}
+		h2 { font-size: 28px;}
+		h3 { font-size: 22px;}
+		h4 { font-size: 18px;}
+		h5 { font-size: 16px;}
+		h6 { font-size: 14px;}
+    }
+
+</style><link rel="stylesheet" id="sydney-font-awesome-css" href="/wp-content/themes/hwj-based-on-sydney/fonts/font-awesome.min.css" type="text/css" media="all"><script type="text/javascript" src="/wp-includes/js/jquery/jquery.min.js" id="jquery-core-js"></script><script type="text/javascript" src="/wp-includes/js/jquery/jquery-migrate.min.js" id="jquery-migrate-js"></script><script type="text/javascript" id="crayon_js-js-extra">
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/localhost\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script><script type="text/javascript" src="/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js" id="crayon_js-js"></script></head><body><div id="fb-root"></div><script>(function(d, s, id) {
+
+	var js, fjs = d.getElementsByTagName(s)[0];
+
+	if (d.getElementById(id)) return;
+
+	js = d.createElement(s); js.id = id;
+
+	js.src = '//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.3';
+
+	fjs.parentNode.insertBefore(js, fjs);
+
+	}(document, 'script', 'facebook-jssdk'));</script><style type="text/css">
+		.header-image {
+			background-image: url(/wp-content/uploads/2018/09/果醬珍珍_首圖_10.jpg);
+			display: block;
+		}
+		@media only screen and (max-width: 1024px) {
+			.header-inner {
+				display: block;
+			}
+			.header-image {
+				background-image: none;
+				height: auto !important;
+			}		
+		}
+	</style><style type="text/css" id="wp-custom-css">
+			.entry-content a {
+	text-decoration: underline;
+	color: #9f6ad4;
+}		</style><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-123728148-1"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-123728148-1');
+</script><div class="preloader">
+	    <div class="spinner">
+	        <div class="pre-bounce1"></div>
+	        <div class="pre-bounce2"></div>
+	    </div>
+	</div>
+	
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">跳至主內容區</a>
+
+	
+	
+	
+	<div id="masthead" class="site-header" role="banner" style="display:none;"> 
+		<div class="header-wrap">
+            <div class="container">
+                <div class="row">
+				<div class="col-md-4 col-sm-8 col-xs-12">
+		        					<a href="/" title="果醬珍珍•JamJam"><img class="site-logo" src="/wp-content/uploads/2018/09/grape_320.png" alt="果醬珍珍•JamJam"></a>
+		        				</div>
+				<div class="col-md-8 col-sm-4 col-xs-12">
+					<div class="btn-menu"></div>
+					<nav id="mainnav" class="mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute" class="menu"><li id="menu-item-1691" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li id="menu-item-626" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li id="menu-item-627" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li id="menu-item-2415" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>					</nav></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+
+	
+	<style>
+	.header-img-bounding-box {
+	  background-image: url("/wp-content/uploads/2018/09/%E8%83%8C%E6%99%AF%E5%8E%9F%E5%9C%96_v2.jpg");
+    background-size:     cover;                      /* <------ */
+    background-repeat:   no-repeat;
+    background-position: center center;              /* optional, center the image */
+/* 	height: 300px; */
+	padding-top:55px;
+	padding-bottom:55px;
+		}
+		.title_img {
+		    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+
+		}
+		
+		
+		.subtitle_img {
+			display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+		min-width: 340px;
+			max-width: 800px;
+		}
+		
+		
+		.subtitle_overlay {
+			margin-top:20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			padding-bottom:8px;
+		}
+	</style><div>
+		<a href="/">
+		<div class="header-img-bounding-box">
+
+			<img src="/wp-content/uploads/2018/09/title.png" class="title_img"><div class="subtitle_overlay">
+			<img src="/wp-content/uploads/2018/09/subtitle.png" class="subtitle_img"></div>			
+		</div>	
+		</a>
+	</div>
+	
+	
+	
+	<header><nav id="my_mainnav" class="my_mainnav" role="navigation"><div class="menu-jamleecute-container"><ul id="menu-jamleecute-1" class="menu"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1691"><a href="/category/programming-statistics/"> 程式與統計</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-626"><a href="/category/travel/">旅遊</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-627"><a href="/category/foodie/">美食</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2415"><a href="/%e7%b0%a1%e4%bb%8b/">關於我</a></li>
+</ul></div>		</nav></header><div id="content" class="page-wrap">
+		
+		
+		
+		<style>
+			.home_intro {
+				    margin: 0 12%;
+					/*height: 400px;*/
+    				/*background: yellow;*/
+				
+			}
+			
+			.home_intro .content{
+				display: flex; 
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    flex-wrap: wrap;
+			}
+			.home_intro .content .intro {
+				width: 240px;
+    			
+				margin: 0 auto;
+				
+			}
+			.home_intro .content .intro .image {
+				/*width: 240px;
+    			padding: 0px;
+				margin: 0 auto;
+				display: inline-block;*/
+			  position: relative;
+			  width: 240px;
+			  height: 240px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+			.home_intro .content .description{
+				padding: 0 0px;
+    			margin: 0 auto;
+    			width: 240px;
+				text-align: center;
+			}
+			.home_intro .content .social_icon {
+				margin: 0 7px;
+			}
+			
+			.circular--landscape {
+			  display: inline-block;
+			  position: relative;
+			  width: 200px;
+			  height: 200px;
+			  overflow: hidden;
+			  border-radius: 50%;
+			}
+
+			.home_intro .content .intro .image img {
+			  width: auto;
+			  height: 100%;
+			  /*margin-left: -50px;*/
+			}
+		</style><div class="container content-wrapper">
+			<div class="row">	
+				
+				
+				
+	
+	
+	<div id="primary" class="content-area col-md-9 ">
+
+		
+		<main id="main" class="post-wrap" role="main"><article id="post-2221" class="post-2221 post type-post status-publish format-standard has-post-thumbnail hentry category-programming-statistics category-291 tag-crm tag-rfm-model"><div class="entry-thumb">
+			<img width="4608" height="3072" src="/wp-content/uploads/2018/12/campaign-creators-771730-unsplash.jpg" class="attachment-large-thumb size-large-thumb wp-post-image" alt="campaign-creators-771730-unsplash" loading="lazy" srcset="/wp-content/uploads/2018/12/campaign-creators-771730-unsplash.jpg 4608w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-300x200.jpg 300w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-768x512.jpg 768w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-1024x683.jpg 1024w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-830x553.jpg 830w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-230x153.jpg 230w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-350x233.jpg 350w,/wp-content/uploads/2018/12/campaign-creators-771730-unsplash-480x320.jpg 480w" sizes="(max-width: 4608px) 100vw, 4608px"></div>
+		
+	<header class="entry-header"><div class="meta-post">
+			<a href="/category/programming-statistics/" title=" 程式與統計" class="post-cat"> 程式與統計</a><a href="/category/programming-statistics/%e7%b5%b1%e8%a8%88%e5%88%86%e6%9e%90/" title="統計分析" class="post-cat">統計分析</a>		</div>
+
+		<h1 class="title-post entry-title">RFM Model using R | CRM 客戶分群模型 Customer Segmentation | R 統計</h1>
+				<div class="single-meta">
+			<span class="posted-on">發表於 <a href="/rfm-model-crm-customer-segmentation-r/" rel="bookmark"><time class="entry-date published" datetime="2018-12-05T11:23:22+08:00">2018-12-05</time><time class="updated" datetime="2020-07-03T10:27:36+08:00">2020-07-03</time></a></span><span class="byline"> <span class="author vcard"><a class="url fn n" href="/author/jamleecute/">jamleecute</a></span></span>		</div>
+			</header><div class="entry-content">
+		<p>RFM Model 是個簡易客戶分群的模型，依據消費者的Recency, Frequency, Monetary維度資訊來快速檢視客群組成，並能幫助行銷者快速評估最適化的CRM方案，極大化投資報酬率。比如說，若能知道各客群歷史回應率，就能預測不同客群的行銷效果(預期回應人數與報酬率)，並客製化CRM行銷策略。</p>
+<h3>RFM Model</h3>
+<p>在精準行銷的時代，行銷者需要評估資源（或預算）如何有效的分配給對的目標受眾輪廓，最大化投資報酬率。主要需評估的問題包括兩個面向：</p>
+<ol><li><strong>Customer Segmentation</strong>
+<ul><li>如何有效區隔消費者，並找出各消費者分群的特色如：高貢獻度、高往來程度、以及高回應率等。</li>
+</ul></li>
+<li><strong>CRM strategies</strong>
+<ul><li>根據消費者所屬分群特性，挑選合適的目標受眾進行行銷，以獲取最大報酬率。</li>
+</ul></li>
+</ol><p>RFM模型則是一個簡單卻有效的顧客分析模型，能幫助我們解決以上兩個問題。其中RFM分別代表：</p>
+<ul><li>R – Recency : 消費者最後一次購買距今天數。</li>
+<li>F – Frequency: 消費者購買頻率。</li>
+<li>M – Monetary: 消費者平均花費金額（每一次購物/訂單結帳）。</li>
+</ul><p>雖然RFM模型在部分統計分析軟體中有現成快速套用的RFM功能節點(ex: IBM SPSS RFM)，在R裡面並沒有簡易現成的套件能快速套用。故本學習筆記將說明如何使用R語言進行RFM分析。</p>
+<h3>Data Explore</h3>
+<p>我們使用CDNOW dataset (1/10th sample)，<a href="http://www.brucehardie.com/datasets/" target="_blank" rel="noopener noreferrer">下載連結</a>。</p>
+
+		<div id="crayon-60f906a89dd24064415237" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# read CDNOW_SAMPLE.txt
+rawdf <- read.table(file = "CDNOW_sample.txt", header = FALSE)
+head(rawdf)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd24064415237-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd24064415237-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd24064415237-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd24064415237-1"># read CDNOW_SAMPLE.txt</div><div class="crayon-line" id="crayon-60f906a89dd24064415237-2">rawdf <div class="crayon-line" id="crayon-60f906a89dd24064415237-3">head(rawdf)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd31678493098" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   V1 V2       V3 V4    V5
+## 1  4  1 19970101  2 29.33
+## 2  4  1 19970118  2 29.73
+## 3  4  1 19970802  1 14.96
+## 4  4  1 19971212  2 26.48
+## 5 21  2 19970101  3 63.34
+## 6 21  2 19970113  1 11.77
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd31678493098-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd31678493098-1">##   V1 V2       V3 V4    V5</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-2">## 1  4  1 19970101  2 29.33</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-3">## 2  4  1 19970118  2 29.73</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-4">## 3  4  1 19970802  1 14.96</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-5">## 4  4  1 19971212  2 26.48</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-6">## 5 21  2 19970101  3 63.34</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-7">## 6 21  2 19970113  1 11.77</div><div class="crayon-line" id="crayon-60f906a89dd31678493098-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd36234338778" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# select columns of interest :
+df <- rawdf[,c(1,3,5)]
+# rename columns' names
+names(df) <- c("ID","Date","Amount")
+# transfer column Date type from int type to date type
+df$Date <- as.Date(as.character(df$Date), format="%Y%m%d")
+head(df)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd36234338778-7">7</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd36234338778-1"># select columns of interest :</div><div class="crayon-line" id="crayon-60f906a89dd36234338778-2">df <div class="crayon-line" id="crayon-60f906a89dd36234338778-3"># rename columns' names</div><div class="crayon-line" id="crayon-60f906a89dd36234338778-4">names(df) <div class="crayon-line" id="crayon-60f906a89dd36234338778-5"># transfer column Date type from int type to date type</div><div class="crayon-line" id="crayon-60f906a89dd36234338778-6">df$Date <div class="crayon-line" id="crayon-60f906a89dd36234338778-7">head(df)</div></div></div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd3a603237343" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID       Date Amount
+## 1  4 1997-01-01  29.33
+## 2  4 1997-01-18  29.73
+## 3  4 1997-08-02  14.96
+## 4  4 1997-12-12  26.48
+## 5 21 1997-01-01  63.34
+## 6 21 1997-01-13  11.77
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd3a603237343-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd3a603237343-1">##   ID       Date Amount</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-2">## 1  4 1997-01-01  29.33</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-3">## 2  4 1997-01-18  29.73</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-4">## 3  4 1997-08-02  14.96</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-5">## 4  4 1997-12-12  26.48</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-6">## 5 21 1997-01-01  63.34</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-7">## 6 21 1997-01-13  11.77</div><div class="crayon-line" id="crayon-60f906a89dd3a603237343-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd3e245647378" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# see total row&column number 
+dim(df)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd3e245647378-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd3e245647378-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd3e245647378-1"># see total row&column number </div><div class="crayon-line" id="crayon-60f906a89dd3e245647378-2">dim(df)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd41345212709" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 6919    3
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd41345212709-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd41345212709-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd41345212709-1">## [1] 6919    3</div><div class="crayon-line" id="crayon-60f906a89dd41345212709-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd46465449741" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+# count the number of distinct ID 
+uid <- df[!duplicated(df$ID),]
+dim(uid)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd46465449741-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd46465449741-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd46465449741-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd46465449741-1"># count the number of distinct ID </div><div class="crayon-line" id="crayon-60f906a89dd46465449741-2">uid <div class="crayon-line" id="crayon-60f906a89dd46465449741-3">dim(uid)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd49410416095" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## [1] 2357    3
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd49410416095-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd49410416095-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd49410416095-1">## [1] 2357    3</div><div class="crayon-line" id="crayon-60f906a89dd49410416095-2"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>我們可以知道獨立用戶ID數為2357，交易比數共為6919。</p>
+<h3>Segment the Customers into RFM Cells</h3>
+<p>根據剛剛載入的資料，我們可以依據R,F,M三個維度將客戶分群到各個RFM<span style="color: #9f6ad4;"> Cell</span>。<br>
+而通常，我們會幫客戶在每個維度給予1~5級的評分（維度bin數量可以根據情境調整），分數越高表示在該維度程度越高。</p>
+<p>且根據過去經驗來說，Recency是高回應率的主要關鍵影響因素(x100)，Frequency是次要影響因素(x10)，最後才是Monetary(x1)。被分類到同一個RFM Cell的客戶分數會是相同的。分數“531″代表著該客戶在Recency得到5分，Frequency得到3分，Monetary則為1分。</p>
+<p>在每一維度進行客戶切群(分箱，Binning)的方法有兩種：一種是Nested Binning巢狀法，另一種是Independent Binning獨立法。</p>
+<ol><li><strong>Nested Binning 巢狀法</strong>：先將客群在Recency維度切成若干等分(aliquots)，然後從每組Recency等分中再依據Frequency切割成若干等份，Monetary亦然。此法的好處是，每一群RFM Cell的人數會差不多，但缺點就是不同Recency分群下的Frequency和Monetary的意義就無法比較，分數相同，但意義不同。</li>
+<li><strong>Independent Binning 獨立法</strong>：則是獨立將客戶在各維度進行等分切群，這樣的好處就是，同樣RFM分數的意義是相同的，但缺點就是每群RFM Cell中的人數大小會有差距。</li>
+</ol><p>更多有關維度切bin(分箱)方法的優缺點比較(pros & cons)可參考此<a href="https://www.quora.com/SPSS/SPSS-Pros-and-Cons-of-Nested-and-Independent-Binning-for-RFM-Analysis">連結</a>。</p>
+<p><span style="color: #9f6ad4;">為了讓每一群RFM Cell可以相互比較，本學習筆記將先以Independent法，依據各維度分佈來決定bin的切點(breaks)</span>。</p>
+<h3>Calculate the Recency, Frequency, and Monetary</h3>
+<p>為了進行RFM分析，我們需要進一步處理加工CDNOW Sample資料集，分為以下幾個步驟：</p>
+<ol><li>group by unique customer ID</li>
+<li>計算每個ID的Recency: 計算最新的一筆交易距離今日或其他指定日期的天數。</li>
+<li>計算每個ID的Frequency: 計算每個人的總交易次數。</li>
+<li>計算每個ID的Monetary: 計算每個人的交易金額加總除上總交易次數，即平均每筆交易的金額。</li>
+</ol><p>首先，先限制分析資料的時間區間如下：</p>
+
+		<div id="crayon-60f906a89dd4d527763492" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+startDate <- as.Date("19970101","%Y%m%d")
+endDate <- as.Date("19980701","%Y%m%d")</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd4d527763492-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd4d527763492-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd4d527763492-1">startDate <div class="crayon-line" id="crayon-60f906a89dd4d527763492-2">endDate </div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p>group by 每個獨立ID計算以上時間區間的R,F,M值。其中Recency是最近一次交易距離endDate(1998-07-01)的天數。</p>
+
+		<div id="crayon-60f906a89dd52300511623" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(dplyr)
+library(magrittr)
+
+df.1 <- 
+  df %>% 
+  filter(Date >= startDate & Date <= endDate) %>% 
+  group_by(ID) %>% 
+  summarise(
+    MaxTransDate = max(Date),
+    Amount = sum(Amount),
+    Recency = as.numeric(endDate - MaxTransDate),
+    Frequency = n(),
+    Monetary = Amount/Frequency
+         ) %>% 
+  ungroup() %>% 
+  as.data.frame()
+
+head(df.1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-8">8</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-9">9</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-10">10</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-11">11</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-12">12</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-13">13</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-14">14</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-15">15</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-16">16</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-17">17</div><div class="crayon-num" data-line="crayon-60f906a89dd52300511623-18">18</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd52300511623-1">library(dplyr)</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-2">library(magrittr)</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-3"> </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-4">df.1 <div class="crayon-line" id="crayon-60f906a89dd52300511623-5">  df %>% </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-6">  filter(Date >= startDate & Date % </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-7">  group_by(ID) %>% </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-8">  summarise(</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-9">    MaxTransDate = max(Date),</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-10">    Amount = sum(Amount),</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-11">    Recency = as.numeric(endDate - MaxTransDate),</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-12">    Frequency = n(),</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-13">    Monetary = Amount/Frequency</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-14">         ) %>% </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-15">  ungroup() %>% </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-16">  as.data.frame()</div><div class="crayon-line" id="crayon-60f906a89dd52300511623-17"> </div><div class="crayon-line" id="crayon-60f906a89dd52300511623-18">head(df.1)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd55817830957" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID MaxTransDate Amount Recency Frequency Monetary
+## 1  4   1997-12-12 100.50     201         4   25.125
+## 2 18   1997-01-04  14.96     543         1   14.960
+## 3 21   1997-01-13  75.11     534         2   37.555
+## 4 50   1997-01-01   6.79     546         1    6.790
+## 5 60   1997-02-01  21.75     515         1   21.750
+## 6 71   1997-01-01  13.97     546         1   13.970
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd55817830957-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd55817830957-1">##   ID MaxTransDate Amount Recency Frequency Monetary</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-2">## 1  4   1997-12-12 100.50     201         4   25.125</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-3">## 2 18   1997-01-04  14.96     543         1   14.960</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-4">## 3 21   1997-01-13  75.11     534         2   37.555</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-5">## 4 50   1997-01-01   6.79     546         1    6.790</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-6">## 5 60   1997-02-01  21.75     515         1   21.750</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-7">## 6 71   1997-01-01  13.97     546         1   13.970</div><div class="crayon-line" id="crayon-60f906a89dd55817830957-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>Independent RFM Scoring</h3>
+<h4>檢視Recency維度的分佈資訊。</h4>
+<p></p>
+
+		<div id="crayon-60f906a89dd59594377526" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+quantile(df.1$Recency, probs = seq(0,1,by = 0.2))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd59594377526-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd59594377526-1">quantile(df.1$Recency, probs = seq(0,1,by = 0.2))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd5c202518195" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   0%  20%  40%  60%  80% 100% 
+##    1  153  443  487  513  546
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd5c202518195-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd5c202518195-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd5c202518195-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd5c202518195-1">##   0%  20%  40%  60%  80% 100% </div><div class="crayon-line" id="crayon-60f906a89dd5c202518195-2">##    1  153  443  487  513  546</div><div class="crayon-line" id="crayon-60f906a89dd5c202518195-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd5f674804128" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+hist(df.1$Recency)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd5f674804128-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd5f674804128-1">hist(df.1$Recency)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-5-1.png" alt="RFM Model CRM "></p>
+
+		<div id="crayon-60f906a89dd63253880509" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(density(df.1$Recency))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd63253880509-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd63253880509-1">plot(density(df.1$Recency))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-5-2.png" alt="RFM Model CRM "></p>
+<h4>Recency binning</h4>
+<p>依據Recency維度的百分位數(quantile)進行切群(binning)，每間隔20%百分位數切一等份。</p>
+
+		<div id="crayon-60f906a89dd66660812279" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+labels = c(5,4,3,2,1)
+df.1$R_Score <- labels[as.numeric(cut(df.1$Recency, breaks=c(quantile(df.1$Recency, probs = seq(0,1,by = 0.2))), labels=labels, include.lowest=TRUE))]
+
+head(df.1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd66660812279-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd66660812279-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd66660812279-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd66660812279-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd66660812279-1">labels = c(5,4,3,2,1)</div><div class="crayon-line" id="crayon-60f906a89dd66660812279-2">df.1$R_Score <div class="crayon-line" id="crayon-60f906a89dd66660812279-3"> </div><div class="crayon-line" id="crayon-60f906a89dd66660812279-4">head(df.1)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd6a500362964" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID MaxTransDate Amount Recency Frequency Monetary R_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1
+## 4 50   1997-01-01   6.79     546         1    6.790       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd6a500362964-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd6a500362964-1">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-2">## 1  4   1997-12-12 100.50     201         4   25.125       4</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-3">## 2 18   1997-01-04  14.96     543         1   14.960       1</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-4">## 3 21   1997-01-13  75.11     534         2   37.555       1</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-5">## 4 50   1997-01-01   6.79     546         1    6.790       1</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-6">## 5 60   1997-02-01  21.75     515         1   21.750       1</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-7">## 6 71   1997-01-01  13.97     546         1   13.970       1</div><div class="crayon-line" id="crayon-60f906a89dd6a500362964-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>檢視Frequency維度的分佈資訊。</h4>
+<p>可以發現前80%百分位數都集中在1,2,3,4等數值。</p>
+
+		<div id="crayon-60f906a89dd6d388022316" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+quantile(df.1$Frequency, probs = seq(0,1,by = 0.2))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd6d388022316-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd6d388022316-1">quantile(df.1$Frequency, probs = seq(0,1,by = 0.2))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd71187674787" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   0%  20%  40%  60%  80% 100% 
+##    1    1    1    2    4   56
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd71187674787-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd71187674787-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd71187674787-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd71187674787-1">##   0%  20%  40%  60%  80% 100% </div><div class="crayon-line" id="crayon-60f906a89dd71187674787-2">##    1    1    1    2    4   56</div><div class="crayon-line" id="crayon-60f906a89dd71187674787-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd74653485433" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+summary(df.1$Frequency)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd74653485433-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd74653485433-1">summary(df.1$Frequency)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd78565580325" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.000   1.000   2.936   3.000  56.000
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd78565580325-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd78565580325-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd78565580325-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd78565580325-1">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </div><div class="crayon-line" id="crayon-60f906a89dd78565580325-2">##   1.000   1.000   1.000   2.936   3.000  56.000</div><div class="crayon-line" id="crayon-60f906a89dd78565580325-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd7b102412884" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+hist(df.1$Frequency, breaks = 100)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd7b102412884-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd7b102412884-1">hist(df.1$Frequency, breaks = 100)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-7-1.png" alt="RFM Model CRM "></p>
+
+		<div id="crayon-60f906a89dd7f265905363" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(density(df.1$Frequency))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd7f265905363-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd7f265905363-1">plot(density(df.1$Frequency))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-7-2.png" alt="RFM Model CRM "></p>
+<h4>Frequency binning</h4>
+<p>Frequency的部分<span style="color: #9f6ad4;">則使用指定的1,2,3,4,5+的bin區間來進行分箱</span>。</p>
+
+		<div id="crayon-60f906a89dd82818398792" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+labels.freq = c(1,2,3,4,5)
+df.1$F_Score <- labels.freq[as.numeric(cut(df.1$Frequency, breaks=c(0,1,2,3,4,60), labels=labels.freq, include.lowest=TRUE))]
+
+head(df.1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd82818398792-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd82818398792-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd82818398792-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd82818398792-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd82818398792-1">labels.freq = c(1,2,3,4,5)</div><div class="crayon-line" id="crayon-60f906a89dd82818398792-2">df.1$F_Score <div class="crayon-line" id="crayon-60f906a89dd82818398792-3"> </div><div class="crayon-line" id="crayon-60f906a89dd82818398792-4">head(df.1)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd85845225388" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-4">4</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-5">5</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-6">6</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-7">7</div><div class="crayon-num" data-line="crayon-60f906a89dd85845225388-8">8</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd85845225388-1">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-2">## 1  4   1997-12-12 100.50     201         4   25.125       4       4</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-3">## 2 18   1997-01-04  14.96     543         1   14.960       1       1</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-4">## 3 21   1997-01-13  75.11     534         2   37.555       1       2</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-5">## 4 50   1997-01-01   6.79     546         1    6.790       1       1</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-6">## 5 60   1997-02-01  21.75     515         1   21.750       1       1</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-7">## 6 71   1997-01-01  13.97     546         1   13.970       1       1</div><div class="crayon-line" id="crayon-60f906a89dd85845225388-8"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd89574900911" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+table(df.1$F_Score)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd89574900911-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd89574900911-1">table(df.1$F_Score)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd8c265676169" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## 
+##    1    2    3    4    5 
+## 1205  406  208  150  388
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd8c265676169-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd8c265676169-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd8c265676169-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dd8c265676169-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd8c265676169-1">## </div><div class="crayon-line" id="crayon-60f906a89dd8c265676169-2">##    1    2    3    4    5 </div><div class="crayon-line" id="crayon-60f906a89dd8c265676169-3">## 1205  406  208  150  388</div><div class="crayon-line" id="crayon-60f906a89dd8c265676169-4"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>檢視Monetary維度的分佈資訊。</h4>
+<p></p>
+
+		<div id="crayon-60f906a89dd90318266123" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+quantile(df.1$Monetary, probs = seq(0,1,by = 0.2))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd90318266123-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd90318266123-1">quantile(df.1$Monetary, probs = seq(0,1,by = 0.2))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd94301696007" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##        0%       20%       40%       60%       80%      100% 
+##   0.00000  14.37000  20.40800  29.33098  43.08773 506.97000
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd94301696007-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd94301696007-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd94301696007-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd94301696007-1">##        0%       20%       40%       60%       80%      100% </div><div class="crayon-line" id="crayon-60f906a89dd94301696007-2">##   0.00000  14.37000  20.40800  29.33098  43.08773 506.97000</div><div class="crayon-line" id="crayon-60f906a89dd94301696007-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd97643061689" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+summary(df.1$Monetary)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd97643061689-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd97643061689-1">summary(df.1$Monetary)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd9a890220593" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   15.24   24.99   32.44   38.51  506.97
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd9a890220593-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dd9a890220593-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dd9a890220593-3">3</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd9a890220593-1">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </div><div class="crayon-line" id="crayon-60f906a89dd9a890220593-2">##    0.00   15.24   24.99   32.44   38.51  506.97</div><div class="crayon-line" id="crayon-60f906a89dd9a890220593-3"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dd9e443691509" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+hist(df.1$Monetary,200)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dd9e443691509-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dd9e443691509-1">hist(df.1$Monetary,200)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-10-1.png" alt="RFM Model CRM "></p>
+
+		<div id="crayon-60f906a89dda1045187773" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+plot(density(df.1$Monetary))</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dda1045187773-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dda1045187773-1">plot(density(df.1$Monetary))</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-10-2.png" alt="RFM Model CRM "></p>
+<h4>Monetary binning</h4>
+<p>Monetary維度則使用百分位數法來進行分箱。</p>
+
+		<div id="crayon-60f906a89dda4721742069" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+labels.mon = c(1,2,3,4,5)
+df.1$M_Score <- labels.mon[as.numeric(cut(df.1$Monetary, breaks=c(quantile(df.1$Monetary, probs = seq(0,1,0.2))), labels=labels.mon, include.lowest=TRUE))]
+
+table(df.1$M_Score)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dda4721742069-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dda4721742069-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dda4721742069-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dda4721742069-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dda4721742069-1">labels.mon = c(1,2,3,4,5)</div><div class="crayon-line" id="crayon-60f906a89dda4721742069-2">df.1$M_Score <div class="crayon-line" id="crayon-60f906a89dda4721742069-3"> </div><div class="crayon-line" id="crayon-60f906a89dda4721742069-4">table(df.1$M_Score)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89dda8513067405" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+## 
+##   1   2   3   4   5 
+## 487 456 471 471 472
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89dda8513067405-1">1</div><div class="crayon-num" data-line="crayon-60f906a89dda8513067405-2">2</div><div class="crayon-num" data-line="crayon-60f906a89dda8513067405-3">3</div><div class="crayon-num" data-line="crayon-60f906a89dda8513067405-4">4</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89dda8513067405-1">## </div><div class="crayon-line" id="crayon-60f906a89dda8513067405-2">##   1   2   3   4   5 </div><div class="crayon-line" id="crayon-60f906a89dda8513067405-3">## 487 456 471 471 472</div><div class="crayon-line" id="crayon-60f906a89dda8513067405-4"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89ddac370061801" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+head(df.1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89ddac370061801-1">1</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89ddac370061801-1">head(df.1)</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89ddaf162417204" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1
+##   M_Score
+## 1       3
+## 2       2
+## 3       4
+## 4       1
+## 5       3
+## 6       1
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-1">1</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-2">2</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-3">3</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-4">4</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-5">5</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-6">6</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-7">7</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-8">8</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-9">9</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-10">10</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-11">11</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-12">12</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-13">13</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-14">14</div><div class="crayon-num" data-line="crayon-60f906a89ddaf162417204-15">15</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89ddaf162417204-1">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-2">## 1  4   1997-12-12 100.50     201         4   25.125       4       4</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-3">## 2 18   1997-01-04  14.96     543         1   14.960       1       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-4">## 3 21   1997-01-13  75.11     534         2   37.555       1       2</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-5">## 4 50   1997-01-01   6.79     546         1    6.790       1       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-6">## 5 60   1997-02-01  21.75     515         1   21.750       1       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-7">## 6 71   1997-01-01  13.97     546         1   13.970       1       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-8">##   M_Score</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-9">## 1       3</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-10">## 2       2</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-11">## 3       4</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-12">## 4       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-13">## 5       3</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-14">## 6       1</div><div class="crayon-line" id="crayon-60f906a89ddaf162417204-15"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h4>計算total score</h4>
+<p>將R_Score, F_Score, M_Score三個數值合併為新的三位數值。</p>
+
+		<div id="crayon-60f906a89ddb3417874829" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+df.1$Total_Score <- as.numeric(paste(df.1$R_Score,df.1$F_Score,df.1$M_Score, sep = ""))
+head(df.1)</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89ddb3417874829-1">1</div><div class="crayon-num" data-line="crayon-60f906a89ddb3417874829-2">2</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89ddb3417874829-1">df.1$Total_Score <div class="crayon-line" id="crayon-60f906a89ddb3417874829-2">head(df.1)</div></div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+
+		<div id="crayon-60f906a89ddb7823890403" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score
+## 1  4   1997-12-12 100.50     201         4   25.125       4       4
+## 2 18   1997-01-04  14.96     543         1   14.960       1       1
+## 3 21   1997-01-13  75.11     534         2   37.555       1       2
+## 4 50   1997-01-01   6.79     546         1    6.790       1       1
+## 5 60   1997-02-01  21.75     515         1   21.750       1       1
+## 6 71   1997-01-01  13.97     546         1   13.970       1       1
+##   M_Score Total_Score
+## 1       3         443
+## 2       2         112
+## 3       4         124
+## 4       1         111
+## 5       3         113
+## 6       1         111
+</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-1">1</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-2">2</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-3">3</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-4">4</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-5">5</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-6">6</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-7">7</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-8">8</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-9">9</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-10">10</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-11">11</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-12">12</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-13">13</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-14">14</div><div class="crayon-num" data-line="crayon-60f906a89ddb7823890403-15">15</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89ddb7823890403-1">##   ID MaxTransDate Amount Recency Frequency Monetary R_Score F_Score</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-2">## 1  4   1997-12-12 100.50     201         4   25.125       4       4</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-3">## 2 18   1997-01-04  14.96     543         1   14.960       1       1</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-4">## 3 21   1997-01-13  75.11     534         2   37.555       1       2</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-5">## 4 50   1997-01-01   6.79     546         1    6.790       1       1</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-6">## 5 60   1997-02-01  21.75     515         1   21.750       1       1</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-7">## 6 71   1997-01-01  13.97     546         1   13.970       1       1</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-8">##   M_Score Total_Score</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-9">## 1       3         443</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-10">## 2       2         112</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-11">## 3       4         124</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-12">## 4       1         111</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-13">## 5       3         113</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-14">## 6       1         111</div><div class="crayon-line" id="crayon-60f906a89ddb7823890403-15"> </div></div></td>
+					</tr></table></div>
+		</div>
+
+<p></p>
+<h3>查看每一個RFM Cell的人數分佈</h3>
+<p>R_Score和M_Score兩維度交叉表。</p>
+
+		<div id="crayon-60f906a89ddbb919210004" class="crayon-syntax crayon-theme-hwj-based-on-monokai crayon-font-monospace crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 20px !important;">
+		
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 20px !important;">
+library(ggplot2)
+# plot data
+df.1 %>% 
+  mutate(R_Score = as.factor(R_Score),
+         F_Score = as.factor(F_Score)) %>%
+  group_by(R_Score, F_Score) %>% 
+  summarise(value = n()) %>% 
+  ungroup() %>% 
+  ggplot(aes(R_Score, F_Score)) +
+  geom_tile(aes(fill = value), col = "black") + 
+  geom_text(aes(label = round(value, 1))) +
+  scale_fill_gradient2() +
+  theme(panel.background = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        text = element_text(family = "黑體-繁 中黑", size = 14),
+        legend.background = element_rect(fill = "gray96",colour = "gray88"),
+        plot.background = element_rect(fill = "gray99"),
+        plot.title = element_text(hjust = 0.5,size = 16), #標題置中
+        strip.background = element_rect(fill = "lightgray", colour = NA)
+  )</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table"><tr class="crayon-row"><td class="crayon-nums " data-settings="hide">
+					<div class="crayon-nums-content" style="font-size: 14px !important; line-height: 20px !important;"><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-1">1</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-2">2</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-3">3</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-4">4</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-5">5</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-6">6</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-7">7</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-8">8</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-9">9</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-10">10</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-11">11</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-12">12</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-13">13</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-14">14</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-15">15</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-16">16</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-17">17</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-18">18</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-19">19</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-20">20</div><div class="crayon-num" data-line="crayon-60f906a89ddbb919210004-21">21</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 14px !important; line-height: 20px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-60f906a89ddbb919210004-1">library(ggplot2)</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-2"># plot data</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-3">df.1 %>% </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-4">  mutate(R_Score = as.factor(R_Score),</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-5">         F_Score = as.factor(F_Score)) %>%</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-6">  group_by(R_Score, F_Score) %>% </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-7">  summarise(value = n()) %>% </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-8">  ungroup() %>% </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-9">  ggplot(aes(R_Score, F_Score)) +</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-10">  geom_tile(aes(fill = value), col = "black") + </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-11">  geom_text(aes(label = round(value, 1))) +</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-12">  scale_fill_gradient2() +</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-13">  theme(panel.background = element_blank(), </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-14">        panel.grid.major = element_blank(), </div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-15">        panel.grid.minor = element_blank(),</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-16">        text = element_text(family = "黑體-繁 中黑", size = 14),</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-17">        legend.background = element_rect(fill = "gray96",colour = "gray88"),</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-18">        plot.background = element_rect(fill = "gray99"),</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-19">        plot.title = element_text(hjust = 0.5,size = 16), #標題置中</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-20">        strip.background = element_rect(fill = "lightgray", colour = NA)</div><div class="crayon-line" id="crayon-60f906a89ddbb919210004-21">  )</div></div></td>
+					</tr></table></div>
+		</div>
+
+<p><img src="/wp-content/uploads/2018/12/unnamed-chunk-14-1.png" alt="RFM Model CRM "></p>
+<p>根據行銷目的斟酌參考R_ScorexM_Score和R_ScorexF_Score交叉資訊表，有了基本分群資訊後，<span style="color: #9f6ad4;">就可套用各客群歷史行銷回應率資訊，來輔助分配行銷預算，尋找目標客群，並估算預期行銷效果（預期回應人數與投報率）</span>。</p>
+<hr><p><strong>更多<span style="color: #9f6ad4;">統計分析(Analysis)</span>與<span style="color: #9f6ad4;">資料分群(Clustering)</span>學習筆記:</strong></p>
+<ol><li><a href="/app-mobile-ad-revenue-admob-%e8%a1%8c%e5%8b%95%e5%bb%a3%e5%91%8a%e6%94%b6%e5%85%a5/" target="_blank" rel="noopener noreferrer">開發一個免費App能賺多少錢？靠AdMob廣告月收3萬實例分享</a></li>
+<li><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">Partitional Clustering 切割式分群 | K-means, Kmedoid | Clustering 資料分群</a></li>
+<li><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">Hierarchical Clustering 階層式分群 | Clustering 資料分群 | R 統計</a></li>
+<li><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">Decision Tree 決策樹 | CART, Conditional Inference Tree, Random Forest </a></li>
+</ol><hr><p><strong>參考資料連結：</strong></p>
+<ol><li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+<li><a href="https://www.r-bloggers.com/rfm-customer-analysis-with-r-language/" target="_blank" rel="noopener noreferrer">RFM Customer Analysis with R Language</a></li>
+</ol></div>
+
+	<footer class="entry-footer"><span class="tags-links"> <a href="/tag/crm/" rel="tag">CRM</a>0<a href="/tag/rfm-model/" rel="tag">RFM Model</a></span>	</footer></article><nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">文章導覽列</h2>
+		<div class="nav-links clearfix">
+			<div class="nav-previous"><span>⟵</span><a href="/%e4%bd%86%e9%a6%ac%e5%ae%b6%e6%b6%ae%e6%b6%ae%e9%8d%8b-tajimaya-shabushabu/" rel="prev">但馬家涮涮鍋 | 奢華氣派優雅頂級鍋物 | 台北文華精品</a></div><div class="nav-next"><a href="/tidyr-reshaping-data/" rel="next">Reshaping Data using tidyr | 資料合併與分離、變長或變寬的小技巧 | R 統計</a><span>⟶</span></div>		</div>
+	</nav><div id="comments" class="comments-area">
+
+	
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">發佈留言 <small><a rel="nofollow" id="cancel-comment-reply-link" href="/rfm-model-crm-customer-segmentation-r/#respond" style="display:none;">取消回覆</a></small></h3><form action="/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">發佈留言必須填寫的電子郵件地址不會公開。</span> 必填欄位標示為 <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">留言</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">顯示名稱 <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required="required"></p>
+<p class="comment-form-email"><label for="email">電子郵件地址 <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required="required"></p>
+<p class="comment-form-url"><label for="url">個人網站網址</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200"></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="發佈留言"><input type="hidden" name="comment_post_ID" value="2221" id="comment_post_ID"><input type="hidden" name="comment_parent" id="comment_parent" value="0"></p><div class="wantispam-required-fields"><input type="hidden" name="wantispam_t" class="wantispam-control wantispam-control-t" value="1626932904"><div class="wantispam-group wantispam-group-q" style="clear: both;">
+					<label>Current ye@r <span class="required">*</span></label>
+					<input type="hidden" name="wantispam_a" class="wantispam-control wantispam-control-a" value="2021"><input type="text" name="wantispam_q" class="wantispam-control wantispam-control-q" value="7.2.0" autocomplete="off"></div>
+<div class="wantispam-group wantispam-group-e" style="display: none;">
+					<label>Leave this field empty</label>
+					<input type="text" name="wantispam_e_email_url_website" class="wantispam-control wantispam-control-e" value="" autocomplete="off"></div>
+</div></form>	</div>
+	
+</div>
+
+		
+		</main></div>
+
+	
+
+<div id="secondary" class="widget-area col-md-3" role="complementary">
+	<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="/">
+				<label>
+					<span class="screen-reader-text">搜尋關鍵字:</span>
+					<input type="search" class="search-field" placeholder="搜尋..." value="" name="s"></label>
+				<input type="submit" class="search-submit" value="搜尋"></form></aside><aside id="recent-posts-2" class="widget widget_recent_entries"><h3 class="widget-title">近期文章</h3>
+		<ul><li>
+					<a href="/jbs-diner/">JB’s Diner | 陽光、綠意、自然度假風美式早午餐 | 台北 天母</a>
+									</li>
+											<li>
+					<a href="/%e9%82%80%e6%9c%88%e5%85%92/">邀月兒 | 適合放鬆小酌的迷人高級餐酒館 | 台北 民生社區 富錦街</a>
+									</li>
+											<li>
+					<a href="/eslite-cafe-%e4%bf%a1%e7%be%a9%e8%aa%a0%e5%93%81%e5%92%96%e5%95%a1/">信義誠品咖啡 Eslite Café | 美美的 優雅的 文青咖啡廳 | 台北 信義區</a>
+									</li>
+											<li>
+					<a href="/%e5%b0%8f%e9%bc%8e%e8%86%be/">小鼎膾 | 新鮮美味的高品質日式丼飯、海鮮料理 | 台北信義 Bellavita B2</a>
+									</li>
+											<li>
+					<a href="/gradient-boosting-machines-gbm/">Gradient Boosting Machines GBM | gbm, xgboost, h2o | R語言</a>
+									</li>
+					</ul></aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">彙整</h3>
+			<ul><li><a href="/2019/08/">2019 年 8 月</a></li>
+	<li><a href="/2019/04/">2019 年 4 月</a></li>
+	<li><a href="/2019/03/">2019 年 3 月</a></li>
+	<li><a href="/2019/02/">2019 年 2 月</a></li>
+	<li><a href="/2019/01/">2019 年 1 月</a></li>
+	<li><a href="/2018/12/">2018 年 12 月</a></li>
+	<li><a href="/2018/10/">2018 年 10 月</a></li>
+	<li><a href="/2018/09/">2018 年 9 月</a></li>
+	<li><a href="/2018/08/">2018 年 8 月</a></li>
+	<li><a href="/2018/07/">2018 年 7 月</a></li>
+	<li><a href="/2018/05/">2018 年 5 月</a></li>
+			</ul></aside></div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+    <a class="go-top"><i class="fa fa-angle-up"></i></a>
+		
+	<footer id="colophon" class="site-footer" role="contentinfo"><div class="site-info container">
+			<a href="https://tw.wordpress.org/">本站採用 WordPress 建置</a>
+			<span class="sep"> | </span>
+			佈景主題採用由 aThemes 所設計的 <a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>。		</div>
+	</footer></div>
+
+
+<script type="text/javascript">
+var sbiajaxurl = "/wp-admin/admin-ajax.php";
+</script><script type="text/javascript" src="/wp-content/plugins/anti-spam/assets/js/anti-spam.js" id="anti-spam-script-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/scripts.js" id="sydney-scripts-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/main.min.js" id="sydney-main-js"></script><script type="text/javascript" src="/wp-content/themes/hwj-based-on-sydney/js/skip-link-focus-fix.js" id="sydney-skip-link-focus-fix-js"></script></body></html>

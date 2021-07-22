@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>BeautifulSoup &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/beautifulsoup/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 03:35:42 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>網路爬蟲 Web Crawler &#124; 資料不求人 基礎篇 &#124; using Python BeautifulSoup</title>
+		<link>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/</link>
+					<comments>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 08 May 2018 13:00:34 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[BeautifulSoup]]></category>
+		<category><![CDATA[crawler]]></category>
+		<category><![CDATA[python]]></category>
+		<category><![CDATA[爬蟲]]></category>
+		<category><![CDATA[網頁爬蟲]]></category>
+		<guid isPermaLink="false">/?p=1404</guid>
+
+					<description><![CDATA[<p>料理一道菜必須要有好的食材，就像豐富有趣的資料是好的資料分析基礎。有時為了有效蒐集我們感興趣的資料，我們得自己寫網路爬蟲(web crawler)。本篇文章將示 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>料理一道菜必須要有好的食材，就像豐富有趣的資料是好的資料分析基礎。有時為了有效蒐集我們感興趣的資料，我們得自己寫網路爬蟲(web crawler)。本篇文章將示範如利用python的 <span style="color: #9f6ad4;">requests</span> 及 <span style="color: #9f6ad4;">BeautifulSoup</span> 套件抓取網頁上感興趣的資料。我們將以著名的PTT批踢踢網站為例，爬取每日各時點人氣看板與人氣資訊。</p>
+<p>&nbsp;</p>
+<h3>Step 1: 觀察網頁資料</h3>
+<p>我們的目標網頁是 <a href="https://www.ptt.cc/bbs/hotboards.html">https://www.ptt.cc/bbs/hotboards.html</a> (PTT 熱門看板)<br />
+用瀏覽器打開頁面並按右鍵點觀看網頁原始碼會看到以下內容:</p><pre class="crayon-plain-tag">...
+
+&lt;div id="main-container"&gt;
+	&lt;div id="action-bar-container"&gt;
+		&lt;div class="action-bar"&gt;
+			&lt;div class="btn-group btn-group-cls"&gt;
+				&lt;a class="btn selected" href="/bbs/hotboards.html"&gt;熱門看板&lt;/a&gt;
+                &lt;a class="btn" href="/cls/1"&gt;分類看板&lt;/a&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;div class="b-list-container action-bar-margin bbs-screen"&gt;
+        
+        &lt;div class="b-ent"&gt;
+            &lt;a class="board" href="/bbs/Gossiping/index.html"&gt;
+                &lt;div class="board-name"&gt;Gossiping&lt;/div&gt;
+                &lt;div class="board-nuser"&gt;&lt;span class="hl f6"&gt;12807&lt;/span&gt;&lt;/div&gt;
+                &lt;div class="board-class"&gt;綜合&lt;/div&gt;
+                &lt;div class="board-title"&gt;&amp;#9678;[八卦] 守護肉燥飯，嚴防非洲豬瘟&lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+        
+        &lt;div class="b-ent"&gt;
+            &lt;a class="board" href="/bbs/NBA/index.html"&gt;
+                &lt;div class="board-name"&gt;NBA&lt;/div&gt;
+                &lt;div class="board-nuser"&gt;&lt;span class="hl f1"&gt;4345&lt;/span&gt;&lt;/div&gt;
+                &lt;div class="board-class"&gt;籃球&lt;/div&gt;
+                &lt;div class="board-title"&gt;&amp;#9678;[NBA]        VC 25000&lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/div&gt;
+
+...</pre><p>我們可以看到這個網頁的HTML結構，以及我們想爬取的資料如 (<span style="color: #9f6ad4;">看板名稱</span>、<span style="color: #9f6ad4;">當前看板人氣</span>…等) 所在的Elements.</p>
+<p>例如我們想爬取這個網頁中所有出現的<span style="color: #9f6ad4;">看板名稱</span>，而這些資料所在的 Element 是一個 &lt;div&gt; ，並且用一個 <span style="color: #9f6ad4;">&#8220;board-name&#8221;</span> 來指定套用樣式，所以我們就可以找出所有的 class 是 &#8220;board-name&#8221; 的 &lt;div&gt; Element。</p>
+<p>有了策略之後，我們就可以把網頁自動下載下來，並用 BeautifulSoup 對 HTML 進行解析來快速取出我們想要的部分。</p>
+<h3></h3>
+<h3>step 2: 自動下載網頁原始碼</h3>
+<p>以往我們必續手動打開頁面，檢視網頁原始碼，按右鍵儲存。<br />
+但我們希望可以利用機器自動抓取，之後就能設定時間，使它每隔一段時間抓取一次。<br />
+在python中，我們可以利用 <span style="color: #9f6ad4;">requests <span style="color: #000000;">套件自動地抓取</span></span>網頁原始碼。</p><pre class="crayon-plain-tag"># 如果先前沒安裝過requests 套件則這邊會失敗, 因此需要先安裝, 可用這個指令: pip install requests
+import requests
+
+# 指定要抓取的網頁URL
+url = "https://www.ptt.cc/bbs/hotboards.html"
+
+# 使用requests.get() 來得到網頁回傳內容
+r = requests.get(url)
+
+# request.get()回傳的是一個物件 
+# 若抓成功(即r.status_code==200), 則網頁原始碼會放在物件的text屬性, 我們把它存在一個變數 'web_content'
+web_content = r.text
+
+#print(web_content) 可以印出來看看, 會跟從網頁右鍵查看原始碼看到的一樣</pre><p></p>
+<h3></h3>
+<h3>step 3: 解析HTML原始碼</h3>
+<p>我們使用著名的<span style="color: #9f6ad4;">BeautifulSoup套件來解析原始碼</span>。並取出我們想要的部分。</p><pre class="crayon-plain-tag"># 載入BeautifulSoup套件, 若沒有的話可以先: pip install beautifulsoup4
+from bs4 import BeautifulSoup
+
+# 以 Beautiful Soup 解析 HTML 程式碼 : 
+soup = BeautifulSoup(web_content, 'html.parser')
+
+# 找出所有class為"board-name"的div elements
+boardNameElements = soup.find_all('div', class_="board-name")
+boardNameElements</pre><p>會得到一個list of elements, 順序為他們在原始網頁程式碼出現的順序</p><pre class="crayon-plain-tag">[&lt;div class="board-name"&gt;Gossiping&lt;/div&gt;,
+&lt;div class="board-name"&gt;NBA&lt;/div&gt;,
+&lt;div class="board-name"&gt;C_Chat&lt;/div&gt;, 
+...略...
+&lt;div class="board-name"&gt;TY_Research&lt;/div&gt;]</pre><p>將每個element的文字部分(看板名稱)取出</p><pre class="crayon-plain-tag">boardNames = [e.text for e in boardNameElements]
+boardNames</pre><p>會得到一個 list of strings</p><pre class="crayon-plain-tag">['Gossiping',
+ 'NBA',
+ 'C_Chat',
+ ...略...
+ 'TY_Research']</pre><p>上面已經將網頁中出現的看板名稱依序取出了, 也可以依樣畫葫蘆將當下的看板人氣也依序取出:</p><pre class="crayon-plain-tag"># 觀察網頁原始碼後看到
+# 雖然&lt;div class="board-nuser"&gt;裡面還有用&lt;span&gt;夾住我們想要的資料(人氣值)
+# 不過我們會用.text 直接取出所包含的文字部分即可 
+popularityElements = soup.find_all('div', class_="board-nuser")
+# 取出的文字的類型是字串, 我們可用int()轉成數字類型
+popularities = [int(e.text) for e in popularityElements]
+popularities</pre><p>會得到list of integers</p><pre class="crayon-plain-tag">[12807,
+ 4345,
+ 2103,
+ ... 略...
+ 48]</pre><p>爬完囉! 秀出結果來看看吧</p><pre class="crayon-plain-tag">print(len(boardNames), len(popularities))
+# 128 128 == &gt; 一個看板名稱對應一個人氣值, 該PTT頁面共顯示前128個當下最熱門的看板.
+
+for pop, bn in zip(popularities, boardNames):
+    print(pop, bn)
+
+# 上面兩行也許不熟悉python的新手會看不太懂.
+# 我的目的是想要按順序一行一行印出來看, 而且每一行是這樣:"人氣值 看板名稱"
+# 所以我用python的 'zip' 函數, 將'popularites'及'boardNames'這兩個list夾鏈起來, 就可以一起跌代.
+# 第一次迴圈拿到雙方list的第一個item,  第二次迴圈拿到雙方list的第二個item... 等依此類推.</pre><p></p><pre class="crayon-plain-tag"># 顯示結果如下
+12807 Gossiping
+4345 NBA
+2103 C_Chat
+1608 sex
+1246 HatePolitics
+1228 Baseball
+1074 movie
+1024 Stock
+951 MobileComm
+915 Lifeismoney
+830 car
+691 Beauty
+670 WomenTalk
+634 Tech_Job
+617 marvel
+613 LoL
+594 Japan_Travel
+592 Boy-Girl
+545 e-shopping
+521 MayDay
+489 AllTogether
+483 creditcard
+475 BabyMother
+448 KoreaStar
+427 StupidClown
+408 joke
+407 Kaohsiung
+403 Hearthstone
+402 Steam
+370 ToS
+354 MakeUp
+341 KR_Entertain
+336 PlayStation
+325 NSwitch
+324 PC_Shopping
+315 marriage
+313 Tainan
+290 japanavgirls
+289 SportLottery
+281 PokemonGO
+272 KoreaDrama
+268 iOS
+225 BeautySalon
+215 TaichungBun
+205 home-sale
+194 CFantasy
+182 FATE_GO
+166 CVS
+163 HardwareSale
+159 TWICE
+158 Drama-Ticket
+155 ONE_PIECE
+154 basketballTW
+153 WOW
+152 BuyTogether
+149 Japandrama
+148 Salary
+140 Food
+139 Hsinchu
+138 AC_In
+137 PCReDive
+133 biker
+132 TypeMoon
+130 MLB
+129 MuscleBeach
+126 Examination
+124 Gamesale
+121 NBA_Film
+118 YuanChuang
+115 MH
+115 cat
+113 Headphone
+111 Aviation
+110 GetMarry
+109 LGBT_SEX
+109 PathofExile
+107 PublicServan
+102 China-Drama
+102 PHX-Suns
+99 cookclub
+98 DSLR
+95 mobilesales
+95 gay
+91 KoreanPop
+90 TW_Entertain
+89 CarShop
+89 Wanted
+89 lesbian
+87 Finance
+85 Palmar_Drama
+80 Soft_Job
+79 MacShop
+79 Zastrology
+78 EAseries
+77 BTS
+76 PuzzleDragon
+75 medstudent
+74 feminine_sex
+74 forsale
+73 give
+72 Nogizaka46
+72 MobilePay
+72 Gov_owned
+69 DMM_GAMES
+68 BB-Love
+67 watch
+65 KanColle
+65 HelpBuy
+64 fastfood
+63 BabyProducts
+63 RealmOfValor
+61 Actuary
+58 hypermall
+56 Spurs
+56 part-time
+56 FITNESS
+55 ChungLi
+55 IZONE
+54 E-appliance
+53 Taoyuan
+53 Lakers
+53 graduate
+50 DC_SALE
+50 GBF
+49 Chiayi
+49 facelift
+49 Bank_Service
+48 TY_Research</pre><p></p>
+<h3></h3>
+<h3>step 4: 爬蟲結果輸出</h3>
+<h4>將 data 輸出到sqlite 儲存</h4>
+<p></p><pre class="crayon-plain-tag">import sqlite3
+# 在目前的目錄下尋找一個叫test.db的檔案並建立連線, 若不存在則會在你目錄下自動建立這個檔案.
+# 以SQL的概念來說, 它就是一個"database"
+conn = sqlite3.connect("test.db")
+
+# 後面都用這個 cursor來做SQL操作.
+c = conn.cursor()</pre><p>在SQLite中create table</p><pre class="crayon-plain-tag"># Create 一個叫做"records" 的table
+
+# 如果想要刪除原本已經存在的records table的話, 就拿掉下面這一行的註解.
+# c.execute('drop table records')
+
+# SQLite 欄位資料類型很簡單 
+# 文字就是"text"
+# 數字就是"int"
+# 時間就是"datetime"
+
+c.execute('''
+CREATE TABLE records
+ (boardnames text,
+  popularity int,
+  timestamp datetime)
+''')</pre><p>使用for迴圈，逐列將資料一筆一筆insert到&#8221;records&#8221; table中, 並紀錄每一筆資料對應的時間點.</p><pre class="crayon-plain-tag">import datetime
+now_dt = datetime.datetime.now()
+
+for bn, pop in zip(boardNames, popularities):
+    c.execute('INSERT INTO records VALUES (?,?,?)', (bn, pop, now_dt))
+
+# 將指令送出, 確保前述所有操作已生效
+conn.commit()</pre><p>查看table內容</p><pre class="crayon-plain-tag">c.execute("select * from records;").fetchall()</pre><p></p><pre class="crayon-plain-tag">[('Gossiping', 10001, '2019-03-03 10:45:43'),
+ ('NBA', 5145, '2019-03-03 10:45:43'),
+ ('C_Chat', 2562, '2019-03-03 10:45:43'),
+ ('Baseball', 1414, '2019-03-03 10:45:43'),
+ ('sex', 1392, '2019-03-03 10:45:43'),
+ ('WomenTalk', 1285, '2019-03-03 10:45:43'),
+ ('Hearthstone', 1117, '2019-03-03 10:45:43'),
+ ('car', 1016, '2019-03-03 10:45:43'),
+ ('HatePolitics', 1001, '2019-03-03 10:45:43'),
+ ('MobileComm', 988, '2019-03-03 10:45:43'),
+ ('movie', 851, '2019-03-03 10:45:43'),
+ ('Lifeismoney', 778, '2019-03-03 10:45:43'),
+ ('Stock', 775, '2019-03-03 10:45:43'),
+ ('marvel', 771, '2019-03-03 10:45:43'),
+ ('Boy-Girl', 723, '2019-03-03 10:45:43'),
+ ('BabyMother', 645, '2019-03-03 10:45:43'),
+ ('Beauty', 612, '2019-03-03 10:45:43'),
+ ('Japan_Travel', 597, '2019-03-03 10:45:43'),
+ ('ToS', 547, '2019-03-03 10:45:43'),
+ ('Tech_Job', 518, '2019-03-03 10:45:43'),
+ ('LoL', 497, '2019-03-03 10:45:43'),
+ ('marriage', 485, '2019-03-03 10:45:43'),
+ ('AllTogether', 414, '2019-03-03 10:45:43'),
+ ('KoreaStar', 410, '2019-03-03 10:45:43'),
+ ('e-shopping', 403, '2019-03-03 10:45:43'),
+ ('MakeUp', 360, '2019-03-03 10:45:43'),
+ ('home-sale', 350, '2019-03-03 10:45:43'),
+ ('PC_Shopping', 348, '2019-03-03 10:45:43'),
+ ('Kaohsiung', 345, '2019-03-03 10:45:43'),
+ ('PlayStation', 341, '2019-03-03 10:45:43'),
+ ('joke', 322, '2019-03-03 10:45:43'),
+ ('NSwitch', 311, '2019-03-03 10:45:43'),
+ ('PokemonGO', 308, '2019-03-03 10:45:43'),
+ ('SportLottery', 305, '2019-03-03 10:45:43'),
+ ('creditcard', 292, '2019-03-03 10:45:43'),
+ ('TaichungBun', 288, '2019-03-03 10:45:43'),
+ ('KR_Entertain', 283, '2019-03-03 10:45:43'),
+ ('Steam', 275, '2019-03-03 10:45:43'),
+ ('Tainan', 271, '2019-03-03 10:45:43'),
+ ('Road_Running', 265, '2019-03-03 10:45:43'),
+ ('KoreaDrama', 265, '2019-03-03 10:45:43'),
+ ('StupidClown', 258, '2019-03-03 10:45:43'),
+ ('Lakers', 248, '2019-03-03 10:45:43'),
+ ('Tennis', 242, '2019-03-03 10:45:43'),
+ ('iOS', 237, '2019-03-03 10:45:43'),
+ ('japanavgirls', 213, '2019-03-03 10:45:43'),
+ ('China-Drama', 198, '2019-03-03 10:45:43'),
+ ('Salary', 184, '2019-03-03 10:45:43'),
+ ('GetMarry', 178, '2019-03-03 10:45:43'),
+ ('BeautySalon', 176, '2019-03-03 10:45:43'),
+ ('Japandrama', 175, '2019-03-03 10:45:43'),
+ ('HardwareSale', 173, '2019-03-03 10:45:43'),
+ ('basketballTW', 165, '2019-03-03 10:45:43'),
+ ('CFantasy', 161, '2019-03-03 10:45:43'),
+ ('PCReDive', 158, '2019-03-03 10:45:43'),
+ ('Examination', 157, '2019-03-03 10:45:43'),
+ ('YuanChuang', 154, '2019-03-03 10:45:43'),
+ ('BuyTogether', 149, '2019-03-03 10:45:43'),
+ ('Gamesale', 147, '2019-03-03 10:45:43'),
+ ('AC_In', 146, '2019-03-03 10:45:43'),
+ ('MLB', 146, '2019-03-03 10:45:43'),
+ ('CVS', 143, '2019-03-03 10:45:43'),
+ ('Hsinchu', 135, '2019-03-03 10:45:43'),
+ ('NBA_Film', 128, '2019-03-03 10:45:43'),
+ ('Food', 124, '2019-03-03 10:45:43'),
+ ('ONE_PIECE', 122, '2019-03-03 10:45:43'),
+ ('MuscleBeach', 117, '2019-03-03 10:45:43'),
+ ('biker', 117, '2019-03-03 10:45:43'),
+ ('FATE_GO', 116, '2019-03-03 10:45:43'),
+ ('TypeMoon', 112, '2019-03-03 10:45:43'),
+ ('EAseries', 108, '2019-03-03 10:45:43'),
+ ('WOW', 107, '2019-03-03 10:45:43'),
+ ('mobilesales', 105, '2019-03-03 10:45:43'),
+ ('Aviation', 103, '2019-03-03 10:45:43'),
+ ('KoreanPop', 101, '2019-03-03 10:45:43'),
+ ('Soft_Job', 100, '2019-03-03 10:45:43'),
+ ('PuzzleDragon', 99, '2019-03-03 10:45:43'),
+ ('Headphone', 99, '2019-03-03 10:45:43'),
+ ('gay', 99, '2019-03-03 10:45:43'),
+ ('cat', 96, '2019-03-03 10:45:43'),
+ ('Gov_owned', 96, '2019-03-03 10:45:43'),
+ ('MobilePay', 95, '2019-03-03 10:45:43'),
+ ('Palmar_Drama', 95, '2019-03-03 10:45:43'),
+ ('OverWatch', 94, '2019-03-03 10:45:43'),
+ ('RealmOfValor', 94, '2019-03-03 10:45:43'),
+ ('TW_Entertain', 94, '2019-03-03 10:45:43'),
+ ('PingTung', 92, '2019-03-03 10:45:43'),
+ ('forsale', 91, '2019-03-03 10:45:43'),
+ ('CarShop', 90, '2019-03-03 10:45:43'),
+ ('lesbian', 89, '2019-03-03 10:45:43'),
+ ('Finance', 88, '2019-03-03 10:45:43'),
+ ('TaiwanDrama', 86, '2019-03-03 10:45:43'),
+ ('Zastrology', 86, '2019-03-03 10:45:43'),
+ ('graduate', 85, '2019-03-03 10:45:43'),
+ ('PublicServan', 82, '2019-03-03 10:45:43'),
+ ('Brand', 79, '2019-03-03 10:45:43'),
+ ('watch', 79, '2019-03-03 10:45:43'),
+ ('E-appliance', 78, '2019-03-03 10:45:43'),
+ ('KanColle', 77, '2019-03-03 10:45:43'),
+ ('give', 77, '2019-03-03 10:45:43'),
+ ('Elephants', 75, '2019-03-03 10:45:43'),
+ ('StarCraft', 73, '2019-03-03 10:45:43'),
+ ('MacShop', 72, '2019-03-03 10:45:43'),
+ ('HelpBuy', 71, '2019-03-03 10:45:43'),
+ ('LGBT_SEX', 71, '2019-03-03 10:45:43'),
+ ('SENIORHIGH', 71, '2019-03-03 10:45:43'),
+ ('Badminton', 71, '2019-03-03 10:45:43'),
+ ('TWICE', 68, '2019-03-03 10:45:43'),
+ ('AKB48', 67, '2019-03-03 10:45:43'),
+ ('Bank_Service', 66, '2019-03-03 10:45:43'),
+ ('FITNESS', 66, '2019-03-03 10:45:43'),
+ ('DSLR', 65, '2019-03-03 10:45:43'),
+ ('fastfood', 65, '2019-03-03 10:45:43'),
+ ('facelift', 65, '2019-03-03 10:45:43'),
+ ('cookclub', 65, '2019-03-03 10:45:43'),
+ ('hypermall', 63, '2019-03-03 10:45:43'),
+ ('feminine_sex', 62, '2019-03-03 10:45:43'),
+ ('BabyProducts', 61, '2019-03-03 10:45:43'),
+ ('nb-shopping', 61, '2019-03-03 10:45:43'),
+ ('part-time', 60, '2019-03-03 10:45:43'),
+ ('SuperJunior', 59, '2019-03-03 10:45:43'),
+ ('Wanted', 59, '2019-03-03 10:45:43'),
+ ('studyabroad', 58, '2019-03-03 10:45:43'),
+ ('Railway', 57, '2019-03-03 10:45:43'),
+ ('DC_SALE', 56, '2019-03-03 10:45:43'),
+ ('ShuangHe', 56, '2019-03-03 10:45:43'),
+ ('Drama-Ticket', 55, '2019-03-03 10:45:43'),
+ ('IZONE', 54, '2019-03-03 10:45:43')]</pre><p>最後記得關閉連線。</p><pre class="crayon-plain-tag">conn.close()</pre><p></p>
+<h3>小結</h3>
+<p>要如何爬取資料內容，<span style="text-decoration: underline;"><span style="color: #9f6ad4; text-decoration: underline;">其實跟該網頁的HTML架構(網頁原始碼)有關</span>，即使同一個網頁也可以有許許多多種的爬取策略</span>。<br />
+因為範例的目標網頁非常簡單，故這邊只是用非常簡單的方式取得各看板名稱及相對應的人氣值。<br />
+另外有些更複雜的網頁可能不是把資料呈現在原始碼中的，就得需要用其他更進階的方法才能爬取囉。</p>
+<p>後續可以用任何方式定期跑這個script (例如每10分鐘跑一次), 就可以不斷的紀錄PTT熱門看板人氣隨時間的變化.<br />
+輔以視覺化工具呈現後, 預期可以看到地震時八卦版會瞬間湧入人潮; NBA板隨著季賽開打而常駐熱門前三名&#8230;等等.</p>
+<p>&nbsp;</p>
+<hr />
+<p>下篇筆記是關於如何將每隔一段時間爬取資料儲存到SQLite，最後做個視覺化的展示：</p>
+<p><a href="/%e7%b5%b1%e8%a8%88-r%e8%aa%9e%e8%a8%80-sqlitedb-%e8%88%87-%e7%b0%a1%e6%98%93%e8%b3%87%e6%96%99%e8%a6%96%e8%a6%ba%e5%8c%96-data-visualization/" target="_blank" rel="noopener noreferrer">使用R連接SQLite取得資料集</a></p>
+<p>更多Python網路爬蟲學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener noreferrer">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-python-yahoo-movies/" target="_blank" rel="noopener noreferrer">網路爬蟲 web crawler | 奇摩電影 yahoo movies | using Python</a></p>
+<p><a href="/%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2-web-crawler-text-mining-python/" target="_blank" rel="noopener noreferrer">Text Mining &amp; 網路爬蟲 web crawler | Google新聞與文章文字雲 | Python</a></p>
+<p>參考:</p>
+<h3><a title="Python網路爬蟲：大數據擷取、清洗、儲存與分析：王者歸來" href="https://tinyurl.com/yc6la3vd" target="_blank" rel="mid_name noopener noreferrer"><span style="font-size: 12pt;">Python網路爬蟲：大數據擷取、清洗、儲存與分析：王者歸來</span></a></h3>
+<p>這篇文章 <a rel="nofollow" href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	
+	>
+<channel>
+	<title>
+	〈Logistic Regression 羅吉斯迴歸 &#124; part2 &#8211; 模型建置、診斷與比較 &#124; R語言〉的留言	</title>
+	<atom:link href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/feed/" rel="self" type="application/rss+xml" />
+	<link>/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:33:57 +0000</lastBuildDate>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>
+		留言者: poisson		</title>
+		<link>/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/#comment-3264</link>
+
+		<dc:creator><![CDATA[poisson]]></dc:creator>
+		<pubDate>Fri, 21 Jun 2019 06:32:32 +0000</pubDate>
+		<guid isPermaLink="false">/?p=851#comment-3264</guid>
+
+					<description><![CDATA[您好：
+看了此篇文章獲益良多，但有一個部分想請教。
+在8-4.Support Vector Machine(SVM)中，
+predict(svm4,testData, type = &quot;decision&quot;)計算出來的數值有超過1或小於-1，例如：-2.3、3.005，
+想問這個是SVM-Y的預測機率值嗎？感謝！]]></description>
+			<content:encoded><![CDATA[<p>您好：<br />
+看了此篇文章獲益良多，但有一個部分想請教。<br />
+在8-4.Support Vector Machine(SVM)中，<br />
+predict(svm4,testData, type = &#8220;decision&#8221;)計算出來的數值有超過1或小於-1，例如：-2.3、3.005，<br />
+想問這個是SVM-Y的預測機率值嗎？感謝！</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: jamleecute		</title>
+		<link>/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/#comment-131</link>
+
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Fri, 21 Dec 2018 03:15:06 +0000</pubDate>
+		<guid isPermaLink="false">/?p=851#comment-131</guid>
+
+					<description><![CDATA[回覆的對象為「&lt;a href=&quot;/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/#comment-130&quot;&gt;allen&lt;/a&gt;」。
+
+您好，
+「回歸模型基本上並不包含變數篩選」這句話在這邊指的是說「尋找模型方程式的最佳變數組合」，
+因為每一次跑羅吉斯模型我們只能寫死指定某n個x變數來解釋y變數的配飾效果(也會告訴我們每個x變數與y變數的關係顯著性)，但不知道是否用某n個x變數就是最好的回歸方程式的組合。
+所以如果要找「尋找模型方程式的最佳變數組合」，我們會額外進行幾個處理，常見的方法包括(1)「逐步回歸」和(2)「lasso回歸(regularization regression)」。
+(1)逐步回歸會使用向前、向後或雙向逐一加減x變數來看哪個x變數組合的方程式的回歸模型表現最好；
+(2)而後者lasso回歸則會幫每個x變數加入權重，並在回歸目標是加入懲罰因子(限制模型複雜度)，來看每個x變數的權重要拿捏在多少程度(0~1)才能配釋出最佳回歸方程式。
+希望有回答到你！^^]]></description>
+			<content:encoded><![CDATA[<p>您好，<br />
+「回歸模型基本上並不包含變數篩選」這句話在這邊指的是說「尋找模型方程式的最佳變數組合」，<br />
+因為每一次跑羅吉斯模型我們只能寫死指定某n個x變數來解釋y變數的配飾效果(也會告訴我們每個x變數與y變數的關係顯著性)，但不知道是否用某n個x變數就是最好的回歸方程式的組合。<br />
+所以如果要找「尋找模型方程式的最佳變數組合」，我們會額外進行幾個處理，常見的方法包括(1)「逐步回歸」和(2)「lasso回歸(regularization regression)」。<br />
+(1)逐步回歸會使用向前、向後或雙向逐一加減x變數來看哪個x變數組合的方程式的回歸模型表現最好；<br />
+(2)而後者lasso回歸則會幫每個x變數加入權重，並在回歸目標是加入懲罰因子(限制模型複雜度)，來看每個x變數的權重要拿捏在多少程度(0~1)才能配釋出最佳回歸方程式。<br />
+希望有回答到你！^^</p>
+]]></content:encoded>
+		
+			</item>
+		<item>
+		<title>
+		留言者: allen		</title>
+		<link>/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e8%bf%b4%e6%ad%b8/#comment-130</link>
+
+		<dc:creator><![CDATA[allen]]></dc:creator>
+		<pubDate>Thu, 20 Dec 2018 03:06:20 +0000</pubDate>
+		<guid isPermaLink="false">/?p=851#comment-130</guid>
+
+					<description><![CDATA[感謝您的這篇文章，收穫非常多，不過我想請問總結的第二段
+```回歸模型基本上並不包含變數篩選```
+意思是，我如果利用glm所建立的羅吉斯模型，我並不能作挑選有顯著的變數當作我的重要變數嗎?]]></description>
+			<content:encoded><![CDATA[<p>感謝您的這篇文章，收穫非常多，不過我想請問總結的第二段<br />
+<code></code><code>回歸模型基本上並不包含變數篩選</code><code></code><br />
+意思是，我如果利用glm所建立的羅吉斯模型，我並不能作挑選有顯著的變數當作我的重要變數嗎?</p>
+]]></content:encoded>
+		
+			</item>
+	</channel>
+</rss>

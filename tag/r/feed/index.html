@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>R &#8211; 果醬珍珍•JamJam</title>
+	<atom:link href="/tag/r/feed/" rel="self" type="application/rss+xml" />
+	<link>/</link>
+	<description>健忘女孩Jam的學習筆記和生活雜記</description>
+	<lastBuildDate>Fri, 03 Jul 2020 02:32:05 +0000</lastBuildDate>
+	<language>zh-TW</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=5.8</generator>
+	<item>
+		<title>資料處理-實用的10個小技巧 &#124; Data Processing Basics FAQ &#124; R 語言</title>
+		<link>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/</link>
+					<comments>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/#respond</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Sat, 01 Sep 2018 08:09:49 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料處理]]></category>
+		<category><![CDATA[data frame]]></category>
+		<category><![CDATA[data pre processing]]></category>
+		<category><![CDATA[data processing]]></category>
+		<category><![CDATA[R]]></category>
+		<guid isPermaLink="false">/?p=1736</guid>
+
+					<description><![CDATA[<p>本篇整理了使用R語言進行 資料處理(Data Processing) 的 Top 10 FAQ，為了節省健忘的自己反覆google stackoverflow的 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇整理了使用R語言進行 資料處理(Data Processing) 的 Top 10 FAQ，為了節省健忘的自己反覆google stackoverflow的時間，想要把常見的 資料處理 語法筆記下來。包括資料欄位重新命名、產生隨機亂數、產生data frame、數值區隔化(binning)、資料萃取等。</p>
+<h3>資料處理 Data Processing 實用的10個小技巧</h3>
+<h4>1. 產生均一分佈(uniform distribution)和常態分佈(normal distribution)的隨機數值(n=100)</h4>
+<p>產生100個均一分佈(uniform distribution)的隨機數值向量（並使用種子參數，固定隨機結果）</p><pre class="crayon-plain-tag">set.seed(125)
+(vector1 &lt;- runif(n = 100, min = 50, max = 100))
+# [1] 91.23372 55.84255 64.98903 67.82804 98.25975 98.37803 76.65462 66.60778 82.69219 80.72748 50.70648 88.16897 67.96526 55.06754
+# [15] 77.83986 71.21092 70.96414 96.67055 83.60329 87.93464 68.69401 86.41751 84.19229 64.76608 78.88808 53.22125 88.13211 56.14755
+# [29] 58.42466 50.32025 87.44001 52.76610 97.55393 73.19850 94.65054 80.09208 52.96008 54.36781 94.07018 71.41990 85.78686 64.34257
+# [43] 93.64899 63.62392 55.36854 78.86193 87.65080 77.84359 65.02133 75.92287 82.07423 84.34672 51.64452 73.84293 85.64133 67.92616
+# [57] 90.67720 50.76088 82.69066 69.70544 76.52618 91.38894 99.59023 80.40770 59.27992 55.20893 88.90397 95.32379 97.02632 68.20486
+# [71] 93.56424 96.10821 70.03725 96.28664 56.70781 86.41269 94.10011 60.09537 52.10116 75.80777 78.15360 98.07568 62.58464 76.18880
+# [85] 91.73484 91.92365 53.81340 97.19763 88.37050 92.86988 67.39574 80.36109 60.43717 83.97030 65.76207 64.23523 96.80940 95.01764
+# [99] 62.68376 60.57814</pre><p>檢視此分佈次數長條圖</p><pre class="crayon-plain-tag">hist(vector1)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1739" src="/wp-content/uploads/2018/09/Rplot01-2.jpeg" alt="資料處理" width="700" height="773" srcset="/wp-content/uploads/2018/09/Rplot01-2.jpeg 700w, /wp-content/uploads/2018/09/Rplot01-2-272x300.jpeg 272w, /wp-content/uploads/2018/09/Rplot01-2-230x254.jpeg 230w, /wp-content/uploads/2018/09/Rplot01-2-350x387.jpeg 350w, /wp-content/uploads/2018/09/Rplot01-2-480x530.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>檢視此分佈的密度機率圖</p><pre class="crayon-plain-tag">plot(density(vector1))</pre><p><img loading="lazy" class="alignnone size-full wp-image-1740" src="/wp-content/uploads/2018/09/Rplot02-1.jpeg" alt="資料處理" width="700" height="773" srcset="/wp-content/uploads/2018/09/Rplot02-1.jpeg 700w, /wp-content/uploads/2018/09/Rplot02-1-272x300.jpeg 272w, /wp-content/uploads/2018/09/Rplot02-1-230x254.jpeg 230w, /wp-content/uploads/2018/09/Rplot02-1-350x387.jpeg 350w, /wp-content/uploads/2018/09/Rplot02-1-480x530.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>產生100個常態分佈(normal distribution)的隨機數值向量（並使用種子參數，固定隨機結果）。預設的常態平均值為0，標準差為1，我們將之改之為平均數80，標準差20。</p><pre class="crayon-plain-tag"># default的平均數為0標準差為1
+set.seed(125)
+(vector2 &lt;- rnorm(n = 100,mean = 80, sd = 20))
+# [1]  94.570870  98.860533  87.227846 101.200558  94.796854   7.888396  97.381079  53.707525  79.820673  65.226583  83.604616
+# [12]  56.674802  71.379024  65.341515  87.235630  58.500588  75.307624 108.529317  67.545379  88.757267  91.186797  80.637498
+# [23]  58.256334  67.982055  55.808330  77.750359 112.401569  73.330030  73.434837 100.468880  80.106676  76.615631  84.601009
+# [34]  92.579101  88.146062 107.731379 113.084699  83.316553 110.208551  81.149520  79.759604  49.380636 112.434828  87.833169
+# [45]  91.378179  97.054735 122.659543  61.942937  25.111649  82.308347  79.105285 109.440641  79.853266  75.837099  82.781623
+# [56]  42.761641 102.445376  69.369917 101.587147  66.119959  60.815382  88.419203  86.486531  68.378261  95.710587  91.941595
+# [67]  78.080758  61.061284  79.886693  77.463590  82.142727  68.684041  44.079131 113.286471  65.865280  78.415170  79.630492
+# [78]  53.089088  82.405446  83.816031  70.476195 123.994033  64.910649  75.873647  88.055012 102.208292  78.195002  74.755952
+# [89]  63.820298  83.646523  96.931187  84.085811  27.184622  68.838557  66.301864  61.246448  60.270783  68.055789 109.457474
+# [100]  94.410342</pre><p>檢視此分佈次數長條圖</p><pre class="crayon-plain-tag">hist(vector2)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1746" src="/wp-content/uploads/2018/09/Rplot03-3.jpeg" alt="Rplot03" width="700" height="602" srcset="/wp-content/uploads/2018/09/Rplot03-3.jpeg 700w, /wp-content/uploads/2018/09/Rplot03-3-300x258.jpeg 300w, /wp-content/uploads/2018/09/Rplot03-3-230x198.jpeg 230w, /wp-content/uploads/2018/09/Rplot03-3-350x301.jpeg 350w, /wp-content/uploads/2018/09/Rplot03-3-480x413.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>檢視此分佈的密度機率圖</p><pre class="crayon-plain-tag">plot(density(vector2))</pre><p><img loading="lazy" class="alignnone size-large wp-image-1747" src="/wp-content/uploads/2018/09/Rplot04-2.jpeg" alt="Rplot04" width="700" height="602" srcset="/wp-content/uploads/2018/09/Rplot04-2.jpeg 700w, /wp-content/uploads/2018/09/Rplot04-2-300x258.jpeg 300w, /wp-content/uploads/2018/09/Rplot04-2-230x198.jpeg 230w, /wp-content/uploads/2018/09/Rplot04-2-350x301.jpeg 350w, /wp-content/uploads/2018/09/Rplot04-2-480x413.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>2. concatenate strings 串連字串 using paste() / paste0()</h4>
+<p><span style="color: #9f6ad4;">使用<span style="text-decoration: underline;">paste(),paste0()函數</span>，會先將物件轉換成字元型態(as.character)再合併成新字串</span>。</p>
+<p>paste()跟paste0()最大差異就是參數差異如下:</p>
+<ul>
+<li><span style="color: #9f6ad4;">(1) paste()有sep參數: </span>可以調整合併時的字串間的間隔，預設為空白。</li>
+<li><span style="color: #9f6ad4;">(2) paste0()有collapse參數: <span style="color: #333333;">可將所有合併後的新字串合併成一個字串</span></span><span style="color: #333333;">。</span></li>
+</ul>
+<p>我們因為沒有要將100列的新字串合併成單一新字串，因此單純使用paste()即可。</p>
+<p>我們這裡示範將數值串連百分比%符號合成新字串。因為sep預設為空白格，我們將空白拿掉。</p><pre class="crayon-plain-tag">(vector3 &lt;- paste(round(rnorm(100),2),"%", sep = ""))
+
+# [1] "0.46%"  "-1.46%" "0.58%"  "-1.28%" "0.35%"  "1.06%"  "1.65%"  "0.81%"  "0.49%"  "2.48%"  "-0.43%" "-0.26%" "1.57%"  "1.03%" 
+# [15] "0.4%"   "0.01%"  "-0.7%"  "-0.16%" "1.43%"  "-1.67%" "0.75%"  "0.49%"  "-0.24%" "1.14%"  "-0.56%" "-0.12%" "1.08%"  "-0.51%"
+# [29] "-0.01%" "-0.06%" "-0.43%" "-1.52%" "0.26%"  "1.46%"  "1.09%"  "0.39%"  "-0.85%" "0.08%"  "-0.94%" "0.06%"  "0.79%"  "-0.44%"
+# [43] "-0.75%" "-1.04%" "1.44%"  "-1.28%" "-1.39%" "0.1%"   "-0.92%" "1.75%"  "0.61%"  "0.82%"  "-0.8%"  "-1.13%" "0.54%"  "-1.07%"
+# [57] "-0.91%" "1%"     "-0.15%" "-2.07%" "0.56%"  "2.27%"  "-2.53%" "-0.38%" "0.86%"  "0.58%"  "-0.58%" "-1.85%" "-0.64%" "-1.24%"
+# [71] "-2.18%" "-0.85%" "-1.2%"  "0.05%"  "-1.11%" "-2.7%"  "0.36%"  "-0.77%" "0.56%"  "-0.37%" "0.11%"  "0.76%"  "-0.45%" "-1.3%" 
+# [85] "1.8%"   "-0.18%" "1.17%"  "-1.01%" "0.22%"  "-0.17%" "-0.67%" "0.68%"  "1.38%"  "0.67%"  "-2.06%" "0.62%"  "1.17%"  "0.48%" 
+# [99] "-1.77%" "-2.4%"</pre><p></p>
+<h4>3. 產生時間序列</h4>
+<p>可以使用<span style="color: #9f6ad4;">seq.Date()函數</span>，只要設定區間起始日期(from= &#8230;, to=&#8230;)，和間隔(by = <code>"day"</code>, <code>"week"</code>, <code>"month"</code>, <code>"quarter"</code> or <code>"year"</code>)，即可自動產生時間序列。</p><pre class="crayon-plain-tag">(vector4 &lt;- seq.Date(from = as.Date("2018-08-01"), to = as.Date("2018-11-08"), by = "day"))
+
+# [1] "2018-08-01" "2018-08-02" "2018-08-03" "2018-08-04" "2018-08-05" "2018-08-06" "2018-08-07" "2018-08-08" "2018-08-09"
+# [10] "2018-08-10" "2018-08-11" "2018-08-12" "2018-08-13" "2018-08-14" "2018-08-15" "2018-08-16" "2018-08-17" "2018-08-18"
+# [19] "2018-08-19" "2018-08-20" "2018-08-21" "2018-08-22" "2018-08-23" "2018-08-24" "2018-08-25" "2018-08-26" "2018-08-27"
+# [28] "2018-08-28" "2018-08-29" "2018-08-30" "2018-08-31" "2018-09-01" "2018-09-02" "2018-09-03" "2018-09-04" "2018-09-05"
+# [37] "2018-09-06" "2018-09-07" "2018-09-08" "2018-09-09" "2018-09-10" "2018-09-11" "2018-09-12" "2018-09-13" "2018-09-14"
+# [46] "2018-09-15" "2018-09-16" "2018-09-17" "2018-09-18" "2018-09-19" "2018-09-20" "2018-09-21" "2018-09-22" "2018-09-23"
+# [55] "2018-09-24" "2018-09-25" "2018-09-26" "2018-09-27" "2018-09-28" "2018-09-29" "2018-09-30" "2018-10-01" "2018-10-02"
+# [64] "2018-10-03" "2018-10-04" "2018-10-05" "2018-10-06" "2018-10-07" "2018-10-08" "2018-10-09" "2018-10-10" "2018-10-11"
+# [73] "2018-10-12" "2018-10-13" "2018-10-14" "2018-10-15" "2018-10-16" "2018-10-17" "2018-10-18" "2018-10-19" "2018-10-20"
+# [82] "2018-10-21" "2018-10-22" "2018-10-23" "2018-10-24" "2018-10-25" "2018-10-26" "2018-10-27" "2018-10-28" "2018-10-29"
+# [91] "2018-10-30" "2018-10-31" "2018-11-01" "2018-11-02" "2018-11-03" "2018-11-04" "2018-11-05" "2018-11-06" "2018-11-07"
+# [100] "2018-11-08"</pre><p></p>
+<h4>4. 產生data frame</h4>
+<p>這邊示範如何自行建置一個二維的data frame，<span style="color: #9f6ad4;">欄位名稱為&#8221;=&#8221;符號左側之名稱</span>。data frame各組成向量可以是不同的資料型態，只要注意向量長度需相同則行。</p><pre class="crayon-plain-tag">df &lt;- data.frame(維度一 = 1: 100, 維度二 = c(letters, LETTERS , rep('a', 48)))
+head(df)
+#   維度一 維度二
+# 1      1      a
+# 2      2      b
+# 3      3      c
+# 4      4      d
+# 5      5      e
+# 6      6      f
+
+tail(df)
+#     維度一 維度二
+# 95      95      a
+# 96      96      a
+# 97      97      a
+# 98      98      a
+# 99      99      a
+# 100    100      a</pre><p></p>
+<h4>5. 將不同向量vector 與data frame合併成新的data frame</h4>
+<p>使用的是<span style="color: #9f6ad4;">cbind()函數</span>(column bind)。而<span style="color: #9f6ad4;">cbind.data.frame()函數</span>則是事前先把物件都轉換成data frame型態 (as.data.frame())。進行cbind時僅需確保資料長度是相同的。</p><pre class="crayon-plain-tag">df.new &lt;- cbind.data.frame(df,vector1, vector2, vector3, vector4)
+head(df.new)
+#   維度一 維度二  vector1    vector2 vector3    vector4
+# 1      1      a 91.23372  94.570870   0.46% 2018-08-01
+# 2      2      b 55.84255  98.860533  -1.46% 2018-08-02
+# 3      3      c 64.98903  87.227846   0.58% 2018-08-03
+# 4      4      d 67.82804 101.200558  -1.28% 2018-08-04
+# 5      5      e 98.25975  94.796854   0.35% 2018-08-05
+# 6      6      f 98.37803   7.888396   1.06% 2018-08-06
+class(df.new)
+# [1] "data.frame"
+str(df.new)
+# 'data.frame':	100 obs. of  6 variables:
+# $ 維度一 : int  1 2 3 4 5 6 7 8 9 10 ...
+# $ 維度二 : Factor w/ 52 levels "a","A","b","B",..: 1 3 5 7 9 11 13 15 17 19 ...
+# $ vector1: num  91.2 55.8 65 67.8 98.3 ...
+# $ vector2: num  94.6 98.9 87.2 101.2 94.8 ...
+# $ vector3: Factor w/ 93 levels "-0.01%","-0.06%",..: 61 38 66 35 57 78 88 74 63 93 ...
+# $ vector4: Date, format: "2018-08-01" "2018-08-02" "2018-08-03" "2018-08-04" ...</pre><p>（＊若是要將資料列合併，則使用rbind()，此時要注意的就是資料維度要一樣。）</p>
+<h4>6. 重新命名資料欄位名稱</h4>
+<p>如果遇到欄位名稱太長或是為中文時，會想要重新命名。</p>
+<p>全部都重新命名。</p><pre class="crayon-plain-tag">names(df.new) &lt;- c('order','letters','random.uniform', 'random.normal', 'percentage', 'date')
+head(df.new)
+#   order letters random.uniform random.normal percentage       date
+# 1     1       a       91.23372     94.570870      0.46% 2018-08-01
+# 2     2       b       55.84255     98.860533     -1.46% 2018-08-02
+# 3     3       c       64.98903     87.227846      0.58% 2018-08-03
+# 4     4       d       67.82804    101.200558     -1.28% 2018-08-04
+# 5     5       e       98.25975     94.796854      0.35% 2018-08-05
+# 6     6       f       98.37803      7.888396      1.06% 2018-08-06</pre><p>只取部分欄位進行重新命名。</p><pre class="crayon-plain-tag">names(df.new)[colnames(df.new)=='order'] &lt;- 'row.order'
+head(df.new)
+
+#   row.order letters random.uniform random.normal percentage       date
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06</pre><p></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<h4>7. 根據資料pattern萃取所需資訊 : using <span style="color: #9f6ad4;">sub()</span></h4>
+<p>假設想要萃取percentage欄位的數值資訊，並將資料型態改為數值型。我們使用sub()和as.numeric()。</p>
+<p>(*更多<a href="http://astrostatistics.psu.edu/su07/R/html/base/html/grep.html">Pattern Matching and Replacement</a>函數用法介紹)</p><pre class="crayon-plain-tag">df.new$percentage &lt;- as.numeric(sub(pattern = "%",replacement = "",x = df.new$percentage))/100.00
+head(df.new)
+
+#   row.order random.uniform random.normal percentage       date
+# 1         1       91.23372     94.570870     0.0046 2018-08-01
+# 2         2       55.84255     98.860533    -0.0146 2018-08-02
+# 3         3       64.98903     87.227846     0.0058 2018-08-03
+# 4         4       67.82804    101.200558    -0.0128 2018-08-04
+# 5         5       98.25975     94.796854     0.0035 2018-08-05
+# 6         6       98.37803      7.888396     0.0106 2018-08-06</pre><p></p>
+<h4>8. 連續變數區間化(bin, segmentation) : using <span style="color: #9f6ad4;">cut()</span>。</h4>
+<p>比如說年齡資訊，在進行統計分析時，都會將數值組成新的區間以利摘要。</p>
+<p>最長使用的函數為<span style="color: #9f6ad4;">cut()系列，包括cut_interval(), cut_number(), cut_width()</span>。</p>
+<ul>
+<li>cut_interval()：會確保每一個間隔區間(range)是等分的。</li>
+<li>cut_number() : 會確保每一組內觀測值數目（幾乎）是相同的。</li>
+<li>cut_width() : 會確保每一組的寬度(width)相同，並且能調整長條圖的邊界(boundary)和中心點(center)。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">set.seed(423)
+df.new$age &lt;- rnorm(n = 100, mean = 50, sd = 20)
+df.new$seg.age &lt;- cut_width(x = df.new$age, width = 10, boundary = 0, closed = "left")
+table(df.new$seg.age)
+# [0,10)  [10,20)  [20,30)  [30,40)  [40,50)  [50,60)  [60,70)  [70,80)  [80,90) [90,100] 
+#      1        4       10       16       19       21       16        7        5        1</pre><p>將年齡區間分佈以長條圖畫出。</p><pre class="crayon-plain-tag">plot(df.new$seg.age)</pre><p><img loading="lazy" class="alignnone size-full wp-image-1750" src="/wp-content/uploads/2018/09/Rplot05-2.jpeg" alt="Rplot05" width="885" height="675" srcset="/wp-content/uploads/2018/09/Rplot05-2.jpeg 885w, /wp-content/uploads/2018/09/Rplot05-2-300x229.jpeg 300w, /wp-content/uploads/2018/09/Rplot05-2-768x586.jpeg 768w, /wp-content/uploads/2018/09/Rplot05-2-830x633.jpeg 830w, /wp-content/uploads/2018/09/Rplot05-2-230x175.jpeg 230w, /wp-content/uploads/2018/09/Rplot05-2-350x267.jpeg 350w, /wp-content/uploads/2018/09/Rplot05-2-480x366.jpeg 480w" sizes="(max-width: 885px) 100vw, 885px" /></p>
+<h4>9. 刪除不感興趣的資料欄位</h4>
+<p>有時在分析時，我們會捨棄一些對分析沒幫著的維度。</p>
+<p>我們先隨機產生一個不需要的欄位稱作&#8221;nouse&#8221;</p><pre class="crayon-plain-tag">set.seed(423)
+df.new$nouse &lt;- rnorm(n = 100, mean = 70, sd = 30)
+head(df.new)
+#   row.order letters random.uniform random.normal percentage       date      age seg.age     nouse
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01 25.35967 [20,30)  33.03950
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02 88.41891 [80,90) 127.62837
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03 35.08060 [30,40)  47.62090
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04 60.08320 [60,70)  85.12480
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05 24.58924 [20,30)  31.88386
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06 33.34497 [30,40)  45.01745</pre><p>再使用下列指令將該欄位捨棄。</p><pre class="crayon-plain-tag">df.new &lt;- df.new[,!(colnames(df.new)== 'nouse')]
+head(df.new)
+
+#   row.order letters random.uniform random.normal percentage       date      age seg.age
+# 1         1       a       91.23372     94.570870      0.46% 2018-08-01 25.35967 [20,30)
+# 2         2       b       55.84255     98.860533     -1.46% 2018-08-02 88.41891 [80,90)
+# 3         3       c       64.98903     87.227846      0.58% 2018-08-03 35.08060 [30,40)
+# 4         4       d       67.82804    101.200558     -1.28% 2018-08-04 60.08320 [60,70)
+# 5         5       e       98.25975     94.796854      0.35% 2018-08-05 24.58924 [20,30)
+# 6         6       f       98.37803      7.888396      1.06% 2018-08-06 33.34497 [30,40)</pre><p></p>
+<h4>10. 根據分析目的更換資料欄位順序</h4>
+<p>法1: 使用欄位指標column index來重新排列欄位</p><pre class="crayon-plain-tag">df.final &lt;- df.new[c(1,6,2,3,4,5,7,8)]
+head(df.final)
+#   row.order       date letters random.uniform random.normal percentage      age seg.age
+# 1         1 2018-08-01       a       91.23372     94.570870      0.46% 25.35967 [20,30)
+# 2         2 2018-08-02       b       55.84255     98.860533     -1.46% 88.41891 [80,90)
+# 3         3 2018-08-03       c       64.98903     87.227846      0.58% 35.08060 [30,40)
+# 4         4 2018-08-04       d       67.82804    101.200558     -1.28% 60.08320 [60,70)
+# 5         5 2018-08-05       e       98.25975     94.796854      0.35% 24.58924 [20,30)
+# 6         6 2018-08-06       f       98.37803      7.888396      1.06% 33.34497 [30,40)</pre><p>法2: 使用欄位名稱column name來重新排列欄位</p><pre class="crayon-plain-tag">df.final &lt;- df.new[c('row.order','date','letters','random.uniform','random.normal', 'percentage', 'seg.age', 'age')]
+head(df.final)
+#   row.order       date letters random.uniform random.normal percentage seg.age      age
+# 1         1 2018-08-01       a       91.23372     94.570870      0.46% [20,30) 25.35967
+# 2         2 2018-08-02       b       55.84255     98.860533     -1.46% [80,90) 88.41891
+# 3         3 2018-08-03       c       64.98903     87.227846      0.58% [30,40) 35.08060
+# 4         4 2018-08-04       d       67.82804    101.200558     -1.28% [60,70) 60.08320
+# 5         5 2018-08-05       e       98.25975     94.796854      0.35% [20,30) 24.58924
+# 6         6 2018-08-06       f       98.37803      7.888396      1.06% [30,40) 33.34497</pre><p></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>更多資料處理相關學習筆記：</p>
+<p><a href="/python-web-crawler-beautifulsoup-%e7%b6%b2%e8%b7%af%e7%88%ac%e8%9f%b2/" target="_blank" rel="noopener">網路爬蟲 Web Crawler | 資料不求人 基礎篇 | using Python BeautifulSoup</a></p>
+<p>這篇文章 <a rel="nofollow" href="/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/">資料處理-實用的10個小技巧 | Data Processing Basics FAQ | R 語言</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/r-data-processing-top-10-faq-%e8%b3%87%e6%96%99%e8%99%95%e7%90%86/feed/</wfw:commentRss>
+			<slash:comments>0</slash:comments>
+		
+		
+			</item>
+		<item>
+		<title>ggplot2 &#124;  簡易資料視覺化 Basic Data Visualization &#8211; part 1 &#124; using R SQLite</title>
+		<link>/r-sqlite-data-visualization-ggplot2/</link>
+					<comments>/r-sqlite-data-visualization-ggplot2/#comments</comments>
+		
+		<dc:creator><![CDATA[jamleecute]]></dc:creator>
+		<pubDate>Tue, 08 May 2018 14:00:57 +0000</pubDate>
+				<category><![CDATA[ 程式與統計]]></category>
+		<category><![CDATA[資料視覺化]]></category>
+		<category><![CDATA[bar]]></category>
+		<category><![CDATA[barchart]]></category>
+		<category><![CDATA[data visualization]]></category>
+		<category><![CDATA[dplyr]]></category>
+		<category><![CDATA[geom_bar]]></category>
+		<category><![CDATA[geom_col]]></category>
+		<category><![CDATA[ggplot2]]></category>
+		<category><![CDATA[R]]></category>
+		<category><![CDATA[SQLite]]></category>
+		<guid isPermaLink="false">/?p=1408</guid>
+
+					<description><![CDATA[<p>本篇學習筆記主要介紹如何使用R ggplot2 套件的圖層概念來進行資料視覺化 Data Visualization，使用數據則為透過R連接SQLite 資料庫 [&#8230;]</p>
+<p>這篇文章 <a rel="nofollow" href="/r-sqlite-data-visualization-ggplot2/">ggplot2 |  簡易資料視覺化 Basic Data Visualization &#8211; part 1 | using R SQLite</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></description>
+										<content:encoded><![CDATA[<p>本篇學習筆記主要介紹如何使用R ggplot2 套件的圖層概念來進行資料視覺化 Data Visualization，使用數據則為透過R連接SQLite 資料庫而取得。R基本上可以從資料庫下載資料和上傳資料，使用的函數依據資料庫不同而有所異，但所有資料庫指令都還是基本的SQL語法。</p>
+<h3>本篇筆記重點</h3>
+<ul>
+<li>如合使用R連接SQLite資料庫</li>
+<li>簡易資料處理</li>
+<li>進行簡易視覺化</li>
+</ul>
+<h4>本篇將分為幾個步驟：</h4>
+<p>step 1 :使用R連接SQLite DB</p>
+<p>step 2: 資料處理 using dplyr</p>
+<p>step 3 : 簡易資料視覺化 using ggplot2</p>
+<h3>step 1: 使用R連接SQLite DB</h3>
+<p>載入所需套件</p><pre class="crayon-plain-tag">library(RSQLite) #連接SQLite DB
+library(dplyr) #資料處理</pre><p>建立db連線</p><pre class="crayon-plain-tag">con &lt;- dbConnect(SQLite(), dbname="test.db")</pre><p>列出所有DB中的table</p><pre class="crayon-plain-tag">dbListTables(con)
+# [1] "records"</pre><p>查看table&#8221;records&#8221;資料欄位</p><pre class="crayon-plain-tag">dbListFields(con,"records")
+# [1] "boardname"  "popularity" "timestamp"</pre><p>輸入指令並回傳資料。並記得關閉連線。</p><pre class="crayon-plain-tag">pttRecords &lt;-
+  dbGetQuery(con,'select * from records')
+
+class(pttRecords)
+# [1] "data.frame"
+
+# 關閉連線
+dbDisconnect(con)</pre><p>檢視資料前十列。</p><pre class="crayon-plain-tag">pttRecords %&gt;% head(10)
+
+#      boardname popularity           timestamp
+# 1    Gossiping      15386 2018-05-07 22:24:30
+# 2          NBA       5076 2018-05-07 22:24:30
+# 3     Baseball       3759 2018-05-07 22:24:30
+# 4        Stock       3204 2018-05-07 22:24:30
+# 5       C_Chat       2882 2018-05-07 22:24:30
+# 6          sex       2301 2018-05-07 22:24:30
+# 7          LoL       2255 2018-05-07 22:24:30
+# 8        movie       2209 2018-05-07 22:24:30
+# 9    WomenTalk       1659 2018-05-07 22:24:30
+# 10 Lifeismoney       1377 2018-05-07 22:24:30</pre><p>SQL 基本語法：<a href="https://www.w3schools.com/sql/">https://www.w3schools.com/sql/</a></p>
+<h3>step 2: 資料處理 using dplyr</h3>
+<p>先檢視時間戳distinct value</p><pre class="crayon-plain-tag">pttRecords %&gt;% select(timestamp) %&gt;% distinct()
+#             timestamp
+# 1 2018-05-07 22:24:30
+# 2 2018-05-08 21:42:39</pre><p>篩選某一天時間戳的資料並按照各版位人氣高到低排序</p><pre class="crayon-plain-tag">tmp &lt;- pttRecords %&gt;% filter(timestamp == '2018-05-07 22:24:30') %&gt;% 
+  arrange(desc(popularity))</pre><p>篩選人氣前10的版位資料</p><pre class="crayon-plain-tag">tmp2 &lt;- tmp %&gt;% head(10)</pre><p></p>
+<h3>Step 3 : 簡易資料視覺化using ggplot2</h3>
+<p>將該時間戳top10版位人氣繪製bar圖。繪製<span style="color: #9f6ad4;">bar chart(x: discrete, y: continuous)</span>有兩種方法：(<span style="color: #9f6ad4;">*如果x,y皆為 continuus，則使用geom_histogram()</span>)。</p>
+<ul>
+<li><span style="color: #9f6ad4;">geom_col()</span>: stat預設值為stat_identity，即bar圖的高會使用資料的值。</li>
+<li><span style="color: #9f6ad4;">geom_bar()</span>: stat預設值為&#8221;stat_count&#8221;，即每個x資料點對應的資料次數。如果希望bar圖的高度呈現資料值，則須將stat = &#8220;identity&#8221;。</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">library(ggplot2)
+a &lt;- ggplot(tmp2,aes(reorder(boardname, -popularity) ,popularity))
+
+# bar chart method 1:
+a + geom_col()
+# bar chart method 2:
+a + geom_bar(stat = "identity")</pre><p><img loading="lazy" class="alignnone size-full wp-image-1410" src="/wp-content/uploads/2018/09/ptt_pop_01.png" alt="r ggplot2" width="710" height="454" srcset="/wp-content/uploads/2018/09/ptt_pop_01.png 710w, /wp-content/uploads/2018/09/ptt_pop_01-300x192.png 300w, /wp-content/uploads/2018/09/ptt_pop_01-230x147.png 230w, /wp-content/uploads/2018/09/ptt_pop_01-350x224.png 350w, /wp-content/uploads/2018/09/ptt_pop_01-480x307.png 480w" sizes="(max-width: 710px) 100vw, 710px" /></p>
+<p>如果想要進一步將bar圖依據不同版位上色，我們可以選取自己想要的色調</p><pre class="crayon-plain-tag"># 列出所有色調模組
+RColorBrewer::display.brewer.all()</pre><p><img loading="lazy" class="alignnone size-full wp-image-1436" src="/wp-content/uploads/2018/05/Rplot01.jpeg" alt="r ggplot2" width="600" height="815" srcset="/wp-content/uploads/2018/05/Rplot01.jpeg 600w, /wp-content/uploads/2018/05/Rplot01-221x300.jpeg 221w, /wp-content/uploads/2018/05/Rplot01-230x312.jpeg 230w, /wp-content/uploads/2018/05/Rplot01-350x475.jpeg 350w, /wp-content/uploads/2018/05/Rplot01-480x652.jpeg 480w" sizes="(max-width: 600px) 100vw, 600px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<p>我們使用<span style="color: #9f6ad4;">scale_fill_brewer()</span>圖層來指定色調（我們從上圖選擇&#8217;Set3&#8217;的palette）。</p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3')</pre><p><img loading="lazy" class="alignnone size-full wp-image-1437" src="/wp-content/uploads/2018/05/Rplot03.jpeg" alt="r ggplot2" width="819" height="580" srcset="/wp-content/uploads/2018/05/Rplot03.jpeg 819w, /wp-content/uploads/2018/05/Rplot03-300x212.jpeg 300w, /wp-content/uploads/2018/05/Rplot03-768x544.jpeg 768w, /wp-content/uploads/2018/05/Rplot03-230x163.jpeg 230w, /wp-content/uploads/2018/05/Rplot03-350x248.jpeg 350w, /wp-content/uploads/2018/05/Rplot03-480x340.jpeg 480w" sizes="(max-width: 819px) 100vw, 819px" /></p>
+<p>從上圖，我們發現X軸的每行資料欄位的字部分疊在一起，於是我們近一步進行以下調整：</p>
+<ul>
+<li><span style="color: #333333;"><span style="color: #9f6ad4;">theme()圖層</span>：</span>
+<ul>
+<li><span style="color: #333333;">axis.text.x參數：將X軸的文字做一些角度旋轉。</span></li>
+<li><span style="color: #333333;">text參數：指定中文字型，以解決中文亂碼問題。</span></li>
+</ul>
+</li>
+<li><span style="color: #333333;"><span style="color: #9f6ad4;">labs()圖層</span>：</span>
+<ul>
+<li><span style="color: #333333;">title: 圖標題</span></li>
+<li><span style="color: #333333;">x: x軸標題</span></li>
+<li><span style="color: #333333;">y: y軸標題</span></li>
+</ul>
+</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3') +
+  labs(title = 'PPT人氣版位Top10',
+       x = "版位", 
+       y = "人氣") + 
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) # 將title置中</pre><p><img loading="lazy" class="alignnone size-full wp-image-1438" src="/wp-content/uploads/2018/05/Rplot04.jpeg" alt="r ggplot2" width="700" height="580" srcset="/wp-content/uploads/2018/05/Rplot04.jpeg 700w, /wp-content/uploads/2018/05/Rplot04-300x249.jpeg 300w, /wp-content/uploads/2018/05/Rplot04-230x191.jpeg 230w, /wp-content/uploads/2018/05/Rplot04-350x290.jpeg 350w, /wp-content/uploads/2018/05/Rplot04-480x398.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>調整y軸數值單位與顯示方式。因為y軸為連續數值，因此我們使用<span style="color: #9f6ad4;">scale_y_continuous()</span>圖層。</p><pre class="crayon-plain-tag">a + 
+  geom_bar(stat = "identity",aes(fill = boardname)) +
+  scale_fill_brewer(palette = 'Set3') +
+  labs(title = 'PPT人氣版位Top10',
+       x = "版位", 
+       y = "人氣") + 
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) + # 將title置中
+  scale_y_continuous(labels = scales::unit_format("k", 1e-3), #以每千單位顯示
+                     breaks = seq(0,20000, by=2000) #每兩千為間隔
+                     )</pre><p><img loading="lazy" class="alignnone size-full wp-image-1439" src="/wp-content/uploads/2018/05/Rplot05.jpeg" alt="r ggplot2" width="700" height="580" srcset="/wp-content/uploads/2018/05/Rplot05.jpeg 700w, /wp-content/uploads/2018/05/Rplot05-300x249.jpeg 300w, /wp-content/uploads/2018/05/Rplot05-230x191.jpeg 230w, /wp-content/uploads/2018/05/Rplot05-350x290.jpeg 350w, /wp-content/uploads/2018/05/Rplot05-480x398.jpeg 480w" sizes="(max-width: 700px) 100vw, 700px" /></p>
+<p>將每一條bar加上數值標籤。我們可以新增<span style="color: #9f6ad4;">geom_text()</span>圖層。(*這邊因為會用到str_c()函數來串連多個字串成一個新字串，我們載入套件stringr)</p><pre class="crayon-plain-tag">library(stringr) #欲使用str_c()函數: Join multiple strings into a single string.
+gg &lt;- 
+  a + 
+    geom_bar(stat = "identity",aes(fill = boardname)) +
+    geom_text(aes(label = str_c(round(popularity/1000,1),'K'), y = popularity + 300)) +
+    scale_fill_brewer(palette = 'Set3') +
+    labs(title = 'PPT人氣版位Top10',
+         x = "版位", 
+         y = "人氣") + 
+    theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+          axis.text.x = element_text(angle = 45, vjust = 0.5),
+          plot.title = element_text(hjust = 0.5)) + # 將title置中
+    scale_y_continuous(labels = scales::unit_format("k", 1e-3), #以每千單位顯示
+                       breaks = seq(0,20000, by=2000) #每兩千為間隔
+                       )
+gg</pre><p>如果想要近一步調整整體圖形風格，可使用<span style="color: #9f6ad4;">theme_xxx()</span>圖層。</p>
+<ul>
+<li>我們使用比較常用的幾種風格，包括：<span style="color: #9f6ad4;">theme_bw(), theme_classic(), theme_dark(), theme_minimal(), theme_grey(), theme_linedraw()</span>。</li>
+<li>為了比較不同theme的效果，我們使用<span style="color: #9f6ad4;">ggpubr套件中的ggarnage()函數來排版</span>六張圖表。（只適用ggplot2的物件）</li>
+</ul>
+<p></p><pre class="crayon-plain-tag">theme1 &lt;- 
+gg + 
+  theme_bw() +
+  labs(subtitle="BW Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+        )
+    
+
+theme2 &lt;-   
+gg + 
+  theme_classic() + 
+  labs(subtitle="Classic Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+        )
+
+theme3 &lt;- 
+gg + 
+  theme_dark() + 
+  labs(subtitle = "Dark Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme4 &lt;- 
+gg + 
+  theme_minimal() + 
+  labs(subtitle = "Minimal Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme5 &lt;- 
+gg + 
+  theme_grey() + 
+  labs(subtitle = "Grey Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+theme6 &lt;- 
+gg + 
+  theme_linedraw() + 
+  labs(subtitle = "Linedraw Theme") +
+  theme(text=element_text(family="黑體-繁 中黑"), # 解決中文亂碼問題
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5),
+        legend.position="none" # 移除legend圖示 (亦可調整left/right and top/bottom)
+  )
+
+library(ggpubr)
+ggarrange(theme1, theme2, theme3, theme4, theme5, theme6, ncol = 3, nrow = 2)</pre><p><img loading="lazy" class="alignnone size-large wp-image-1442" src="/wp-content/uploads/2018/05/Rplot07-1-1024x555.jpeg" alt="r ggplot2" width="1024" height="555" srcset="/wp-content/uploads/2018/05/Rplot07-1-1024x555.jpeg 1024w, /wp-content/uploads/2018/05/Rplot07-1-300x163.jpeg 300w, /wp-content/uploads/2018/05/Rplot07-1-768x416.jpeg 768w, /wp-content/uploads/2018/05/Rplot07-1-830x450.jpeg 830w, /wp-content/uploads/2018/05/Rplot07-1-230x125.jpeg 230w, /wp-content/uploads/2018/05/Rplot07-1-350x190.jpeg 350w, /wp-content/uploads/2018/05/Rplot07-1-480x260.jpeg 480w, /wp-content/uploads/2018/05/Rplot07-1.jpeg 1300w" sizes="(max-width: 1024px) 100vw, 1024px" /></p>
+<p>經過上述一系列圖層疊加調整，便完成了我們簡單的bar chart囉！</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1443" src="/wp-content/uploads/2018/05/Rplot08.jpeg" alt="r ggplot2" width="752" height="700" srcset="/wp-content/uploads/2018/05/Rplot08.jpeg 752w, /wp-content/uploads/2018/05/Rplot08-300x279.jpeg 300w, /wp-content/uploads/2018/05/Rplot08-230x214.jpeg 230w, /wp-content/uploads/2018/05/Rplot08-350x326.jpeg 350w, /wp-content/uploads/2018/05/Rplot08-480x447.jpeg 480w" sizes="(max-width: 752px) 100vw, 752px" /></p>
+<div align="center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><br />
+<!-- text & display ads 1 --><br />
+<ins class="adsbygoogle" style="display: block;" data-ad-client="ca-pub-7946632597933771" data-ad-slot="8154450369" data-ad-format="auto" data-full-width-responsive="true"></ins><br />
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+<hr />
+<p>探索更多統計模型學習筆記：</p>
+<p><a href="/linear-regression-%e7%b7%9a%e6%80%a7%e5%9b%9e%e6%ad%b8%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noopener noreferrer">線性回歸模型</a></p>
+<p><a href="/logistic-regression-part1-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part1</a></p>
+<p><a href="/logistic-regression-part2-%e7%be%85%e5%90%89%e6%96%af%e5%9b%9e%e6%ad%b8/" target="_blank" rel="noopener noreferrer">羅吉斯回歸模型part2</a></p>
+<p><a href="/decision-tree-cart-%e6%b1%ba%e7%ad%96%e6%a8%b9/" target="_blank" rel="noopener noreferrer">決策樹/隨機森林</a></p>
+<p><a href="/partitional-clustering-kmeans-kmedoid/" target="_blank" rel="noopener noreferrer">切割式分群法</a></p>
+<p><a href="/hierarchical-clustering-%e9%9a%8e%e5%b1%a4%e5%bc%8f%e5%88%86%e7%be%a4/" target="_blank" rel="noopener noreferrer">階層式分群法</a></p>
+<hr />
+<p>參考:</p>
+<ol>
+<li><a href="https://tinyurl.com/y796qqca">歐萊禮  R資料科學</a></li>
+</ol>
+<p>這篇文章 <a rel="nofollow" href="/r-sqlite-data-visualization-ggplot2/">ggplot2 |  簡易資料視覺化 Basic Data Visualization &#8211; part 1 | using R SQLite</a> 最早出現於 <a rel="nofollow" href="/">果醬珍珍•JamJam</a>。</p>
+]]></content:encoded>
+					
+					<wfw:commentRss>/r-sqlite-data-visualization-ggplot2/feed/</wfw:commentRss>
+			<slash:comments>1</slash:comments>
+		
+		
+			</item>
+	</channel>
+</rss>
