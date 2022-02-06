@@ -1,4 +1,4 @@
-# 『Data & AI - 推薦系統 RecSys』課程心得分享
+# 『Data & AI - 推薦系統 RecSys』(ALPHA Camp 資料人才種子計畫)課程心得分享
 
 ## 當初對於課程的期待、回顧期待的達成程度
 
