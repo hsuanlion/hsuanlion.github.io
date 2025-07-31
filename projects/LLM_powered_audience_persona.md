@@ -1,3 +1,10 @@
+---
+title: LLM Powered Audience Persona
+layout: default     # 依你用的 theme 改成對應的 layout 名稱
+permalink: /projects/llm-powered-audience-persona/
+---
+
+
 # Work Project Highlights
 
 ## 1. Project Title  
