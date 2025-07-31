@@ -9,16 +9,39 @@
   <style>
     :root { --primary-color: #ebc3db; --secondary-color: #ffffff; --bg-light: #f5f5f5; --text-color: #333333; --transition-speed: 0.3s; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-color); line-height: 1.6; padding: 0 20px; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-color);
+      line-height: 1.6;
+      margin: 0;
+    }
     header { background: var(--primary-color); color: var(--secondary-color); padding: 60px 20px; text-align: center; }
     header h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 700; }
     header p { font-size: 1.1rem; font-weight: 300; }
     nav { position: sticky; top: 0; background: var(--secondary-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100; }
-    nav ul { display: flex; justify-content: center; list-style: none; padding: 10px; gap: 30px; }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 10px;
+      gap: 30px;
+      overflow-x: auto;
+    }
     nav a { text-decoration: none; color: var(--text-color); font-weight: 500; transition: color var(--transition-speed); }
     nav a:hover { color: var(--primary-color); }
-    .container { max-width: 800px; margin: 0 auto; }
-    section { margin: 60px 0; }
+    .container {
+      /* 使用百分比寬度，自動適用於各種螢幕 */
+      width: 90%;
+      max-width: none;
+      /* 兩側對稱百分比內距 */
+      padding: 0 5%;
+      margin: 0 auto;
+    }
+    section {
+      scroll-margin-top: 100px;
+      margin: 60px 0; margin: 60px 0; }
     h2 { font-size: 1.8rem; margin-bottom: 20px; position: relative; display: inline-block; }
     h2::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 50px; height: 3px; background: var(--primary-color); }
     /* About */
@@ -35,7 +58,15 @@
     /* Experience */
     #experience .job { margin-bottom: 30px; }
     #experience .job h3 { font-weight: 600; }
-    #experience .job p { font-style: italic; margin-bottom: 10px; }
+    #experience .job p {
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    #experience .job ul {
+      list-style-position: inside;
+      padding-left: 20px;
+      margin: 0;
+    }
     /* Skills */
     #skills ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
     #skills li { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; font-weight: 500; }
@@ -84,8 +115,8 @@
           <div class="content">
             <p>Implemented an XGBoost model to identify fraudulent credit card transactions with 98% accuracy.</p>
             <div class="links">
-              <a href="#">Repo</a>
-              <a href="#">Notebook</a>
+              <a href="https://hsuanlion.github.io/data-science-portfolio/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.html">Repo</a>
+              <a href="https://nbviewer.org/github/hsuanlion/data-science-portfolio/blob/main/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.ipynb">Notebook</a>
             </div>
           </div>
         </div>
