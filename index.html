@@ -33,10 +33,12 @@
     nav a:hover { color: var(--primary-color); }
     .container {
       /* 使用百分比寬度，自動適用於各種螢幕 */
-      width: 90%;
+      width: 80%;
       max-width: none;
       /* 兩側對稱百分比內距 */
+      /* 语法： padding: <垂直> <水平>; */
       padding: 0 5%;
+      /* 语法： margin: <垂直> <水平>; */
       margin: 0 auto;
     }
     section {
@@ -46,8 +48,8 @@
     h2::after { content: ''; position: absolute; left: 0; bottom: -5px; width: 50px; height: 3px; background: var(--primary-color); }
     /* About */
     #about .about-content { display: flex; align-items: center; gap: 20px; }
-    #about .pfp { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); }
-    #about p { max-width: 600px; margin-top: 10px; }
+    #about .pfp { width: 30%; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); }
+    #about p { max-width: auto; margin-top: 10px; }
     /* Projects */
     #projects .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .project-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform var(--transition-speed), box-shadow var(--transition-speed); }
@@ -115,9 +117,9 @@
           <div class="content">
             <p>Implemented an XGBoost model to identify fraudulent credit card transactions with 98% accuracy.</p>
             <div class="links">
-              <a href="https://hsuanlion.github.io/data-science-portfolio/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.html">HTML</a>
-              <a href="https://nbviewer.org/github/hsuanlion/data-science-portfolio/blob/main/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.ipynb">Notebook</a>
-              <a href="https://nbviewer.org/github/hsuanlion/data-science-portfolio/blob/main/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.ipynb">Notebook clean</a>
+              <a href="https://hsuanlion.github.io/data-science-portfolio/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.html" target="_blank" rel="noopener noreferrer">HTML</a>
+              <a href="https://nbviewer.org/github/hsuanlion/data-science-portfolio/blob/main/ML/creditcard-fraud-ml/decision_tree_svm_ccFraud_showcase.ipynb" target="_blank" rel="noopener noreferrer">Notebook</a>
+              <a href="https://nbviewer.org/github/hsuanlion/data-science-portfolio/blob/main/ML/creditcard-fraud-ml/ccfraud_clean.ipynb" target="_blank" rel="noopener noreferrer">Notebook clean</a>
             </div>
           </div>
         </div>
