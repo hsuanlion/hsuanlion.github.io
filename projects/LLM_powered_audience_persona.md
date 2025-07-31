@@ -7,7 +7,7 @@ permalink: /projects/llm-powered-audience-persona/
 
 # Work Project Highlights
 
-## 1. Project Title  
+## 1. LLM-Powered Audience Persona Generator
 **LLM-Powered Audience Insights**  
 用大型語言模型產出受眾Persona
 
@@ -50,7 +50,7 @@ App用戶偏好App清單不夠直觀（不是每個App大家都知道是做什�
 - 你從這個專案學到什麼：prompt engineering要給定明確答案規格和範例，讓結果更穩定不發散。  
 - 如果再做一次會怎麼改進：可以把偏好的清單的score一起加入input。 
 - 建立一個可重用的模組、可擴展的設計：有把此應用套用到其他受眾輪廓，產出不同的分析洞察。
-- 搭建好可重複使用text prompt input的pipeline：其他應用包括poi分類器、
+- 搭建好可重複使用text prompt input的pipeline：其他應用包括poi分類器、發票中文分類標籤翻譯器等。
 ![Audience Persona](images/llm_persona_12.png)
 
 
@@ -137,3 +137,7 @@ prompt = f"""
     }}```
     """
 ```
+
+
+### Links  
+- GitHub Repo: [AudienceProfile-by-chatGPT](https://github.com/hsuanlion/AudienceProfile-by-chatGPT/tree/main/app)  
