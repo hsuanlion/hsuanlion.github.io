@@ -36,7 +36,7 @@ permalink: /projects/llm-powered-audience-persona/
 
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1rem 0;">
   <div>
-    <img src="images/llm_persona_05.png" alt="persona 各欄位解析" style="width:100%;border-radius:6px;">
+    <img src="/projects/images/llm_persona_05.png" alt="persona 各欄位解析" style="width:100%;border-radius:6px;">
     <div style="font-size:0.8rem;margin-top:4px;color:#555;">Persona Breakdown</div>
   </div>
   <div>
