@@ -4,7 +4,7 @@ layout: default
 permalink: /projects/llm-powered-audience-persona/
 ---
 
-# LLM-Powered Audience Persona  tt
+# LLM-Powered Audience Persona
 *用大型語言模型＋行為資料，自動生成具象化受眾 Persona 與族群標籤。*
 
 ## 1. Summary  
@@ -34,12 +34,25 @@ permalink: /projects/llm-powered-audience-persona/
   4. 結果呈現：整合成 persona report 與 hashtag，並用 Flask 做 POC demo 展示。  
 
 
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
-  <img src="images/llm_persona_05.png" alt="persona breakdown" style="width:100%;border-radius:6px;">
-  <img src="images/llm_persona_06.png" alt="hashtags & demographics" style="width:100%;border-radius:6px;">
-  <img src="images/llm_persona_07.png" alt="interface example 1" style="width:100%;border-radius:6px;">
-  <img src="images/llm_persona_08.png" alt="interface example 2" style="width:100%;border-radius:6px;">
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1rem 0;">
+  <div>
+    <img src="images/llm_persona_05.png" alt="persona 各欄位解析" style="width:100%;border-radius:6px;">
+    <div style="font-size:0.8rem;margin-top:4px;color:#555;">Persona Breakdown</div>
+  </div>
+  <div>
+    <img src="images/llm_persona_06.png" alt="生活型態 hashtags 與人口統計預估" style="width:100%;border-radius:6px;">
+    <div style="font-size:0.8rem;margin-top:4px;color:#555;">Hashtags & Demographics</div>
+  </div>
+  <div>
+    <img src="images/llm_persona_07.png" alt="介面範例1" style="width:100%;border-radius:6px;">
+    <div style="font-size:0.8rem;margin-top:4px;color:#555;">Interface Example 1</div>
+  </div>
+  <div>
+    <img src="images/llm_persona_08.png" alt="介面範例2" style="width:100%;border-radius:6px;">
+    <div style="font-size:0.8rem;margin-top:4px;color:#555;">Interface Example 2</div>
+  </div>
 </div>
+
 
 
 ## 5. Tech Stack  
