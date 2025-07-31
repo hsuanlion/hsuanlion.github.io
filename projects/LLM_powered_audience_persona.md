@@ -54,6 +54,12 @@ permalink: /projects/llm-powered-audience-persona/
 </div>
 
 
+| | |
+|---|---|
+| ![persona breakdown](/projects/images/llm_persona_05.png) | ![hashtags & demographics](/projects/images/llm_persona_06.png) |
+| ![interface 1](/projects/images/llm_persona_07.png) | ![interface 2](/projects/images/llm_persona_08.png) |
+
+
 
 ## 5. Tech Stack  
 - **Languages / Tools:** Python (OpenAI SDK), BigQuery, Flask  
