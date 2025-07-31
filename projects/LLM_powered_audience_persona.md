@@ -4,7 +4,7 @@ layout: default
 permalink: /projects/llm-powered-audience-persona/
 ---
 
-# LLM-Powered Audience Persona  
+# LLM-Powered Audience Persona  tt
 *用大型語言模型＋行為資料，自動生成具象化受眾 Persona 與族群標籤。*
 
 ## 1. Summary  
