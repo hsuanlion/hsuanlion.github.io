@@ -88,16 +88,14 @@ permalink: /projects/llm-powered-audience-persona/
 
 
 其他應用
-![Reusable Pipeline](images/llm_persona_12.png) <!-- alt: 可重用 prompt pipeline 示意 -->
-poi classification
 
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1rem 0;">
   <div>
     <img src="/projects/images/llm_persona_12.png" alt="其他分析模組的範例" style="width:100%;border-radius:6px;">
-    <div style="font-size:0.8rem;margin-top:4px;color:#555;">其他分析模組的範例</div>
+    <div style="font-size:0.8rem;margin-top:4px;color:#555;">Audience Insight Report的AI摘要示意圖</div>
   </div>
   <div>
-    <img src="/projects/images/llm_persona_12.png" alt="POI 分類器" style="width:100%;border-radius:6px;">
+    <img src="/projects/images/llm_persona_11.png" alt="POI 分類器" style="width:100%;border-radius:6px;">
     <div style="font-size:0.8rem;margin-top:4px;color:#555;">POI 分類器</div>
   </div>
 </div>
