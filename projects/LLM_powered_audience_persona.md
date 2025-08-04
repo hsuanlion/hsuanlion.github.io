@@ -13,7 +13,7 @@ permalink: /projects/llm-powered-audience-persona/
 ## 2. Role & Responsibilities  
 - 主導 LLM 應用設計與 proof-of-concept 建構
 - 設計與實作資料 pipeline（App 偏好清單的擷取、正規化與清洗）
-- 應用 Retrieval-Augmented Generation 概念與 prompt engineering 組出高質 persona prompt
+- 應用RAG-like context和prompt engineering 組出高質 persona prompt
 - 建構 LLM output 的後處理與標籤化（persona 結構化、行銷建議、競品觀察）
 - 自動化整個流程並建立 Flask demo site 供內部驗證與展示
 
@@ -80,9 +80,9 @@ permalink: /projects/llm-powered-audience-persona/
 
 ## 8. Lessons Learned / Takeaways  
 - **學到的事：** 明確、有範例的 grounding prompt 能大幅提升 persona 的一致性與可用性；提供行為背景（RAG-like context）讓 LLM 生成更有根據、可信的描述。
-- **再做一次會改進：**
+<!-- - **再做一次會改進：**
     - 引入 reranking 或 consistency check 來簡單驗證生成 persona 與原始 grounding 是否匹配。
-    - 建立 feedback loop：把高品質 persona 重新 chunk 進入 index，逐步強化 retrieval context。
+    - 建立 feedback loop：把高品質 persona 重新 chunk 進入 index，逐步強化 retrieval context。 -->
 - **可重用性：** prompt pipeline 及輸出結構化模組可套用到其他受眾 / 報表分析。
 - **模組化設計：** 每一步（檢索、prompt 組裝、LLM 呼叫、後處理、展示）分離封裝，降低新 case 上手門檻。
 
