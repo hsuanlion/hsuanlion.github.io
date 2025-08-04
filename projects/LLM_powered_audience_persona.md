@@ -80,8 +80,9 @@ permalink: /projects/llm-powered-audience-persona/
 
 ## 8. Lessons Learned / Takeaways  
 - **學到的事：** 明確、有範例的 grounding prompt 能大幅提升 persona 的一致性與可用性；提供行為背景（RAG-like context）讓 LLM 生成更有根據、可信的描述。
-<!-- - **再做一次會改進：**
-    - 引入 reranking 或 consistency check 來簡單驗證生成 persona 與原始 grounding 是否匹配。
+- **再做一次會改進：**
+    - 為防止LLM對有限資訊的App產出泛化詞彙或產出較無根據的資訊，可以透RAG技術加入其他大型內部資料進行相關上下文檢索並生成更好的prompt。![ARAG](images/RAG.png) 
+    <!-- - 引入 reranking 或 consistency check 來簡單驗證生成 persona 與原始 grounding 是否匹配。
     - 建立 feedback loop：把高品質 persona 重新 chunk 進入 index，逐步強化 retrieval context。 -->
 - **可重用性：** prompt pipeline 及輸出結構化模組可套用到其他受眾 / 報表分析。
 - **模組化設計：** 每一步（檢索、prompt 組裝、LLM 呼叫、後處理、展示）分離封裝，降低新 case 上手門檻。
